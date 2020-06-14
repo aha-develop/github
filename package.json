@@ -1,0 +1,35 @@
+{
+  "name": "aha-develop/github",
+  "description": "GitHub integration extension",
+  "version": "0.0.0",
+  "author": "@k1w1",
+  "dependencies": {
+  },
+  "license": "MIT",
+  "ahaExtension": {
+    "contributes": {
+      "customFields": {
+        "github": {
+          "title": "GitHub",
+          "entryPoint": "src/component.js",
+          "recordTypes": ["Feature", "Epic", "Requirement"],
+          "type": "UrlField"
+        }
+      },
+      "commands": {
+        "branch": {
+          "title": "Create branch",
+          "entryPoint": "src/command.js",
+          "showPanel": false
+        }
+      },
+      "endpoints": {
+        "fetch_pull_details": {
+          "title": "Fetch pull details",
+          "entryPoint": "src/endpoint.js"
+        }
+      }
+
+    }
+  }
+}
