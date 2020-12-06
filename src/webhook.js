@@ -34,7 +34,7 @@ async function handleCreate(payload) {
     console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
 
     fields = await graphFetch(
-      `{ feature(id: "${ahaReference.referenceNum}") { extensionFields } }`
+      `{ feature(id: "${ahaReference.referenceNum}") { extensionFields { id name value} } }`
     );
 
     console.log(fields);
@@ -45,21 +45,21 @@ function extractReference(name) {
   let matches;
 
   // Requirement
-  if ((matches = name.match(/[a-z]{1,10}-[0-9]+-[0-9+]/i))) {
+  if ((matches = name.match(/[a-z]{1,10}-[0-9]+-[0-9]+/i))) {
     return {
       type: "Requirement",
       referenceNum: matches[0],
     };
   }
   // Epic
-  if ((matches = name.match(/[a-z]{1,10}-E-[0-9+]/i))) {
+  if ((matches = name.match(/[a-z]{1,10}-E-[0-9]+/i))) {
     return {
       type: "Epic",
       referenceNum: matches[0],
     };
   }
   // Feature
-  if ((matches = name.match(/[a-z]{1,10}-[0-9+]/i))) {
+  if ((matches = name.match(/[a-z]{1,10}-[0-9]+/i))) {
     return {
       type: "Feature",
       referenceNum: matches[0],
@@ -70,9 +70,12 @@ function extractReference(name) {
 }
 
 async function graphFetch(query) {
-  const response = await fetch("http://reallybigaha.ngrok.io/graphql", {
+  const response = await fetch(Env.apiUrl, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${Env.apiToken}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       query: query,
     }),
