@@ -1,6 +1,4 @@
 Aha.on("webhook", async ({ headers, payload }) => {
-  console.log("start");
-
   const event = headers.HTTP_X_GITHUB_EVENT;
 
   console.log(
@@ -15,8 +13,6 @@ Aha.on("webhook", async ({ headers, payload }) => {
       handlePush(payload);
       break;
   }
-
-  console.log("done");
 });
 
 function handlePush(payload) {}
@@ -48,7 +44,6 @@ async function handleCreate(payload) {
         } 
       }`
     );
-    console.log(result);
 
     const extensionField = result.data.feature.extensionFields[0];
     let branchValue = null;
@@ -131,7 +126,7 @@ async function graphFetch(query, variables = {}) {
       variables: variables,
     }),
   });
-  console.log(response);
+
   if (response.status != 200) {
     throw new Error(
       `GraphQL fetch failed: ${response.status} ${

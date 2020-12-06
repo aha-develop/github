@@ -9,9 +9,15 @@
   "ahaExtension": {
     "contributes": {
       "customFields": {
-        "github": {
-          "title": "GitHub",
+        "url": {
+          "title": "GitHub URL",
           "entryPoint": "src/component.js",
+          "recordTypes": ["Feature", "Epic", "Requirement"],
+          "type": "UrlField"
+        },
+        "links": {
+          "title": "GitHub links",
+          "entryPoint": "src/links.js",
           "recordTypes": ["Feature", "Epic", "Requirement"],
           "type": "UrlField"
         }
