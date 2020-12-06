@@ -33,11 +33,61 @@ async function handleCreate(payload) {
     // Link branch to Aha! record.
     console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
 
-    fields = await graphFetch(
-      `{ feature(id: "${ahaReference.referenceNum}") { extensionFields { id name value} } }`
+    // TODO: This API code is really hacky. It would be really nice to replace
+    // it with the ApplicationModel structure from our framework. Perhaps with
+    // a plugin GraphQL client so we can use raw fetch calls instead of Apollo
+    // to reduce code side and dependencies.
+    result = await graphFetch(
+      `{ 
+        feature(id: "${ahaReference.referenceNum}") { 
+          extensionFields(filters: {extensionIdentifier: "aha-develop.github", name: "branches"}) { 
+            id 
+            name 
+            value
+          } 
+        } 
+      }`
     );
+    console.log(result);
 
-    console.log(fields);
+    const extensionField = result.data.feature.extensionFields[0];
+    let branchValue = null;
+    let newValue = [];
+    if (extensionField) {
+      newValue = extensionField.value || [];
+      console.log(newValue);
+      branchValue = newValue.find((e) => e.name == branchName);
+    }
+
+    if (!branchValue) {
+      branchValue = newValue.push({ name: branchName });
+    }
+    // Insert.
+    await graphFetch(
+      `mutation UpsertExtension($value: JSON) {
+        createExtensionField(
+          attributes: {
+            extension: { id: "aha-develop.github" }, 
+            extensionFieldableId: "${ahaReference.referenceNum}", 
+            extensionFieldableType: "${ahaReference.type}", 
+            name: "branches", 
+            value: $value
+          }
+        ) {
+          extensionField {
+            id
+          }
+          errors {
+            attributes {
+              name
+              messages
+              fullMessages
+            }
+          }
+        }
+      }`,
+      { value: newValue }
+    );
   }
 }
 
@@ -69,7 +119,7 @@ function extractReference(name) {
   return null;
 }
 
-async function graphFetch(query) {
+async function graphFetch(query, variables = {}) {
   const response = await fetch(Env.apiUrl, {
     method: "POST",
     headers: {
@@ -78,9 +128,10 @@ async function graphFetch(query) {
     },
     body: JSON.stringify({
       query: query,
+      variables: variables,
     }),
   });
-
+  console.log(response);
   if (response.status != 200) {
     throw new Error(
       `GraphQL fetch failed: ${response.status} ${
