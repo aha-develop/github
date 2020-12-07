@@ -241,8 +241,8 @@ function PullDetails({ pullDetails, clearPullRequest }) {
   `;
 }
 
-export default (root, props, state) => {
-  const { Aha, update } = props;
+export default (container, props) => {
+  const { Aha, update, state } = props;
   if (state === null) {
     state = {};
   }
@@ -313,9 +313,9 @@ export default (root, props, state) => {
     }
   }
 
-  render(html`<${Styles} /><${App} />`, root);
+  render(html`<${Styles} /><${App} />`, container);
 
   return () => {
-    render(null, root);
+    render(null, container);
   };
 };

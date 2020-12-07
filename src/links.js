@@ -5,19 +5,41 @@ import classnames from "https://cdn.pika.dev/classnames@^2.2.6";
 
 const html = htm.bind(h);
 
-export function links(root, props, state) {
-  const { Aha, update } = props;
-  if (state === null) {
-    state = {};
-  }
+function Styles() {
+  return html` <style>
+    .type-icon {
+      font-size: 18px;
+      color: #aaa;
+      padding-right: 5px;
+      vertical-align: middle;
+    }
+  </style>`;
+}
+
+export function links(container, props) {
+  const { Aha, update, state, fields } = props;
+
+  console.log(fields);
 
   function App() {
-    return html` <p>Loading details...</p> `;
+    if (fields.branches && fields.branches.length > 0) {
+      return html`<div>
+        ${fields.branches.map(
+          (branch) =>
+            html`<div>
+              <i class="fa fa-code-fork type-icon" />
+              <a href="${branch.url}" target="_blank">${branch.name}</a>
+            </div>`
+        )}
+      </div>`;
+    } else {
+      return html`<p>Not linked</p>`;
+    }
   }
 
-  render(html`<${App} />`, root);
+  render(html`<${Styles} /><${App} />`, container);
 
   return () => {
-    render(null, root);
+    render(null, container);
   };
 }

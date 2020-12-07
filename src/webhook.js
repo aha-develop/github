@@ -55,7 +55,10 @@ async function handleCreate(payload) {
     }
 
     if (!branchValue) {
-      branchValue = newValue.push({ name: branchName });
+      branchValue = newValue.push({
+        name: branchName,
+        url: `${payload.repository.html_url}/tree/${branchName}`,
+      });
     }
     // Insert.
     await graphFetch(
