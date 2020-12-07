@@ -1,23 +1,34 @@
 Aha.on("webhook", async ({ headers, payload }) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
 
-  console.log(
-    `Received webhook ${headers.HTTP_X_GITHUB_EVENT} ${payload.action}`
-  );
+  console.log(`Received webhook ${event} ${payload.action || ""}`);
 
   switch (event) {
     case "create":
-      await handleCreate(payload);
+      await handleCreateBranch(payload);
       break;
-    case "push":
-      handlePush(payload);
+    case "pull_request":
+      handlePullRequest(payload);
       break;
   }
 });
 
-function handlePush(payload) {}
+async function handlePullRequest(payload) {
+  const ahaReference =
+    extractReference(payload.pull_request.title) ||
+    extractReference(payload.pull_request.body);
+  if (!ahaReference) {
+    return;
+  }
 
-async function handleCreate(payload) {
+  await appendField(ahaReference, "pullRequests", {
+    id: payload.pull_request.number,
+    name: payload.pull_request.title,
+    url: payload.pull_request.html_url,
+  });
+}
+
+async function handleCreateBranch(payload) {
   // We only care about branches.
   if (payload.ref_type != "branch") {
     return;
@@ -25,50 +36,66 @@ async function handleCreate(payload) {
 
   const branchName = payload.ref;
   const ahaReference = extractReference(branchName);
-  if (ahaReference) {
-    // Link branch to Aha! record.
-    console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
+  if (!ahaReference) {
+    return;
+  }
 
-    // TODO: This API code is really hacky. It would be really nice to replace
-    // it with the ApplicationModel structure from our framework. Perhaps with
-    // a plugin GraphQL client so we can use raw fetch calls instead of Apollo
-    // to reduce code side and dependencies.
-    result = await graphFetch(
-      `{ 
+  await appendField(ahaReference, "branches", {
+    id: payload.ref,
+    name: payload.ref,
+    url: `${payload.repository.html_url}/tree/${branchName}`,
+  });
+}
+
+async function appendField(ahaReference, fieldName, newValue) {
+  // Link to Aha! record.
+  console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
+
+  // TODO: This API code is really hacky. It would be really nice to replace
+  // it with the ApplicationModel structure from our framework. Perhaps with
+  // a plugin GraphQL client so we can use raw fetch calls instead of Apollo
+  // to reduce code side and dependencies.
+  result = await graphFetch(
+    `{ 
         feature(id: "${ahaReference.referenceNum}") { 
-          extensionFields(filters: {extensionIdentifier: "aha-develop.github", name: "branches"}) { 
+          extensionFields(filters: {extensionIdentifier: "aha-develop.github", name: "${fieldName}"}) { 
             id 
             name 
             value
           } 
         } 
       }`
-    );
+  );
 
-    const extensionField = result.data.feature.extensionFields[0];
-    let branchValue = null;
-    let newValue = [];
-    if (extensionField) {
-      newValue = extensionField.value || [];
-      console.log(newValue);
-      branchValue = newValue.find((e) => e.name == branchName);
-    }
+  const extensionField = result.data.feature.extensionFields[0];
+  let foundValue = false;
+  let fieldValue = [];
+  if (extensionField) {
+    fieldValue = extensionField.value || [];
+    fieldValue = fieldValue.map((e) => {
+      if (e.id == newValue.id) {
+        foundValue = true;
+        return newValue;
+      } else {
+        return e;
+      }
+    });
+    // Replace the existing value.
+  }
 
-    if (!branchValue) {
-      branchValue = newValue.push({
-        name: branchName,
-        url: `${payload.repository.html_url}/tree/${branchName}`,
-      });
-    }
-    // Insert.
-    await graphFetch(
-      `mutation UpsertExtension($value: JSON) {
+  if (!foundValue) {
+    fieldValue.push(newValue);
+  }
+
+  // Insert.
+  await graphFetch(
+    `mutation UpsertExtension($value: JSON) {
         createExtensionField(
           attributes: {
             extension: { id: "aha-develop.github" }, 
             extensionFieldableId: "${ahaReference.referenceNum}", 
             extensionFieldableType: "${ahaReference.type}", 
-            name: "branches", 
+            name: "${fieldName}", 
             value: $value
           }
         ) {
@@ -84,9 +111,8 @@ async function handleCreate(payload) {
           }
         }
       }`,
-      { value: newValue }
-    );
-  }
+    { value: fieldValue }
+  );
 }
 
 function extractReference(name) {
@@ -137,5 +163,7 @@ async function graphFetch(query, variables = {}) {
       }: ${await response.text()}`
     );
   }
-  return await response.json();
+  const result = await response.json();
+  console.log(`Result: ${JSON.stringify(result)}`);
+  return result;
 }
