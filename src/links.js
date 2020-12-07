@@ -13,6 +13,16 @@ function Styles() {
       padding-right: 5px;
       vertical-align: middle;
     }
+
+    .pr-state {
+      display: inline-block;
+      font-size: 12px;
+      background-color: #aaa;
+      color: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
   </style>`;
 }
 
@@ -29,6 +39,7 @@ export function links(container, props) {
         (pr) =>
           html`<div>
             <a href="${pr.url}" target="_blank">${pr.name}</a>
+            <span class="pr-state">${pr.state}</span>
           </div>`
       )}
     </div>`;

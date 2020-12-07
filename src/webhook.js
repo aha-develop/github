@@ -14,17 +14,17 @@ Aha.on("webhook", async ({ headers, payload }) => {
 });
 
 async function handlePullRequest(payload) {
-  const ahaReference =
-    extractReference(payload.pull_request.title) ||
-    extractReference(payload.pull_request.body);
+  const pr = payload.pull_request;
+  const ahaReference = extractReference(pr.title) || extractReference(pr.body);
   if (!ahaReference) {
     return;
   }
 
   await appendField(ahaReference, "pullRequests", {
-    id: payload.pull_request.number,
-    name: payload.pull_request.title,
-    url: payload.pull_request.html_url,
+    id: pr.number,
+    name: pr.title,
+    url: pr.html_url,
+    state: pr.merged ? "merged" : pr.state,
   });
 }
 
