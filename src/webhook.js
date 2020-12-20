@@ -75,12 +75,12 @@ async function appendField(ahaReference, fieldName, newValue) {
     fieldValue = fieldValue.map((e) => {
       if (e.id == newValue.id) {
         foundValue = true;
+        // Replace the existing value.
         return newValue;
       } else {
         return e;
       }
     });
-    // Replace the existing value.
   }
 
   if (!foundValue) {
@@ -140,6 +140,7 @@ function extractReference(name) {
     };
   }
 
+  // Done.
   return null;
 }
 
