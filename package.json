@@ -22,6 +22,12 @@
           "type": "UrlField"
         }
       },
+      "commands": {
+        "createBranch": {
+          "title": "Create a branch in GitHub",
+          "entryPoint": "src/createBranch.js"
+        }
+      },
       "endpoints": {
         "fetch_pull_details": {
           "title": "Fetch pull details",

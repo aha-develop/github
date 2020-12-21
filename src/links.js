@@ -1,7 +1,6 @@
-import { h, render } from "https://cdn.pika.dev/preact@^10.4.4";
-import { useState } from "https://cdn.pika.dev/preact@^10.4.4/hooks";
+import { h } from "https://cdn.pika.dev/preact@^10.4.4";
+import render from "https://cdn.pika.dev/preact-render-to-string";
 import htm from "https://cdn.pika.dev/htm@^3.0.4";
-import classnames from "https://cdn.pika.dev/classnames@^2.2.6";
 
 const html = htm.bind(h);
 
@@ -26,9 +25,11 @@ function Styles() {
   </style>`;
 }
 
-export function links(container, props) {
-  const { Aha, update, state, fields } = props;
-
+export function links(props) {
+  const { record, update, state, fields } = props;
+  console.log("PROPS:");
+  console.log(props);
+  console.log("FIELDS:");
   console.log(fields);
 
   function pullRequests() {
@@ -59,17 +60,48 @@ export function links(container, props) {
     </div>`;
   }
 
+  function menu() {
+    return html`<div
+      class="popdown attribute-popdown active"
+      data-reactive-preserve-attributes="true"
+      data-ignore-react-resize="true"
+    >
+      <a class="popdown__trigger btn btn-mini btn-link"
+        ><i class="fa fa-ellipsis-h"></i
+      ></a>
+      <div
+        class="popdown__menu popdown__menu--has-inner"
+        x-placement="bottom-end"
+      >
+        <div class="popdown__inner">
+          <ul>
+            <li>
+              <a
+                rel="nofollow"
+                data-method="post"
+                data-remote="true"
+                href="${Aha.commandUrl("createBranch", { record })}"
+                >Create branch</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>`;
+  }
+
   function App() {
     if (fields.branches || fields.pullRequests) {
-      return html`${branches()}${pullRequests()}`;
+      return html`${branches()}${pullRequests()}${menu()}`;
     } else {
-      return html`<p>Not linked</p>`;
+      return html`<div>Not linked <aha-button>foo</aha-button></div>
+        ${menu()}`;
     }
   }
 
-  render(html`<${Styles} /><${App} />`, container);
-
-  return () => {
-    render(null, container);
-  };
+  return render(html`<${Styles} /><${App} />`);
 }
+
+Aha.on("links", function (args) {
+  return links(args);
+});

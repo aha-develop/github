@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/rest";
+import { Octokit } from "https://cdn.skypack.dev/@octokit/rest";
 
 Aha.on("hello", function (args) {
   return "Hello from server, " + args.name + "!";
