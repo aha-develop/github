@@ -2,5 +2,10 @@ Aha.on("createBranch", function (args) {
   console.log("createBranch");
   console.log("Got args:");
   console.log(args);
-  return {};
+
+  const notAuthenticated = true;
+  if (notAuthenticated) {
+    Aha.respondWithRedirect("/auth");
+    return;
+  }
 });

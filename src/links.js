@@ -62,9 +62,8 @@ export function links(props) {
 
   function menu() {
     return html`<div
-      class="popdown attribute-popdown active"
+      class="popdown attribute-popdown"
       data-reactive-preserve-attributes="true"
-      data-ignore-react-resize="true"
     >
       <a class="popdown__trigger btn btn-mini btn-link"
         ><i class="fa fa-ellipsis-h"></i
@@ -84,6 +83,11 @@ export function links(props) {
                 >Create branch</a
               >
             </li>
+            <li>
+              <a rel="nofollow" data-remote="true" href="${Aha.viewUrl("auth")}"
+                >Login</a
+              >
+            </li>
           </ul>
         </div>
       </div>
@@ -94,7 +98,7 @@ export function links(props) {
     if (fields.branches || fields.pullRequests) {
       return html`${branches()}${pullRequests()}${menu()}`;
     } else {
-      return html`<div>Not linked <aha-button>foo</aha-button></div>
+      return html`<div>Not linked</div>
         ${menu()}`;
     }
   }
