@@ -1,5 +1,4 @@
-import { h } from "https://cdn.pika.dev/preact@^10.4.4";
-import render from "https://cdn.pika.dev/preact-render-to-string";
+import { h, render } from "https://cdn.pika.dev/preact@^10.4.4";
 import htm from "https://cdn.pika.dev/htm@^3.0.4";
 
 const html = htm.bind(h);
@@ -25,7 +24,7 @@ function Styles() {
   </style>`;
 }
 
-export function links(props) {
+function links(container, props) {
   const { record, update, state, fields } = props;
   console.log("PROPS:");
   console.log(props);
@@ -60,52 +59,44 @@ export function links(props) {
     </div>`;
   }
 
-  function menu() {
-    return html`<div
-      class="popdown attribute-popdown"
-      data-reactive-preserve-attributes="true"
-    >
-      <a class="popdown__trigger btn btn-mini btn-link"
-        ><i class="fa fa-ellipsis-h"></i
-      ></a>
-      <div
-        class="popdown__menu popdown__menu--has-inner"
-        x-placement="bottom-end"
-      >
-        <div class="popdown__inner">
-          <ul>
-            <li>
-              <a
-                rel="nofollow"
-                data-method="post"
-                data-remote="true"
-                href="${Aha.commandUrl("createBranch", { record })}"
-                >Create branch</a
-              >
-            </li>
-            <li>
-              <a rel="nofollow" data-remote="true" href="${Aha.viewUrl("auth")}"
-                >Login</a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
+  function createBranch() {
+    aha.command("aha-develop.github.createBranch", {
+      name: `${record.referenceNum}-branch`,
+    });
+  }
+
+  function sync() {
+    aha.command("aha-develop.github.sync", {
+      referenceNum: record.referenceNum,
+    });
+  }
+
+  function buttons() {
+    return html`<div>
+      <button class="btn btn-mini" onClick="${(e) => createBranch()}">
+        Create branch
+      </button>
+      ${" "}
+      <button class="btn btn-mini" onClick="${(e) => sync()}">Resync</button>
     </div>`;
+  }
+
+  function menu() {
+    return html`<div><i>Menu goes here</i></div>`;
   }
 
   function App() {
     if (fields.branches || fields.pullRequests) {
-      return html`${branches()}${pullRequests()}${menu()}`;
+      return html`${branches()}${pullRequests()}${menu()}${buttons()}`;
     } else {
       return html`<div>Not linked</div>
-        ${menu()}`;
+        ${menu()}${buttons()}`;
     }
   }
 
-  return render(html`<${Styles} /><${App} />`);
+  render(html`<${Styles} /><${App} />`, container);
 }
 
-Aha.on("links", function (args) {
-  return links(args);
+aha.on("links", function (container, args) {
+  return links(container, args);
 });

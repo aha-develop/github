@@ -33,6 +33,10 @@
         "createBranch": {
           "title": "Create a branch in GitHub",
           "entryPoint": "src/createBranch.js"
+        },
+        "sync": {
+          "title": "Sync a feature with GitHub, recreating links",
+          "entryPoint": "src/sync.js"
         }
       },
       "endpoints": {
