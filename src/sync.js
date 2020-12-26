@@ -40,7 +40,7 @@ aha.on("sync", () => {
   aha.auth(
     "github",
     {
-      ui: "popup",
+      useCachedRetry: true,
       parameters: { scope: "repo" },
     },
     async (authData) => {
