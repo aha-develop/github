@@ -1,3 +1,5 @@
+import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
+
 async function appendField(ahaReference, fieldName, newValue) {
   // Link to Aha! record.
   console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
@@ -158,4 +160,23 @@ function extractReference(name) {
   return null;
 }
 
-export { graphFetch, appendField, linkPullRequest, linkBranch };
+function withGitHubApi(callback) {
+  aha.auth(
+    "github",
+    {
+      useCachedRetry: true,
+      parameters: { scope: "repo" },
+    },
+    async (authData) => {
+      const graphqlWithAuth = graphql.defaults({
+        headers: {
+          authorization: `token ${authData.token}`,
+        },
+      });
+
+      await callback(graphqlWithAuth);
+    }
+  );
+}
+
+export { withGitHubApi, graphFetch, appendField, linkPullRequest, linkBranch };
