@@ -82,7 +82,7 @@ function links(container, props) {
   }
 
   function menu() {
-    return html`<div><i>Menu goes here</i></div>`;
+    return ""; //html`<div><i>Menu goes here</i></div>`;
   }
 
   function App() {

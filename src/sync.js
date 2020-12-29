@@ -25,7 +25,7 @@ aha.on("sync", () => {
     console.log(search);
 
     for (let prNode of search.edges) {
-      linkPullRequest(prNode.node);
+      await linkPullRequest(prNode.node);
     }
   });
 });

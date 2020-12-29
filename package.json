@@ -31,11 +31,11 @@
       },
       "commands": {
         "createBranch": {
-          "title": "Create a branch in GitHub",
+          "title": "GitHub: Create a branch",
           "entryPoint": "src/createBranch.js"
         },
         "sync": {
-          "title": "Sync a feature with GitHub, recreating links",
+          "title": "GitHub: Sync pull requests",
           "entryPoint": "src/sync.js"
         }
       },
