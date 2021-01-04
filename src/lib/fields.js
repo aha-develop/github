@@ -74,7 +74,7 @@ async function graphFetch(query, variables = {}) {
   };
   let url = "/api/v2/graphql";
 
-  if (!window) {
+  if (typeof window === "undefined") {
     headers["Authorization"] = `Bearer ${Env.apiToken}`;
     url = Env.apiUrl;
   } else {
