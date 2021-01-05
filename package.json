@@ -3,7 +3,7 @@
   "description": "GitHub integration extension",
   "version": "0.0.0",
   "author": "Aha!",
-  "respository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/aha-develop/github"
   },
@@ -53,8 +53,13 @@
           "entryPoint": "src/webhook.js",
           "public": true
         }
+      },
+      "events": {
+        "pr.labeled": {
+          "title": "Respond to labeled PR",
+          "entryPoint": "src/labeledPr.js"
+        }
       }
-
     }
   }
 }
