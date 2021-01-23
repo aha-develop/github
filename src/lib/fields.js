@@ -2,100 +2,71 @@ import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
 
 // Append a field/value pair to the given record. Returns an actual record
 // instance if one existed.
-async function appendField(ahaReference, fieldName, newValue) {
+async function appendField(record, fieldName, newValue) {
+  console.log(record);
   // Link to Aha! record.
-  console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
+  console.log(`Link to ${record.typename}:${record.referenceNum}`);
 
-  // TODO: I really want this to look like:
-  // await record.extensionField.select('id', 'name', 'value').reload()
-  const record = await aha.models[ahaReference.type]
-    .select("id", "referenceNum")
-    .merge({
-      extensionFields: aha.models.ExtensionField.where({
-        extensionIdentifier: "aha-develop.github",
-      }).select("id", "name", "value"),
-    })
-    .find(ahaReference.referenceNum);
-
-  const extensionField = record.extensionFields[0];
+  let fieldValue =
+    (await record.getExtensionField("aha-develop.github", fieldName)) || [];
   let foundValue = false;
-  let fieldValue = [];
-  if (extensionField) {
-    fieldValue = extensionField.value || [];
-    fieldValue = fieldValue.map((e) => {
-      if (e.id == newValue.id) {
-        foundValue = true;
-        // Replace the existing value.
-        return newValue;
-      } else {
-        return e;
-      }
-    });
-  }
+  fieldValue = fieldValue.map((e) => {
+    if (e.id == newValue.id) {
+      foundValue = true;
+      // Replace the existing value.
+      return newValue;
+    } else {
+      return e;
+    }
+  });
 
   if (!foundValue) {
     fieldValue.push(newValue);
   }
 
-  // Insert.
-  await aha.graphQLMutate(
-    `mutation UpsertExtension($value: JSON) {
-        createExtensionField(
-          attributes: {
-            extension: { id: "aha-develop.github" }, 
-            extensionFieldableId: "${ahaReference.referenceNum}", 
-            extensionFieldableType: "${ahaReference.type}", 
-            name: "${fieldName}", 
-            value: $value
-          }
-        ) {
-          extensionField {
-            id
-          }
-          errors {
-            attributes {
-              name
-              messages
-              fullMessages
-            }
-          }
-        }
-      }`,
-    { variables: { value: fieldValue } }
-  );
-
-  // TODO: API calls above should return this object naturally.
-  return new aha.models.Feature({
-    id: record.id,
-    referenceNum: record.referenceNum,
-  });
+  await record.setExtensionField("aha-develop.github", fieldName, fieldValue);
 }
 
 async function linkPullRequest(pr) {
-  const ahaReference = extractReference(pr.title);
-  if (!ahaReference) {
-    return;
+  const record = await referenceToRecord(pr.title);
+  if (record) {
+    await appendField(record, "pullRequests", {
+      id: pr.number,
+      name: pr.title,
+      url: pr.url || pr.html_url,
+      state: pr.merged ? "merged" : pr.state,
+    });
   }
 
-  return await appendField(ahaReference, "pullRequests", {
-    id: pr.number,
-    name: pr.title,
-    url: pr.url || pr.html_url,
-    state: pr.merged ? "merged" : pr.state,
-  });
+  return record;
 }
 
 async function linkBranch(branchName, url) {
-  const ahaReference = extractReference(branchName);
+  const record = await referenceToRecord(branchName);
+  if (record) {
+    await appendField(ahaReference, "branches", {
+      id: branchName,
+      name: branchName,
+      url: url,
+    });
+  }
+}
+
+async function referenceToRecord(str) {
+  const ahaReference = extractReference(str);
   if (!ahaReference) {
-    return;
+    return null;
   }
 
-  await appendField(ahaReference, "branches", {
-    id: branchName,
-    name: branchName,
-    url: url,
-  });
+  const RecordClass = aha.models[ahaReference.type];
+  if (!RecordClass) {
+    console.log(`Unknown record type ${ahaReference.type}`);
+    return null;
+  }
+
+  return await RecordClass.select("id", "referenceNum").find(
+    ahaReference.referenceNum
+  );
 }
 
 function extractReference(name) {
@@ -123,7 +94,6 @@ function extractReference(name) {
     };
   }
 
-  // Done.
   return null;
 }
 
