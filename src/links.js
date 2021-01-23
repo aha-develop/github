@@ -26,10 +26,6 @@ function Styles() {
 
 function links(container, props) {
   const { record, update, state, fields } = props;
-  console.log("PROPS:");
-  console.log(props);
-  console.log("FIELDS:");
-  console.log(fields);
 
   function pullRequests() {
     if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;

@@ -1,10 +1,10 @@
 import { Octokit } from "https://cdn.skypack.dev/@octokit/rest";
 
-Aha.on("hello", function (args) {
+aha.on("hello", function (args) {
   return "Hello from server, " + args.name + "!";
 });
 
-Aha.on("fetch_pull_details", async (args) => {
+aha.on("fetch_pull_details", async (args) => {
   const octokit = new Octokit({
     auth: Env.auth,
     userAgent: "myApp v1.2.3",

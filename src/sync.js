@@ -1,11 +1,12 @@
 import { withGitHubApi, linkPullRequest } from "./lib/fields.js";
 
-aha.on("sync", () => {
-  console.log("Syncing PRs");
+aha.on("sync", (record) => {
+  console.log(`Syncing PRs for ${JSON.stringify(record)}`);
+
   withGitHubApi(async (api) => {
     const { search } = await api(`
     {
-      search(query:"in:title in:body type:pr \\"PLAT-3\\" repo:\\"k1w1/racer_experiment\\"", type: ISSUE, first:20 ) {
+      search(query:"in:title in:body type:pr \\"${record.referenceNum}\\" repo:\\"k1w1/racer_experiment\\"", type: ISSUE, first:20 ) {
         edges {
           node {
             __typename

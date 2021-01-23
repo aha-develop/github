@@ -1,26 +1,23 @@
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
 
+// Append a field/value pair to the given record. Returns an actual record
+// instance if one existed.
 async function appendField(ahaReference, fieldName, newValue) {
   // Link to Aha! record.
   console.log(`Link to ${ahaReference.type}:${ahaReference.referenceNum}`);
 
-  // TODO: This API code is really hacky. It would be really nice to replace
-  // it with the ApplicationModel structure from our framework. Perhaps with
-  // a plugin GraphQL client so we can use raw fetch calls instead of Apollo
-  // to reduce code side and dependencies.
-  const result = await graphFetch(
-    `{ 
-        feature(id: "${ahaReference.referenceNum}") { 
-          extensionFields(filters: {extensionIdentifier: "aha-develop.github", name: "${fieldName}"}) { 
-            id 
-            name 
-            value
-          } 
-        } 
-      }`
-  );
+  // TODO: I really want this to look like:
+  // await record.extensionField.select('id', 'name', 'value').reload()
+  const record = await aha.models[ahaReference.type]
+    .select("id", "referenceNum")
+    .merge({
+      extensionFields: aha.models.ExtensionField.where({
+        extensionIdentifier: "aha-develop.github",
+      }).select("id", "name", "value"),
+    })
+    .find(ahaReference.referenceNum);
 
-  const extensionField = result.data.feature.extensionFields[0];
+  const extensionField = record.extensionFields[0];
   let foundValue = false;
   let fieldValue = [];
   if (extensionField) {
@@ -41,7 +38,7 @@ async function appendField(ahaReference, fieldName, newValue) {
   }
 
   // Insert.
-  await graphFetch(
+  await aha.graphQLMutate(
     `mutation UpsertExtension($value: JSON) {
         createExtensionField(
           attributes: {
@@ -64,54 +61,23 @@ async function appendField(ahaReference, fieldName, newValue) {
           }
         }
       }`,
-    { value: fieldValue }
+    { variables: { value: fieldValue } }
   );
-}
 
-async function graphFetch(query, variables = {}) {
-  let headers = {
-    "Content-Type": "application/json",
-  };
-  let url = "/api/v2/graphql";
-
-  if (typeof window === "undefined") {
-    headers["Authorization"] = `Bearer ${Env.apiToken}`;
-    url = Env.apiUrl;
-  } else {
-    headers["X-CSRF-Token"] = window.csrfToken();
-  }
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: headers,
-    body: JSON.stringify({
-      query: query,
-      variables: variables,
-    }),
+  // TODO: API calls above should return this object naturally.
+  return new aha.models.Feature({
+    id: record.id,
+    referenceNum: record.referenceNum,
   });
-
-  if (response.status != 200) {
-    throw new Error(
-      `GraphQL fetch failed: ${response.status} ${
-        response.statusText
-      }: ${await response.text()}`
-    );
-  }
-  const result = await response.json();
-  console.log(result);
-  if (result.errors) {
-    throw new Error(result.errors[0].message);
-  }
-  return result;
 }
 
 async function linkPullRequest(pr) {
-  const ahaReference = extractReference(pr.title) || extractReference(pr.body);
+  const ahaReference = extractReference(pr.title);
   if (!ahaReference) {
     return;
   }
 
-  await appendField(ahaReference, "pullRequests", {
+  return await appendField(ahaReference, "pullRequests", {
     id: pr.number,
     name: pr.title,
     url: pr.url || pr.html_url,
@@ -180,4 +146,4 @@ function withGitHubApi(callback) {
   );
 }
 
-export { withGitHubApi, graphFetch, appendField, linkPullRequest, linkBranch };
+export { withGitHubApi, appendField, linkPullRequest, linkBranch };

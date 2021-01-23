@@ -12,25 +12,11 @@
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
-      "customFields": {
-        "url": {
-          "title": "GitHub URL",
-          "entryPoint": "src/component.js",
-          "recordTypes": ["Feature", "Epic", "Requirement"],
-          "type": "UrlField"
-        },
+      "views": {
         "links": {
           "title": "GitHub links",
           "entryPoint": "src/links.js",
-          "recordTypes": ["Feature", "Epic", "Requirement"],
-          "type": "UrlField"
-        }
-      },
-      "views": {
-        "auth": {
-          "title": "Authenticate to GitHub",
-          "entryPoint": "src/auth.js",
-          "host": "modal"
+          "recordTypes": ["Feature", "Epic", "Requirement"]
         }
       },
       "commands": {
@@ -55,9 +41,10 @@
         }
       },
       "events": {
-        "pr.labeled": {
+        "labels": {
           "title": "Respond to labeled PR",
-          "entryPoint": "src/labeledPr.js"
+          "entryPoint": "src/labeledPr.js",
+          "handles": ["aha-develop.github.pr.labeled"]
         }
       }
     }

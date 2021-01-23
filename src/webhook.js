@@ -4,13 +4,12 @@ aha.on("webhook", async ({ headers, payload }) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
 
   console.log(`Received webhook ${event} ${payload.action || ""}`);
-
   switch (event) {
     case "create":
       await handleCreateBranch(payload);
       break;
     case "pull_request":
-      handlePullRequest(payload);
+      await handlePullRequest(payload);
       break;
   }
 });
@@ -18,7 +17,16 @@ aha.on("webhook", async ({ headers, payload }) => {
 async function handlePullRequest(payload) {
   const pr = payload.pull_request;
 
-  await linkPullRequest(pr);
+  // Make sure the PR is linked to its record.
+  const record = await linkPullRequest(pr);
+
+  // Generate events.
+  if (record) {
+    aha.trigger(`aha-develop.github.pr.${payload.action}`, {
+      record: record,
+      label: payload["label"],
+    });
+  }
 }
 
 async function handleCreateBranch(payload) {
