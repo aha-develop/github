@@ -30,10 +30,6 @@
         }
       },
       "endpoints": {
-        "fetch_pull_details": {
-          "title": "Fetch pull details",
-          "entryPoint": "src/endpoint.js"
-        },
         "webhook": {
           "title": "Webhook from Github",
           "entryPoint": "src/webhook.js",

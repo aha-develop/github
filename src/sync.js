@@ -3,6 +3,11 @@ import { withGitHubApi, linkPullRequest } from "./lib/fields.js";
 aha.on("sync", (record) => {
   console.log(`Syncing PRs for ${JSON.stringify(record)}`);
 
+  aha.trigger(`aha-develop.github.pr.labeled`, {
+    record: new aha.models.Feature({ id: "PLAT-3" }),
+    label: { name: "documentation" },
+  });
+
   withGitHubApi(async (api) => {
     const { search } = await api(`
     {
