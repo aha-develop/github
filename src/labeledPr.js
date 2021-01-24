@@ -4,20 +4,7 @@ aha.on(
     console.log(label);
 
     if (label.name === "documentation") {
-      console.log("Changing");
-      console.log(record);
-
-      record = new aha.modelClasses.Feature(
-        {
-          id: record.attributes.id,
-          workflowStatus: "unknown",
-        },
-        {
-          query: aha.modelClasses.Feature.select(["id"]).first(),
-        }
-      );
-
-      record.workflow_status = { name: "Documented" };
+      record.workflowStatus = { name: "Will not implement" };
       await record.save();
     }
   }
