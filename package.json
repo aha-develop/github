@@ -2,38 +2,47 @@
   "name": "aha-develop/github",
   "description": "GitHub integration extension",
   "version": "0.0.0",
-  "author": "@k1w1",
+  "author": "Aha!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aha-develop/github"
+  },
   "dependencies": {
   },
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
-      "customFields": {
-        "url": {
-          "title": "GitHub URL",
-          "entryPoint": "src/component.js",
-          "recordTypes": ["Feature", "Epic", "Requirement"],
-          "type": "UrlField"
-        },
+      "views": {
         "links": {
           "title": "GitHub links",
           "entryPoint": "src/links.js",
-          "recordTypes": ["Feature", "Epic", "Requirement"],
-          "type": "UrlField"
+          "recordTypes": ["Feature", "Epic", "Requirement"]
+        }
+      },
+      "commands": {
+        "createBranch": {
+          "title": "GitHub: Create a branch",
+          "entryPoint": "src/createBranch.js"
+        },
+        "sync": {
+          "title": "GitHub: Sync pull requests",
+          "entryPoint": "src/sync.js"
         }
       },
       "endpoints": {
-        "fetch_pull_details": {
-          "title": "Fetch pull details",
-          "entryPoint": "src/endpoint.js"
-        },
         "webhook": {
           "title": "Webhook from Github",
           "entryPoint": "src/webhook.js",
           "public": true
         }
+      },
+      "events": {
+        "labels": {
+          "title": "Respond to labeled PR",
+          "entryPoint": "src/labeledPr.js",
+          "handles": ["aha-develop.github.pr.labeled"]
+        }
       }
-
     }
   }
 }
