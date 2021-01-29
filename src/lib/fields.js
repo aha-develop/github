@@ -1,4 +1,5 @@
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
+const identifier = "aha-develop.github";
 
 // Append a field/value pair to the given record. Returns an actual record
 // instance if one existed.
@@ -24,7 +25,7 @@ async function appendField(record, fieldName, newValue) {
     fieldValue.push(newValue);
   }
 
-  await record.setExtensionField("aha-develop.github", fieldName, fieldValue);
+  await record.setExtensionField(identifier, fieldName, fieldValue);
 }
 
 async function linkPullRequest(pr) {
@@ -36,9 +37,21 @@ async function linkPullRequest(pr) {
       url: pr.html_url,
       state: pr.merged ? "merged" : pr.state,
     });
+
+    console.log(aha.account);
+    await appendField(aha.account, "pullRequests", {
+      id: [pr.number, record.referenceNum].join(""),
+      prNumber: pr.number,
+      ahaReference: [record.typename, record.referenceNum],
+    });
   }
 
   return record;
+}
+
+export async function allPrs() {
+  const prs = await aha.account.getExtensionField(identifier, "pullRequests");
+  return prs || [];
 }
 
 async function linkBranch(branchName, url) {

@@ -11,7 +11,7 @@ aha.on("sync", (record) => {
   withGitHubApi(async (api) => {
     const { search } = await api(`
     {
-      search(query:"in:title in:body type:pr \\"${record.referenceNum}\\" repo:\\"k1w1/racer_experiment\\"", type: ISSUE, first:20 ) {
+      search(query:"in:title in:body type:pr \\"${record.referenceNum}\\" repo:\\"jemmyw/small-mammals\\"", type: ISSUE, first:20 ) {
         edges {
           node {
             __typename
