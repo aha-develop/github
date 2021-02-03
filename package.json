@@ -11,20 +11,20 @@
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
-      "attributes": {
+      "views": {
         "links": {
           "title": "GitHub links",
+          "host": "attribute",
           "entryPoint": "src/links.js",
           "recordTypes": [
             "Feature",
             "Epic",
             "Requirement"
           ]
-        }
-      },
-      "pages": {
+        },
         "prs": {
           "title": "GitHub Pull Requests",
+          "host": "page",
           "entryPoint": "src/prs.js",
           "location": {
             "menu": "Work"
