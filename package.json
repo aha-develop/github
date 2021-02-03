@@ -7,8 +7,7 @@
     "type": "git",
     "url": "https://github.com/aha-develop/github"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
@@ -17,7 +16,19 @@
           "title": "GitHub links",
           "host": "attribute",
           "entryPoint": "src/links.js",
-          "recordTypes": ["Feature", "Epic", "Requirement"]
+          "recordTypes": [
+            "Feature",
+            "Epic",
+            "Requirement"
+          ]
+        },
+        "prs": {
+          "title": "GitHub Pull Requests",
+          "host": "page",
+          "entryPoint": "src/prs.js",
+          "location": {
+            "menu": "Work"
+          }
         }
       },
       "commands": {
@@ -41,7 +52,9 @@
         "labels": {
           "title": "Respond to labeled PR",
           "entryPoint": "src/labeledPr.js",
-          "handles": ["aha-develop.github.pr.labeled"]
+          "handles": [
+            "aha-develop.github.pr.labeled"
+          ]
         }
       },
       "settings": {
