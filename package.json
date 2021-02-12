@@ -1,6 +1,6 @@
 {
   "name": "aha-develop/github",
-  "description": "GitHub integration extension",
+  "description": "GitHub integration",
   "version": "0.0.0",
   "author": "Aha!",
   "repository": {
@@ -55,18 +55,6 @@
           "handles": [
             "aha-develop.github.pr.labeled"
           ]
-        }
-      },
-      "settings": {
-        "repositories": {
-          "title": "Repositories",
-          "description": "List of repos that will be searched for relevant branches and pull requests.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "title": "Repository name"
-          },
-          "scopes": ["account", "workspace", "user"]
         }
       }
     }

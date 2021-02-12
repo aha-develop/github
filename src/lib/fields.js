@@ -34,7 +34,7 @@ async function linkPullRequest(pr) {
     await appendField(record, "pullRequests", {
       id: pr.number,
       name: pr.title,
-      url: pr.html_url,
+      url: pr.html_url || pr.url,
       state: pr.merged ? "merged" : pr.state,
     });
 
