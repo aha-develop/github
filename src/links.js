@@ -20,8 +20,53 @@ function Styles() {
       padding: 1px 6px;
       border-radius: 4px;
       margin-left: 5px;
+      text-transform: capitalize;
+    }
+    .pr-state-open {
+      background-color: #28a745;
+    }
+    .pr-state-merged {
+      background-color: #6f42c1;
+    }
+    .pr-state-closed {
+      background-color: #d73a49;
+    }
+    .pr-state-draft {
+      background-color: #6a737d;
     }
   </style>`;
+}
+
+function prStatus(pr) {
+  /*
+  {
+    viewer {
+      login
+      pullRequests(last: 10) {
+        nodes {
+          state
+          commits(last: 1) {
+            edges {
+              node {
+                id
+                commit {
+                  status {
+                    state
+                    contexts {
+                      state
+                      description
+                      context
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  */
 }
 
 function links(container, props) {
@@ -35,7 +80,9 @@ function links(container, props) {
         (pr) =>
           html`<div>
             <a href="${pr.url}" target="_blank">${pr.name}</a>
-            <span class="pr-state">${pr.state}</span>
+            <span class="pr-state pr-state-${pr.state.toLowerCase()}"
+              >${pr.state}</span
+            >
           </div>`
       )}
     </div>`;
@@ -68,7 +115,16 @@ function links(container, props) {
   }
 
   function buttons() {
-    return html`<div>
+    return html`<div style="padding-top: 10px;">
+      <aha-action-menu>
+        <aha-menu>
+          <aha-menu-item @click="${(e) => createBranch()}"
+            >Create branch</aha-menu-item
+          >
+          <aha-menu-item @click="${(e) => sync()}">Resync</aha-menu-item>
+        </aha-menu>
+      </aha-action-menu>
+
       <button class="btn btn-mini" onClick="${(e) => createBranch()}">
         Create branch
       </button>
