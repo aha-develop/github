@@ -13,7 +13,7 @@
     "contributes": {
       "views": {
         "links": {
-          "title": "GitHub links",
+          "title": "GitHub",
           "host": "attribute",
           "entryPoint": "src/links.js",
           "recordTypes": [
