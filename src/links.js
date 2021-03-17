@@ -115,22 +115,14 @@ function links(container, props) {
   }
 
   function buttons() {
-    return html`<div style="padding-top: 10px;">
-      <aha-action-menu>
+    return html`
+      <aha-action-menu buttonSize="medium">
         <aha-menu>
-          <aha-menu-item @click="${(e) => createBranch()}"
-            >Create branch</aha-menu-item
-          >
-          <aha-menu-item @click="${(e) => sync()}">Resync</aha-menu-item>
+          <aha-menu-item onClick=${createBranch}>Create Branch</aha-menu-item>
+          <aha-menu-item onClick=${sync}>Resync</aha-menu-item>
         </aha-menu>
       </aha-action-menu>
-
-      <button class="btn btn-mini" onClick="${(e) => createBranch()}">
-        Create branch
-      </button>
-      ${" "}
-      <button class="btn btn-mini" onClick="${(e) => sync()}">Resync</button>
-    </div>`;
+    `;
   }
 
   function menu() {
@@ -139,7 +131,13 @@ function links(container, props) {
 
   function App() {
     if (fields.branches || fields.pullRequests) {
-      return html`${branches()}${pullRequests()}${menu()}${buttons()}`;
+      return html`
+        <aha-flex alignItems="center">
+          ${branches()} ${pullRequests()} ${menu()}
+          <div style="margin-left: auto"></div>
+          ${buttons()}
+        </aha-flex>
+      `;
     } else {
       return html`<div>Not linked</div>
         ${menu()}${buttons()}`;
