@@ -1,5 +1,6 @@
 import { h, render } from "https://cdn.pika.dev/preact@^10.4.4";
 import htm from "https://cdn.pika.dev/htm@^3.0.4";
+import { unlinkPullRequest } from "./lib/fields";
 
 const html = htm.bind(h);
 
@@ -72,8 +73,13 @@ function prStatus(pr) {
 function links(container, props) {
   const { record, update, state, fields } = props;
 
-  function pullRequests() {
+  function PullRequests() {
     if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
+
+    const handleUnlink = (number) => async () => {
+      console.log('unlink', number);
+      unlinkPullRequest(record, number);
+    };
 
     return html`<div>
       ${fields.pullRequests.map(
@@ -83,12 +89,13 @@ function links(container, props) {
             <span class="pr-state pr-state-${pr.state.toLowerCase()}"
               >${pr.state}</span
             >
+            <button onClick="${handleUnlink(pr.id)}">unlink</button>
           </div>`
       )}
     </div>`;
   }
 
-  function branches() {
+  function Branches() {
     if (!fields.branches || fields.branches.length == 0) return html``;
 
     return html`<div>
@@ -108,13 +115,12 @@ function links(container, props) {
     });
   }
 
-  function sync() {
-    aha.command("aha-develop.github.sync", {
-      referenceNum: record.referenceNum,
-    });
+  async function sync() {
+    const result = await aha.command("aha-develop.github.sync", record);
+    console.log("fin sync", result);
   }
 
-  function buttons() {
+  function Buttons() {
     return html`<div style="padding-top: 10px;">
       <aha-action-menu>
         <aha-menu>
@@ -133,16 +139,16 @@ function links(container, props) {
     </div>`;
   }
 
-  function menu() {
+  function Menu() {
     return ""; //html`<div><i>Menu goes here</i></div>`;
   }
 
   function App() {
     if (fields.branches || fields.pullRequests) {
-      return html`${branches()}${pullRequests()}${menu()}${buttons()}`;
+      return html`${Branches()}${PullRequests()}${Menu()}${Buttons()}`;
     } else {
       return html`<div>Not linked</div>
-        ${menu()}${buttons()}`;
+        ${Menu()}${Buttons()}`;
     }
   }
 

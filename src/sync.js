@@ -1,34 +1,39 @@
 import { withGitHubApi, linkPullRequest } from "./lib/fields.js";
 
-aha.on("sync", (record) => {
-  console.log(`Syncing PRs for ${JSON.stringify(record)}`);
-
-  aha.trigger(`aha-develop.github.pr.labeled`, {
-    record: new aha.models.Feature({ id: "PLAT-3" }),
-    label: { name: "documentation" },
-  });
-
-  withGitHubApi(async (api) => {
-    const { search } = await api(`
-    {
-      search(query:"in:title in:body type:pr \\"${record.referenceNum}\\" repo:\\"aha-app/aha-app\\"", type: ISSUE, first:20 ) {
-        edges {
-          node {
-            __typename
-            ... on PullRequest {
-              id
-              number
-              title
-              url
-              state
-              merged
-            }
+const SEARCH_FOR_PR = `
+  query searchForPr($searchQuery: String!) {
+    search(query: $searchQuery, type: ISSUE, first:20 ) {
+      edges {
+        node {
+          __typename
+          ... on PullRequest {
+            id
+            number
+            title
+            url
+            state
+            merged
           }
         }
       }
     }
-  `);
-    console.log(search);
+  }
+`;
+
+aha.on("sync", (record, { settings }) => {
+  console.log(`Syncing PRs for ${JSON.stringify(record)}`);
+  /** @type {string[]} */
+  const repos = settings.repos;
+
+  if (!repos || repos.length === 0) {
+    throw new Error("Go to github extension settings and set up some repos");
+  }
+
+  const repoQuery = repos.map((repo) => `repo:"${repo}"`);
+  const searchQuery = `in:title in:body type:pr ${repoQuery} "${record.referenceNum}"`;
+
+  withGitHubApi(async (api) => {
+    const { search } = await api(SEARCH_FOR_PR, { searchQuery });
 
     for (let prNode of search.edges) {
       await linkPullRequest(prNode.node);

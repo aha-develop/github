@@ -8,24 +8,29 @@ async function appendField(record, fieldName, newValue) {
   // Link to Aha! record.
   console.log(`Link to ${record.typename}:${record.referenceNum}`);
 
-  let fieldValue =
-    (await record.getExtensionField("aha-develop.github", fieldName)) || [];
-  let foundValue = false;
-  fieldValue = fieldValue.map((e) => {
-    if (e.id == newValue.id) {
-      foundValue = true;
-      // Replace the existing value.
-      return newValue;
+  await replaceField(record, fieldName, (value) => {
+    /** @type {{id:any}[]} */
+    const list = [...(value || [])];
+    const existing = list.findIndex((item) => item.id == newValue.id);
+
+    if (existing > -1) {
+      list.splice(existing, 1, newValue);
     } else {
-      return e;
+      list.push(newValue);
     }
+
+    return list;
   });
+}
 
-  if (!foundValue) {
-    fieldValue.push(newValue);
-  }
+async function replaceField(record, fieldName, replacer) {
+  const fieldValue = await record.getExtensionField(identifier, fieldName);
+  const newValue = await replacer(fieldValue);
+  await record.setExtensionField(identifier, fieldName, newValue);
+}
 
-  await record.setExtensionField(identifier, fieldName, fieldValue);
+function accountPrId(number, ref) {
+  return [number, ref].join("");
 }
 
 async function linkPullRequest(pr) {
@@ -38,15 +43,34 @@ async function linkPullRequest(pr) {
       state: pr.merged ? "merged" : pr.state,
     });
 
-    console.log(aha.account);
     await appendField(aha.account, "pullRequests", {
-      id: [pr.number, record.referenceNum].join(""),
+      id: accountPrId(pr.number, record.referenceNum),
       prNumber: pr.number,
       ahaReference: [record.typename, record.referenceNum],
     });
   }
 
   return record;
+}
+
+async function unlinkPullRequest(record, number) {
+  await replaceField(record, "pullRequests", (prs) => {
+    if (prs) {
+      return prs.filter((pr) => pr.id != number);
+    } else {
+      return [];
+    }
+  });
+
+  await replaceField(aha.account, "pullRequests", (prs) => {
+    if (prs) {
+      return prs.filter(
+        (pr) => pr.id == accountPrId(number, record.referenceNum)
+      );
+    } else {
+      return [];
+    }
+  });
 }
 
 export async function allPrs() {
@@ -129,4 +153,10 @@ function withGitHubApi(callback) {
   );
 }
 
-export { withGitHubApi, appendField, linkPullRequest, linkBranch };
+export {
+  withGitHubApi,
+  appendField,
+  linkPullRequest,
+  unlinkPullRequest,
+  linkBranch,
+};

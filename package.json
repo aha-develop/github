@@ -11,6 +11,16 @@
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
+      "settings": {
+        "repos": {
+          "title": "List of repos to use for pull requests",
+          "scope": [
+            "account"
+          ],
+          "type": "string",
+          "array": true
+        }
+      },
       "views": {
         "links": {
           "title": "GitHub",
