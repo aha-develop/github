@@ -114,7 +114,7 @@ function links(container, props) {
     });
   }
 
-  function buttons() {
+  function menu() {
     return html`
       <aha-action-menu buttonSize="medium">
         <aha-menu>
@@ -125,23 +125,16 @@ function links(container, props) {
     `;
   }
 
-  function menu() {
-    return ""; //html`<div><i>Menu goes here</i></div>`;
-  }
-
   function App() {
-    if (fields.branches || fields.pullRequests) {
-      return html`
-        <aha-flex alignItems="center">
-          ${branches()} ${pullRequests()} ${menu()}
-          <div style="margin-left: auto"></div>
-          ${buttons()}
-        </aha-flex>
-      `;
-    } else {
-      return html`<div>Not linked</div>
-        ${menu()}${buttons()}`;
-    }
+    return html`
+      <aha-flex alignItems="center">
+        ${fields.branches || fields.pullRequests
+          ? html`${branches()} ${pullRequests()}`
+          : html`<div>Not linked</div>`}
+        <div style="margin-left: auto"></div>
+        ${menu()}
+      </aha-flex>
+    `;
   }
 
   render(html`<${Styles} /><${App} />`, container);
