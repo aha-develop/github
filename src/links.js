@@ -120,36 +120,27 @@ function links(container, props) {
     console.log("fin sync", result);
   }
 
-  function Buttons() {
-    return html`<div style="padding-top: 10px;">
-      <aha-action-menu>
+  function menu() {
+    return html`
+      <aha-action-menu buttonSize="medium">
         <aha-menu>
-          <aha-menu-item @click="${(e) => createBranch()}"
-            >Create branch</aha-menu-item
-          >
-          <aha-menu-item @click="${(e) => sync()}">Resync</aha-menu-item>
+          <aha-menu-item onClick=${createBranch}>Create Branch</aha-menu-item>
+          <aha-menu-item onClick=${sync}>Resync</aha-menu-item>
         </aha-menu>
       </aha-action-menu>
-
-      <button class="btn btn-mini" onClick="${(e) => createBranch()}">
-        Create branch
-      </button>
-      ${" "}
-      <button class="btn btn-mini" onClick="${(e) => sync()}">Resync</button>
-    </div>`;
-  }
-
-  function Menu() {
-    return ""; //html`<div><i>Menu goes here</i></div>`;
+    `;
   }
 
   function App() {
-    if (fields.branches || fields.pullRequests) {
-      return html`${Branches()}${PullRequests()}${Menu()}${Buttons()}`;
-    } else {
-      return html`<div>Not linked</div>
-        ${Menu()}${Buttons()}`;
-    }
+    return html`
+      <aha-flex alignItems="center">
+        ${fields.branches || fields.pullRequests
+          ? html`${branches()} ${pullRequests()}`
+          : html`<div>Not linked</div>`}
+        <div style="margin-left: auto"></div>
+        ${menu()}
+      </aha-flex>
+    `;
   }
 
   render(html`<${Styles} /><${App} />`, container);
