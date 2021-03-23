@@ -11,6 +11,7 @@
   "license": "MIT",
   "ahaExtension": {
     "contributes": {
+      "externalResourceSources": ["https://api.github.com"],
       "views": {
         "links": {
           "title": "GitHub",
