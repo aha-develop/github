@@ -10,8 +10,8 @@
   "dependencies": {},
   "license": "MIT",
   "ahaExtension": {
+    "cspSources": ["https://api.github.com"],
     "contributes": {
-      "cspSources": ["https://api.github.com"],
       "views": {
         "links": {
           "title": "GitHub",
