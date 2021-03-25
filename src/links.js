@@ -73,7 +73,7 @@ function prStatus(pr) {
 function links(container, props) {
   const { record, update, state, fields } = props;
 
-  function PullRequests() {
+  function pullRequests() {
     if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
 
     const handleUnlink = (number) => async () => {
@@ -95,7 +95,7 @@ function links(container, props) {
     </div>`;
   }
 
-  function Branches() {
+  function branches() {
     if (!fields.branches || fields.branches.length == 0) return html``;
 
     return html`<div>
