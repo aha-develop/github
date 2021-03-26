@@ -1,8 +1,6 @@
-import { h, render, Fragment } from "https://cdn.pika.dev/preact@^10.4.4";
-import htm from "https://cdn.pika.dev/htm@^3.0.4";
+import React from "react";
+import { render, unmountComponentAtNode } from "react-dom";
 import { unlinkPullRequest } from "./lib/fields";
-
-const html = htm.bind(h);
 
 /**
  * @param {Aha.RecordStub} record
@@ -19,7 +17,9 @@ async function sync(record) {
 }
 
 function Styles() {
-  return html` <style>
+  return (
+    <style>
+      {`
     .type-icon {
       font-size: 18px;
       color: #aaa;
@@ -49,7 +49,9 @@ function Styles() {
     .pr-state-draft {
       background-color: #6a737d;
     }
-  </style>`;
+    `}
+    </style>
+  );
 }
 
 function prStatus(pr) {
@@ -85,8 +87,6 @@ function prStatus(pr) {
 }
 
 function PullRequests({ record, fields }) {
-  if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
-
   const handleUnlink = (number) => async () => {
     console.log("unlink", number);
     unlinkPullRequest(record, number);
@@ -97,7 +97,7 @@ function PullRequests({ record, fields }) {
       <a href={pr.url} target="_blank">
         {pr.name}
       </a>
-      <span class={`pr-state pr-state-${pr.state.toLowerCase()}`}>
+      <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
         {pr.state}
       </span>
       <button onClick={handleUnlink(pr.id)}>unlink</button>
@@ -110,7 +110,7 @@ function PullRequests({ record, fields }) {
 function Branches({ fields }) {
   const branches = (fields.branches || []).map((branch, idx) => (
     <div key={idx}>
-      <i class="fa fa-code-fork type-icon" />
+      <i className="fa fa-code-fork type-icon" />
       <a href={branch.url} target="_blank">
         {branch.name}
       </a>
@@ -147,7 +147,7 @@ function App({ fields, record }) {
   return (
     <aha-flex alignItems="center">
       {githubLinks}
-      <div style="margin-left: auto"></div>
+      <div style={{marginLeft: 'auto'}}></div>
       <Menu record={record} />
     </aha-flex>
   );
@@ -163,6 +163,8 @@ function links(container, { record, fields }) {
     </>,
     container
   );
+
+  return () => unmountComponentAtNode(container);
 }
 
 aha.on("links", links);
