@@ -11,6 +11,7 @@
   "license": "MIT",
   "ahaExtension": {
     "cspSources": ["https://api.github.com"],
+    "jsxFactory": "h",
     "contributes": {
       "settings": {
         "repos": {

@@ -1,8 +1,22 @@
-import { h, render } from "https://cdn.pika.dev/preact@^10.4.4";
+import { h, render, Fragment } from "https://cdn.pika.dev/preact@^10.4.4";
 import htm from "https://cdn.pika.dev/htm@^3.0.4";
 import { unlinkPullRequest } from "./lib/fields";
 
 const html = htm.bind(h);
+
+/**
+ * @param {Aha.RecordStub} record
+ */
+function createBranch(record) {
+  aha.command("aha-develop.github.createBranch", {
+    name: `${record.referenceNum}-branch`,
+  });
+}
+
+async function sync(record) {
+  const result = await aha.command("aha-develop.github.sync", record);
+  console.log("fin sync", result);
+}
 
 function Styles() {
   return html` <style>
@@ -70,7 +84,7 @@ function prStatus(pr) {
   */
 }
 
-function PullRequests({ fields }) {
+function PullRequests({ record, fields }) {
   if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
 
   const handleUnlink = (number) => async () => {
@@ -78,74 +92,77 @@ function PullRequests({ fields }) {
     unlinkPullRequest(record, number);
   };
 
-  return html`<div>
-    ${fields.pullRequests.map(
-      (pr) =>
-        html`<div>
-          <a href="${pr.url}" target="_blank">${pr.name}</a>
-          <span class="pr-state pr-state-${pr.state.toLowerCase()}"
-            >${pr.state}</span
-          >
-          <button onClick="${handleUnlink(pr.id)}">unlink</button>
-        </div>`
-    )}
-  </div>`;
+  const pullRequests = (fields.pullRequests || []).map((pr, idx) => (
+    <div key={idx}>
+      <a href={pr.url} target="_blank">
+        {pr.name}
+      </a>
+      <span class={`pr-state pr-state-${pr.state.toLowerCase()}`}>
+        {pr.state}
+      </span>
+      <button onClick={handleUnlink(pr.id)}>unlink</button>
+    </div>
+  ));
+
+  return <div>{pullRequests}</div>;
 }
 
-function links(container, props) {
-  const { record, update, state, fields } = props;
+function Branches({ fields }) {
+  const branches = (fields.branches || []).map((branch, idx) => (
+    <div key={idx}>
+      <i class="fa fa-code-fork type-icon" />
+      <a href={branch.url} target="_blank">
+        {branch.name}
+      </a>
+    </div>
+  ));
 
-  function branches() {
-    if (!fields.branches || fields.branches.length == 0) return html``;
-
-    return html`<div>
-      ${fields.branches.map(
-        (branch) =>
-          html`<div>
-            <i class="fa fa-code-fork type-icon" />
-            <a href="${branch.url}" target="_blank">${branch.name}</a>
-          </div>`
-      )}
-    </div>`;
-  }
-
-  function createBranch() {
-    aha.command("aha-develop.github.createBranch", {
-      name: `${record.referenceNum}-branch`,
-    });
-  }
-
-  async function sync() {
-    const result = await aha.command("aha-develop.github.sync", record);
-    console.log("fin sync", result);
-  }
-
-  function menu() {
-    return html`
-      <aha-action-menu buttonSize="medium">
-        <aha-menu>
-          <aha-menu-item onClick=${createBranch}>Create Branch</aha-menu-item>
-          <aha-menu-item onClick=${sync}>Resync</aha-menu-item>
-        </aha-menu>
-      </aha-action-menu>
-    `;
-  }
-
-  function App() {
-    return html`
-      <aha-flex alignItems="center">
-        ${fields.branches || fields.pullRequests
-          ? html`${branches()} ${PullRequests({ fields })}`
-          : html`<div>Not linked</div>`}
-        <div style="margin-left: auto"></div>
-        ${menu()}
-      </aha-flex>
-    `;
-  }
-
-  render(html`<${Styles} /><${App} />`, container);
+  return <div>{branches}</div>;
 }
 
-aha.on("links", function (container, args) {
-  return links(container, args);
-});
+function Menu({ record }) {
+  return (
+    <aha-action-menu buttonSize="medium">
+      <aha-menu>
+        <aha-menu-item onClick={() => createBranch(record)}>
+          Create Branch
+        </aha-menu-item>
+        <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
+      </aha-menu>
+    </aha-action-menu>
+  );
+}
+
+function App({ fields, record }) {
+  const githubLinks =
+    fields.branches || fields.pullRequests ? (
+      <>
+        <Branches fields={fields} />
+        <PullRequests record={record} fields={fields}></PullRequests>
+      </>
+    ) : (
+      <div>Not linked</div>
+    );
+
+  return (
+    <aha-flex alignItems="center">
+      {githubLinks}
+      <div style="margin-left: auto"></div>
+      <Menu record={record} />
+    </aha-flex>
+  );
+}
+
+/**
+ * @type {Aha.RenderExtension}
+ */
+function links(container, { record, fields }) {
+  render(
+    <>
+      <Styles /> <App fields={fields} record={record} />
+    </>,
+    container
+  );
+}
+
+aha.on("links", links);

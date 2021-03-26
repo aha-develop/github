@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "noEmit": true,
+    "lib": ["DOM", "ES2019"],
+    "jsx": "preserve",
+    "typeRoots": ["node_modules/@types", "node_modules/@aha-app"]
+  }
+}
