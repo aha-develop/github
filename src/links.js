@@ -70,30 +70,30 @@ function prStatus(pr) {
   */
 }
 
+function PullRequests({ fields }) {
+  if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
+
+  const handleUnlink = (number) => async () => {
+    console.log("unlink", number);
+    unlinkPullRequest(record, number);
+  };
+
+  return html`<div>
+    ${fields.pullRequests.map(
+      (pr) =>
+        html`<div>
+          <a href="${pr.url}" target="_blank">${pr.name}</a>
+          <span class="pr-state pr-state-${pr.state.toLowerCase()}"
+            >${pr.state}</span
+          >
+          <button onClick="${handleUnlink(pr.id)}">unlink</button>
+        </div>`
+    )}
+  </div>`;
+}
+
 function links(container, props) {
   const { record, update, state, fields } = props;
-
-  function pullRequests() {
-    if (!fields.pullRequests || fields.pullRequests.length == 0) return html``;
-
-    const handleUnlink = (number) => async () => {
-      console.log('unlink', number);
-      unlinkPullRequest(record, number);
-    };
-
-    return html`<div>
-      ${fields.pullRequests.map(
-        (pr) =>
-          html`<div>
-            <a href="${pr.url}" target="_blank">${pr.name}</a>
-            <span class="pr-state pr-state-${pr.state.toLowerCase()}"
-              >${pr.state}</span
-            >
-            <button onClick="${handleUnlink(pr.id)}">unlink</button>
-          </div>`
-      )}
-    </div>`;
-  }
 
   function branches() {
     if (!fields.branches || fields.branches.length == 0) return html``;
@@ -135,7 +135,7 @@ function links(container, props) {
     return html`
       <aha-flex alignItems="center">
         ${fields.branches || fields.pullRequests
-          ? html`${branches()} ${pullRequests()}`
+          ? html`${branches()} ${PullRequests({ fields })}`
           : html`<div>Not linked</div>`}
         <div style="margin-left: auto"></div>
         ${menu()}
