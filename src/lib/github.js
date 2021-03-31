@@ -36,7 +36,9 @@ const GetStatus = `
               }
               status {
                 contexts {
+                  context
                   description
+                  targetUrl
                   state
                   isRequired(pullRequestNumber: $number)
                 }
@@ -49,17 +51,21 @@ const GetStatus = `
   }
 `;
 
+/** @typedef {'EXPECTED'|'ERROR'|'FAILURE'|'SUCCESS'|'PENDING'} StatusState */
+
 /**
  * @typedef Context
+ * @prop {string} context
  * @prop {string} description
- * @prop {string} state
+ * @prop {string} targetUrl
+ * @prop {StatusState} state
  * @prop {boolean} isRequired
  */
 
 /**
  * @typedef CommitStatus
- * @prop {{status: string}} statusCheckRollup
- * @prop {{contexts: Context[]}} status
+ * @prop {{state: StatusState} | null} statusCheckRollup
+ * @prop {{contexts: Context[]} | null} status
  */
 
 /**

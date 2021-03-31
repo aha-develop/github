@@ -43,6 +43,27 @@ function Styles() {
     .pr-state-draft {
       background-color: #6a737d;
     }
+
+    .pr-status {
+      display: flex;
+      align-items: center;
+    }
+
+    .pr-checks {
+      font-size: 85%;
+      z-index: 1000;
+      background: white;
+      border: 1px solid #aaa;
+      padding: 4px;
+    }
+
+    .pr-icon {
+      margin-right: 3px;
+    }
+
+    .hidden {
+      opacity: 0.0;
+    }
     `}
     </style>
   );
