@@ -21,7 +21,7 @@ const SEARCH_FOR_PR = `
 `;
 
 aha.on("sync", (record, { settings }) => {
-  console.log(`Syncing PRs for ${JSON.stringify(record)}`);
+  console.log(`Syncing PRs for ${record.typename} ${record.id}`);
   /** @type {string[]} */
   const repos = settings.repos;
 
