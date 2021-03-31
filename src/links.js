@@ -1,20 +1,10 @@
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
+import Branches from "./components/Branches";
+import Menu from "./components/Menu";
 import PullRequests from "./components/PullRequest";
-
-/**
- * @param {Aha.RecordStub} record
- */
-function createBranch(record) {
-  aha.command("aha-develop.github.createBranch", {
-    name: `${record.referenceNum}-branch`,
-  });
-}
-
-async function sync(record) {
-  const result = await aha.command("aha-develop.github.sync", record);
-  console.log("fin sync", result);
-}
+import { githubApi } from "./lib/github";
+import { GithubAuthContext } from "./lib/useGithubApi";
 
 function Styles() {
   return (
@@ -90,32 +80,6 @@ function prStatus(pr) {
   */
 }
 
-function Branches({ fields }) {
-  const branches = (fields.branches || []).map((branch, idx) => (
-    <div key={idx}>
-      <i className="fa fa-code-fork type-icon" />
-      <a href={branch.url} target="_blank">
-        {branch.name}
-      </a>
-    </div>
-  ));
-
-  return <div>{branches}</div>;
-}
-
-function Menu({ record }) {
-  return (
-    <aha-action-menu buttonSize="medium">
-      <aha-menu>
-        <aha-menu-item onClick={() => createBranch(record)}>
-          Create Branch
-        </aha-menu-item>
-        <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
-      </aha-menu>
-    </aha-action-menu>
-  );
-}
-
 function App({ fields, record }) {
   const githubLinks =
     fields.branches || fields.pullRequests ? (
@@ -136,13 +100,82 @@ function App({ fields, record }) {
   );
 }
 
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case "authed":
+      return { ...state, error: null, api: action.api, authed: true };
+    case "error":
+      if (action.message.includes("Token is not available")) {
+        return {
+          ...state,
+          error: null,
+          api: null,
+          authed: false,
+        };
+      } else {
+        return {
+          ...state,
+          error: action.message,
+          api: null,
+          authed: false,
+        };
+      }
+    case "clear":
+    default:
+      return { error: null, api: null, authed: null };
+  }
+};
+
+const Authed = (Component) => (props) => {
+  /** @type {any} */
+  const [authState, dispatch] = useReducer(authReducer, {});
+
+  const loadCachedAuth = async () => {
+    try {
+      const api = await githubApi(true);
+      dispatch({ type: "authed", api });
+    } catch (err) {
+      dispatch({ type: "error", message: err.message });
+    }
+  };
+
+  useEffect(() => {
+    loadCachedAuth();
+  }, []);
+
+  const handleReauth = useCallback(async () => {
+    dispatch({ type: "clear" });
+
+    try {
+      const api = await githubApi(false);
+      dispatch({ type: "authed", api });
+      return true;
+    } catch (err) {
+      dispatch({ type: "error", message: err.message });
+      return false;
+    }
+  }, [dispatch]);
+
+  const authContext = useMemo(() => {
+    return { ...authState, handleReauth };
+  }, [authState, handleReauth]);
+
+  return (
+    <GithubAuthContext.Provider value={authContext}>
+      <Component {...props} />
+    </GithubAuthContext.Provider>
+  );
+};
+
+const AuthedApp = Authed(App);
+
 /**
  * @type {Aha.RenderExtension}
  */
 function links(container, { record, fields }) {
   render(
     <>
-      <Styles /> <App fields={fields} record={record} />
+      <Styles /> <AuthedApp fields={fields} record={record} />
     </>,
     container
   );

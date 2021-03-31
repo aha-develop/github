@@ -1,4 +1,5 @@
-import { withGitHubApi, linkPullRequest } from "./lib/fields.js";
+import { linkPullRequest } from "./lib/fields.js";
+import { withGitHubApi } from "./lib/github.js";
 
 const SEARCH_FOR_PR = `
   query searchForPr($searchQuery: String!) {
