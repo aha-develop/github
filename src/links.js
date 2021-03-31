@@ -1,6 +1,6 @@
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import { unlinkPullRequest } from "./lib/fields";
+import PullRequests from "./components/PullRequest";
 
 /**
  * @param {Aha.RecordStub} record
@@ -25,6 +25,10 @@ function Styles() {
       color: #aaa;
       padding-right: 5px;
       vertical-align: middle;
+    }
+
+    .icon-button {
+      border: 0;
     }
 
     .pr-state {
@@ -86,27 +90,6 @@ function prStatus(pr) {
   */
 }
 
-function PullRequests({ record, fields }) {
-  const handleUnlink = (number) => async () => {
-    console.log("unlink", number);
-    unlinkPullRequest(record, number);
-  };
-
-  const pullRequests = (fields.pullRequests || []).map((pr, idx) => (
-    <div key={idx}>
-      <a href={pr.url} target="_blank">
-        {pr.name}
-      </a>
-      <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
-        {pr.state}
-      </span>
-      <button onClick={handleUnlink(pr.id)}>unlink</button>
-    </div>
-  ));
-
-  return <div>{pullRequests}</div>;
-}
-
 function Branches({ fields }) {
   const branches = (fields.branches || []).map((branch, idx) => (
     <div key={idx}>
@@ -147,7 +130,7 @@ function App({ fields, record }) {
   return (
     <aha-flex alignItems="center">
       {githubLinks}
-      <div style={{marginLeft: 'auto'}}></div>
+      <div style={{ marginLeft: "auto" }}></div>
       <Menu record={record} />
     </aha-flex>
   );
