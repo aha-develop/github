@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from "react";
+import { AuthProvider, useAuth } from "@aha-app/aha-develop-react";
+import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import Branches from "./components/Branches";
 import Menu from "./components/Menu";
 import PullRequests from "./components/PullRequest";
-import { githubApi } from "./lib/github";
-import { AuthProvider } from "@aha-app/aha-develop-react";
 
 function Styles() {
   return (
@@ -102,6 +101,10 @@ function prStatus(pr) {
 }
 
 function App({ fields, record }) {
+  const { error, authed } = useAuth(async () => {});
+
+  const authError = error && <div>{error}</div>;
+
   const githubLinks =
     fields.branches || fields.pullRequests ? (
       <>
@@ -114,6 +117,7 @@ function App({ fields, record }) {
 
   return (
     <aha-flex alignItems="center">
+      {authError}
       {githubLinks}
       <div style={{ marginLeft: "auto" }}></div>
       <Menu record={record} />
@@ -125,6 +129,8 @@ function App({ fields, record }) {
  * @type {Aha.RenderExtension}
  */
 function links(container, { record, fields }) {
+  const root = container.parentNode;
+
   render(
     <>
       <Styles />

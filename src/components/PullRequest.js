@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { unlinkPullRequest } from "../lib/fields";
 import { fetchPrStatus } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
@@ -8,6 +8,7 @@ import checkCircle16 from "https://cdn.skypack.dev/@iconify/icons-octicon/check-
 import xCircle16 from "https://cdn.skypack.dev/@iconify-icons/octicon/x-circle-16";
 import alert16 from "https://cdn.skypack.dev/@iconify-icons/octicon/alert-16";
 import clock16 from "https://cdn.skypack.dev/@iconify-icons/octicon/clock-16";
+import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 
 /**
  * @param {import("../lib/github").StatusState} status
@@ -40,20 +41,28 @@ const StatusIcon = ({ status }) => {
 };
 
 function Status({ record, pr }) {
-  const { data: prStatus, error, authed, loading, fetch } = useGithubApi(
+  const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
     async (api) => await fetchPrStatus(api, pr)
   );
   const [referenceElement, setReferenceElement] = useState(null);
-  const [popperElement, setPopperElement] = useState(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    modifiers: [],
-  });
+  const popperElement = useRef(null);
+  const { styles, attributes } = usePopper(
+    referenceElement,
+    popperElement.current,
+    {
+      modifiers: [],
+    }
+  );
   const [showChecks, setShowChecks] = useState(false);
 
-  const toggleShowChecks = (event) => {
-    event.preventDefault();
+  const toggleShowChecks = (/** @type {MouseEvent} */ event) => {
     setShowChecks((v) => !v);
   };
+  useOutsideAlerter(popperElement, () => {
+    if (showChecks) {
+      setShowChecks(false);
+    }
+  });
 
   if (error) {
     return (
@@ -74,7 +83,7 @@ function Status({ record, pr }) {
   if (!authed || !prStatus) {
     return (
       <span className="pr-status">
-        <button className="refresh" onClick={fetch}>
+        <button className="refresh" onClick={fetchData}>
           <aha-icon icon="fa-regular fa-refresh"></aha-icon>
         </button>
       </span>
@@ -127,7 +136,7 @@ function Status({ record, pr }) {
       </div>
       <div
         style={styles.popper}
-        ref={setPopperElement}
+        ref={popperElement}
         className={`pr-checks ${showChecks ? "" : "hidden"}`}
         {...attributes.popper}
       >
