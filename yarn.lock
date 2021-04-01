@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@aha-app/aha-develop-react@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aha-app/aha-develop-react/-/aha-develop-react-1.0.0.tgz#162ffc92bdfa4ba725db05940fcd431deca5d15b"
+  integrity sha512-m14jpQGqvQrouiULjzfEsAXtYlGKcQEjTqUR+OCOrj8Xr72+1eJx7XOxdSnOsDmxoACVM3KOGVpGl9dPXxY8YQ==
+
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"

@@ -4,7 +4,7 @@ import Branches from "./components/Branches";
 import Menu from "./components/Menu";
 import PullRequests from "./components/PullRequest";
 import { githubApi } from "./lib/github";
-import { GithubAuthContext } from "./lib/useGithubApi";
+import { AuthProvider } from "@aha-app/aha-develop-react";
 
 function Styles() {
   return (
@@ -196,7 +196,10 @@ const AuthedApp = Authed(App);
 function links(container, { record, fields }) {
   render(
     <>
-      <Styles /> <AuthedApp fields={fields} record={record} />
+      <Styles />
+      <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
+        <App fields={fields} record={record} />
+      </AuthProvider>
     </>,
     container
   );
