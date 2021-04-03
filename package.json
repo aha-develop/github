@@ -16,12 +16,13 @@
     "contributes": {
       "settings": {
         "repos": {
-          "title": "List of repos to use for pull requests",
+          "title": "Related repositories",
           "scope": [
             "account"
           ],
           "type": "string",
-          "array": true
+          "array": true,
+          "description": "List of the GitHub repositories that should be searched for related pull requests. e.g. 'rails/rails'."
         }
       },
       "views": {
