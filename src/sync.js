@@ -22,12 +22,16 @@ const SEARCH_FOR_PR = `
 `;
 
 aha.on("sync", (record, { settings }) => {
-  console.log(`Syncing PRs for ${record.typename} ${record.id}`);
+  console.log(
+    `Syncing PRs for ${record.typename} ${record.id} ${record.referenceNum}`
+  );
   /** @type {string[]} */
   const repos = settings.repos;
 
   if (!repos || repos.length === 0) {
-    throw new Error("Go to github extension settings and set up some repos");
+    throw new Error(
+      "No repos are configured. Go to Settings -> Account -> Extensions to configure repos."
+    );
   }
 
   const repoQuery = repos.map((repo) => `repo:"${repo}"`);

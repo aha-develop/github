@@ -3,11 +3,6 @@ import { unlinkPullRequest } from "../lib/fields";
 import { fetchPrStatus } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 import { usePopper } from "https://cdn.skypack.dev/react-popper";
-import { InlineIcon, Icon } from "https://cdn.skypack.dev/@iconify/react";
-import checkCircle16 from "https://cdn.skypack.dev/@iconify/icons-octicon/check-circle-16";
-import xCircle16 from "https://cdn.skypack.dev/@iconify-icons/octicon/x-circle-16";
-import alert16 from "https://cdn.skypack.dev/@iconify-icons/octicon/alert-16";
-import clock16 from "https://cdn.skypack.dev/@iconify-icons/octicon/clock-16";
 import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 
 /**
@@ -16,15 +11,15 @@ import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 const statusIcon = (status) => {
   switch (status) {
     case "ERROR":
-      return alert16;
+      return "fa-regular fa-exclamation-triangle";
     case "EXPECTED":
-      return clock16;
+      return "fa-regular fa-clock";
     case "FAILURE":
-      return xCircle16;
+      return "fa-regular fa-times";
     case "PENDING":
-      return clock16;
+      return "fa-regular fa-clock";
     case "SUCCESS":
-      return checkCircle16;
+      return "fa-regular fa-check";
   }
 };
 
@@ -32,12 +27,7 @@ const statusIcon = (status) => {
  * @param {{status: import("../lib/github").StatusState}} param0
  */
 const StatusIcon = ({ status }) => {
-  const icon = statusIcon(status);
-  return (
-    <span className={`pr-icon pr-icon-${status.toLowerCase()}`}>
-      <InlineIcon icon={icon} />
-    </span>
-  );
+  return <fa-icon class={statusIcon(status)} />;
 };
 
 function Status({ record, pr }) {
@@ -75,7 +65,7 @@ function Status({ record, pr }) {
   if (loading) {
     return (
       <span className="pr-status">
-        <aha-icon icon="fa-regular fa-spinner fa-spin"></aha-icon>
+        <aha-spinner />
       </span>
     );
   }
@@ -83,9 +73,9 @@ function Status({ record, pr }) {
   if (!authed || !prStatus) {
     return (
       <span className="pr-status">
-        <button className="refresh" onClick={fetchData}>
+        <aha-button onClick={fetchData}>
           <aha-icon icon="fa-regular fa-refresh"></aha-icon>
-        </button>
+        </aha-button>
       </span>
     );
   }
@@ -160,9 +150,9 @@ function PullRequest({ record, pr }) {
       <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
         {pr.state}
       </span>
-      <button onClick={handleUnlink(pr.id)} className="icon-button">
-        <aha-icon icon="fa-regular fa-trash fa-fw"></aha-icon>
-      </button>
+      <aha-button onClick={handleUnlink(pr.id)}>
+        <fa-icon class="fa-regular fa-trash" />
+      </aha-button>
 
       <Status record={record} pr={pr} />
     </aha-flex>
