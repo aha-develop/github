@@ -179,7 +179,7 @@ function PullRequests({ record, fields }) {
     <PullRequest key={idx} record={record} pr={pr} />
   ));
 
-  return <div>{pullRequests}</div>;
+  return <div className="pull-requests">{pullRequests}</div>;
 }
 
 export default PullRequests;

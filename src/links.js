@@ -12,10 +12,10 @@ function App({ fields, record }) {
 
   const isLinked = (fields.branches || fields.pullRequests || []).length > 0;
   const githubLinks = isLinked ? (
-    <>
+    <aha-flex direction="column" gap="5px" justifyContent="space-between">
       <Branches fields={fields} />
       <PullRequests record={record} fields={fields}></PullRequests>
-    </>
+    </aha-flex>
   ) : (
     <div>Not linked</div>
   );
