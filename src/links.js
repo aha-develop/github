@@ -73,6 +73,7 @@ function Styles() {
 
     .hidden {
       opacity: 0.0;
+      visibility: hidden;
     }
 
     .pr-check {
