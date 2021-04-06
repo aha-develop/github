@@ -1,25 +1,5 @@
-import { linkPullRequest } from "./lib/fields.js";
-import { withGitHubApi } from "./lib/github.js";
-
-const SEARCH_FOR_PR = `
-  query searchForPr($searchQuery: String!) {
-    search(query: $searchQuery, type: ISSUE, first:20 ) {
-      edges {
-        node {
-          __typename
-          ... on PullRequest {
-            id
-            number
-            title
-            url
-            state
-            merged
-          }
-        }
-      }
-    }
-  }
-`;
+import { linkPullRequest } from "../lib/fields.js";
+import { searchForPr, withGitHubApi } from "../lib/github.js";
 
 aha.on("sync", (record, { settings }) => {
   console.log(
@@ -38,7 +18,7 @@ aha.on("sync", (record, { settings }) => {
   const searchQuery = `in:title in:body type:pr ${repoQuery} "${record.referenceNum}"`;
 
   withGitHubApi(async (api) => {
-    const { search } = await api(SEARCH_FOR_PR, { searchQuery });
+    const search = await searchForPr(api, searchQuery);
 
     for (let prNode of search.edges) {
       await linkPullRequest(prNode.node);
