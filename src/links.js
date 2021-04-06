@@ -46,6 +46,7 @@ function Styles() {
     .pr-status {
       margin-left: 5px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .pr-checks {
