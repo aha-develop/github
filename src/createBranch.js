@@ -1,5 +1,3 @@
-import { withGitHubApi } from "./lib/fields.js";
-
 aha.on("createBranch", async (args) => {
   console.log("createBranch");
   console.log("Got args:");

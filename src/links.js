@@ -1,20 +1,9 @@
+import { AuthProvider, useAuth } from "@aha-app/aha-develop-react";
 import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import { unlinkPullRequest } from "./lib/fields";
-
-/**
- * @param {Aha.RecordStub} record
- */
-function createBranch(record) {
-  aha.command("aha-develop.github.createBranch", {
-    name: `${record.referenceNum}-branch`,
-  });
-}
-
-async function sync(record) {
-  const result = await aha.command("aha-develop.github.sync", record);
-  console.log("fin sync", result);
-}
+import Branches from "./components/Branches";
+import Menu from "./components/Menu";
+import PullRequests from "./components/PullRequest";
 
 function Styles() {
   return (
@@ -25,6 +14,10 @@ function Styles() {
       color: #aaa;
       padding-right: 5px;
       vertical-align: middle;
+    }
+
+    .icon-button {
+      border: 0;
     }
 
     .pr-state {
@@ -49,91 +42,60 @@ function Styles() {
     .pr-state-draft {
       background-color: #6a737d;
     }
+
+    .pr-status {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .pr-checks {
+      font-size: 85%;
+      z-index: 1000;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 7px #eeee;
+      padding: 8px;
+    }
+
+    .pr-check-detail {
+      margin-bottom: 2px;
+    }
+
+    .pr-icon {
+      margin-right: 3px;
+    }
+
+    .pr-count {
+      font-size: 12px;
+      margin-left: 2px;
+    }
+
+    .hidden {
+      opacity: 0.0;
+    }
+
+    .pr-check {
+      vertical-align: middle;
+    }
+    .pr-check-error, .pr-check-failure {
+      color: var(--aha-red-600);
+    }
+    .pr-check-expected, .pr-check-pending {
+      color: var(--aha-yellow-600);
+    }
+    .pr-check-success {
+      color: var(--aha-green-600);
+    }
     `}
     </style>
   );
 }
 
-function prStatus(pr) {
-  /*
-  {
-    viewer {
-      login
-      pullRequests(last: 10) {
-        nodes {
-          state
-          commits(last: 1) {
-            edges {
-              node {
-                id
-                commit {
-                  status {
-                    state
-                    contexts {
-                      state
-                      description
-                      context
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  */
-}
-
-function PullRequests({ record, fields }) {
-  const handleUnlink = (number) => async () => {
-    console.log("unlink", number);
-    unlinkPullRequest(record, number);
-  };
-
-  const pullRequests = (fields.pullRequests || []).map((pr, idx) => (
-    <div key={idx}>
-      <a href={pr.url} target="_blank">
-        {pr.name}
-      </a>
-      <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
-        {pr.state}
-      </span>
-      <button onClick={handleUnlink(pr.id)}>unlink</button>
-    </div>
-  ));
-
-  return <div>{pullRequests}</div>;
-}
-
-function Branches({ fields }) {
-  const branches = (fields.branches || []).map((branch, idx) => (
-    <div key={idx}>
-      <i className="fa fa-code-fork type-icon" />
-      <a href={branch.url} target="_blank">
-        {branch.name}
-      </a>
-    </div>
-  ));
-
-  return <div>{branches}</div>;
-}
-
-function Menu({ record }) {
-  return (
-    <aha-action-menu buttonSize="medium">
-      <aha-menu>
-        <aha-menu-item onClick={() => createBranch(record)}>
-          Create Branch
-        </aha-menu-item>
-        <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
-      </aha-menu>
-    </aha-action-menu>
-  );
-}
-
 function App({ fields, record }) {
+  const { error, authed } = useAuth(async () => {});
+
+  const authError = error && <div>{error}</div>;
+
   const githubLinks =
     fields.branches || fields.pullRequests ? (
       <>
@@ -145,9 +107,9 @@ function App({ fields, record }) {
     );
 
   return (
-    <aha-flex alignItems="center">
+    <aha-flex alignItems="center" justifycontent="space-between">
+      {authError}
       {githubLinks}
-      <div style={{marginLeft: 'auto'}}></div>
       <Menu record={record} />
     </aha-flex>
   );
@@ -157,9 +119,14 @@ function App({ fields, record }) {
  * @type {Aha.RenderExtension}
  */
 function links(container, { record, fields }) {
+  const root = container.parentNode;
+
   render(
     <>
-      <Styles /> <App fields={fields} record={record} />
+      <Styles />
+      <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
+        <App fields={fields} record={record} />
+      </AuthProvider>
     </>,
     container
   );

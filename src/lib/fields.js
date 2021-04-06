@@ -1,4 +1,3 @@
-import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
 const identifier = "aha-develop.github";
 
 // Append a field/value pair to the given record. Returns an actual record
@@ -134,27 +133,7 @@ function extractReference(name) {
   return null;
 }
 
-function withGitHubApi(callback) {
-  aha.auth(
-    "github",
-    {
-      useCachedRetry: true,
-      parameters: { scope: "repo" },
-    },
-    async (authData) => {
-      const graphqlWithAuth = graphql.defaults({
-        headers: {
-          authorization: `token ${authData.token}`,
-        },
-      });
-
-      await callback(graphqlWithAuth);
-    }
-  );
-}
-
 export {
-  withGitHubApi,
   appendField,
   linkPullRequest,
   unlinkPullRequest,

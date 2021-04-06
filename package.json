@@ -1,5 +1,5 @@
 {
-  "name": "aha-develop/github",
+  "name": "@aha-develop/github",
   "description": "GitHub integration",
   "version": "0.0.0",
   "author": "Aha!",
@@ -7,7 +7,9 @@
     "type": "git",
     "url": "https://github.com/aha-develop/github"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aha-app/aha-develop-react": "^1.0.0"
+  },
   "license": "MIT",
   "ahaExtension": {
     "cspSources": [
@@ -72,5 +74,9 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3"
   }
 }
