@@ -5,8 +5,7 @@ const Styles = () => {
     <style>
       {`
     .type-icon {
-      font-size: 18px;
-      color: #aaa;
+      color: #3fad33;
       padding-right: 5px;
       vertical-align: middle;
     }
