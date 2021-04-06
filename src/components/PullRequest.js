@@ -34,6 +34,28 @@ const StatusIcon = ({ status }) => {
   );
 };
 
+const StatusCheck = ({ context }) => {
+  return (
+    <div className="pr-check-detail">
+      <span className="pr-check-icon">
+        <StatusIcon status={context.state} />
+      </span>
+      {context.avatarUrl?.length > 0 && (
+        <img src={context.avatarUrl} className="pr-check-avatar" />
+      )}
+      <span>
+        {context.targetUrl?.length > 0 ? (
+          <a href={context.targetUrl} target="_blank">
+            {context.context}
+          </a>
+        ) : (
+          context.context
+        )}
+      </span>
+    </div>
+  );
+};
+
 function Status({ record, pr }) {
   const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
     async (api) => await fetchPrStatus(api, pr)
@@ -91,22 +113,7 @@ function Status({ record, pr }) {
   const contexts = prStatus?.status?.contexts || [];
 
   const checks = contexts.map((context, idx) => {
-    return (
-      <div key={idx} className="pr-check-detail">
-        <span style={{ marginRight: 5 }}>
-          <StatusIcon status={context.state} />
-        </span>
-        <span>
-          {context.targetUrl?.length > 0 ? (
-            <a href={context.targetUrl} target="_blank">
-              {context.context}
-            </a>
-          ) : (
-            context.context
-          )}
-        </span>
-      </div>
-    );
+    return <StatusCheck key={idx} context={context} />;
   });
 
   const count = (

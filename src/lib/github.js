@@ -39,6 +39,7 @@ const GetStatus = `
                   context
                   description
                   targetUrl
+                  avatarUrl
                   state
                   isRequired(pullRequestNumber: $number)
                 }

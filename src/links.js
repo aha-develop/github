@@ -77,6 +77,15 @@ function Styles() {
     .pr-check {
       vertical-align: middle;
     }
+    .pr-check-detail {
+      display: flex;
+    }
+    .pr-check-icon {
+      margin-right: 5px;
+      width: 20px;
+      display: flex;
+      justify-content: center;
+    }
     .pr-check-error, .pr-check-failure {
       color: var(--aha-red-600);
     }
@@ -85,6 +94,14 @@ function Styles() {
     }
     .pr-check-success {
       color: var(--aha-green-600);
+    }
+    .pr-check-avatar {
+      width: 20px;
+      margin-right: 5px;
+    }
+    .pr-check-avatar img {
+      max-width: 18px;
+      max-height: 18px;
     }
     `}
     </style>
