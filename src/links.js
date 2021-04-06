@@ -54,7 +54,11 @@ function Styles() {
       background: white;
       border: 1px solid #ccc;
       box-shadow: 2px 2px 7px #eeee;
-      padding: 4px;
+      padding: 8px;
+    }
+
+    .pr-check-detail {
+      margin-bottom: 2px;
     }
 
     .pr-icon {
@@ -103,10 +107,9 @@ function App({ fields, record }) {
     );
 
   return (
-    <aha-flex alignItems="center">
+    <aha-flex alignItems="center" justifycontent="space-between">
       {authError}
       {githubLinks}
-      <div style={{ marginLeft: "auto" }}></div>
       <Menu record={record} />
     </aha-flex>
   );

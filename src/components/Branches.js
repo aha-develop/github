@@ -10,7 +10,7 @@ function Branches({ fields }) {
     </div>
   ));
 
-  return <div>{branches}</div>;
+  return <>{branches}</>;
 }
 
 export default Branches;

@@ -92,8 +92,10 @@ function Status({ record, pr }) {
 
   const checks = contexts.map((context, idx) => {
     return (
-      <div key={idx}>
-        <StatusIcon status={context.state} />
+      <div key={idx} className="pr-check-detail">
+        <span style={{ marginRight: 5 }}>
+          <StatusIcon status={context.state} />
+        </span>
         <span>
           {context.targetUrl?.length > 0 ? (
             <a href={context.targetUrl} target="_blank">
@@ -149,20 +151,19 @@ function PullRequest({ record, pr }) {
   };
 
   return (
-    <aha-flex alignitems="center">
-      <span>
-        <a href={pr.url} target="_blank">
-          {pr.name}
-        </a>
-        <Status record={record} pr={pr} />
-      </span>
-      <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
-        {pr.state}
-      </span>
-      <aha-button onClick={handleUnlink(pr.id)}>
-        <aha-icon icon="fa-regular fa-trash" />
-      </aha-button>
-    </aha-flex>
+    <div style={{ marginBottom: 3 }}>
+      <aha-flex alignitems="center" justifycontent="space-between">
+        <span>
+          <a href={pr.url} target="_blank">
+            {pr.name}
+          </a>
+          <Status record={record} pr={pr} />
+        </span>
+        <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
+          {pr.state}
+        </span>
+      </aha-flex>
+    </div>
   );
 }
 
