@@ -14,6 +14,10 @@ const Styles = () => {
       border: 0;
     }
 
+    .branches {
+      font-size: 85%;
+    }
+
     .pr-state {
       display: inline-block;
       font-size: 12px;
