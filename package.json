@@ -13,7 +13,8 @@
   "license": "MIT",
   "ahaExtension": {
     "cspSources": [
-      "https://api.github.com"
+      "https://api.github.com",
+      "https://avatars.githubusercontent.com"
     ],
     "contributes": {
       "settings": {
