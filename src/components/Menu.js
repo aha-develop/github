@@ -16,7 +16,7 @@ async function sync(record) {
 
 function Menu({ record }) {
   return (
-    <aha-action-menu buttonSize="medium">
+    <aha-action-menu buttonSize="medium" style={{ marginLeft: 5 }}>
       <aha-menu>
         <aha-menu-item onClick={() => createBranch(record)}>
           Create Branch

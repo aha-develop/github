@@ -27,7 +27,11 @@ const statusIcon = (status) => {
  * @param {{status: import("../lib/github").StatusState}} param0
  */
 const StatusIcon = ({ status }) => {
-  return <fa-icon class={statusIcon(status)} />;
+  return (
+    <span className={`pr-check pr-check-${status.toLowerCase()}`}>
+      <aha-icon icon={statusIcon(status)} />
+    </span>
+  );
 };
 
 function Status({ record, pr }) {
@@ -88,10 +92,7 @@ function Status({ record, pr }) {
 
   const checks = contexts.map((context, idx) => {
     return (
-      <div
-        key={idx}
-        className={`pr-check pr-check-${context.state.toLowerCase()}`}
-      >
+      <div key={idx}>
         <StatusIcon status={context.state} />
         <span>
           {context.targetUrl?.length > 0 ? (
@@ -116,22 +117,27 @@ function Status({ record, pr }) {
 
   return (
     <>
-      <div
+      <span
         className={`pr-status pr-status-${prStatus.statusCheckRollup.state.toLowerCase()}`}
         ref={setReferenceElement}
         onClick={toggleShowChecks}
       >
         <StatusIcon status={prStatus.statusCheckRollup.state} />
         {count}
-      </div>
-      <div
+      </span>
+      <aha-tooltip type="popover">
+        <span slot="trigger">Foo</span>
+        {checks}
+      </aha-tooltip>
+
+      <span
         style={styles.popper}
         ref={popperElement}
         className={`pr-checks ${showChecks ? "" : "hidden"}`}
         {...attributes.popper}
       >
         {checks}
-      </div>
+      </span>
     </>
   );
 }
@@ -143,18 +149,19 @@ function PullRequest({ record, pr }) {
   };
 
   return (
-    <aha-flex>
-      <a href={pr.url} target="_blank">
-        {pr.name}
-      </a>
+    <aha-flex alignitems="center">
+      <span>
+        <a href={pr.url} target="_blank">
+          {pr.name}
+        </a>
+        <Status record={record} pr={pr} />
+      </span>
       <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
         {pr.state}
       </span>
       <aha-button onClick={handleUnlink(pr.id)}>
-        <fa-icon class="fa-regular fa-trash" />
+        <aha-icon icon="fa-regular fa-trash" />
       </aha-button>
-
-      <Status record={record} pr={pr} />
     </aha-flex>
   );
 }

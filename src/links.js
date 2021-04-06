@@ -44,15 +44,16 @@ function Styles() {
     }
 
     .pr-status {
-      display: flex;
-      align-items: center;
+      margin-left: 5px;
+      cursor: pointer;
     }
 
     .pr-checks {
       font-size: 85%;
       z-index: 1000;
       background: white;
-      border: 1px solid #aaa;
+      border: 1px solid #ccc;
+      box-shadow: 2px 2px 7px #eeee;
       padding: 4px;
     }
 
@@ -60,44 +61,30 @@ function Styles() {
       margin-right: 3px;
     }
 
+    .pr-count {
+      font-size: 12px;
+      margin-left: 2px;
+    }
+
     .hidden {
       opacity: 0.0;
+    }
+
+    .pr-check {
+      vertical-align: middle;
+    }
+    .pr-check-error, .pr-check-failure {
+      color: var(--aha-red-600);
+    }
+    .pr-check-expected, .pr-check-pending {
+      color: var(--aha-yellow-600);
+    }
+    .pr-check-success {
+      color: var(--aha-green-600);
     }
     `}
     </style>
   );
-}
-
-function prStatus(pr) {
-  /*
-  {
-    viewer {
-      login
-      pullRequests(last: 10) {
-        nodes {
-          state
-          commits(last: 1) {
-            edges {
-              node {
-                id
-                commit {
-                  status {
-                    state
-                    contexts {
-                      state
-                      description
-                      context
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  */
 }
 
 function App({ fields, record }) {
