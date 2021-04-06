@@ -1,11 +1,33 @@
-const identifier = "aha-develop.github";
+const IDENTIFIER = "aha-develop.github";
+const PULL_REQUESTS_FIELD = "pullRequests";
 
-// Append a field/value pair to the given record. Returns an actual record
-// instance if one existed.
+/**
+ * @typedef PrLink
+ * @prop {number} id
+ * @prop {string} name
+ * @prop {string} url
+ * @prop {string} state
+ */
+
+/**
+ * @typedef AccountPr
+ * @prop {string} id
+ * @prop {number} number
+ * @prop {[string, string]} ahaReference
+ */
+
+/**
+ * Append a field/value pair to the given record. Returns an actual record
+ * instance if one existed.
+ *
+ * @param {Aha.RecordStub} record
+ * @param {string} fieldName
+ * @param {*} newValue
+ */
 async function appendField(record, fieldName, newValue) {
   console.log(record);
   // Link to Aha! record.
-  console.log(`Link to ${record.typename}:${record.referenceNum}`);
+  console.log(`Link to ${record.typename}:${record.referenceNum || record.id}`);
 
   await replaceField(record, fieldName, (value) => {
     /** @type {{id:any}[]} */
@@ -22,38 +44,53 @@ async function appendField(record, fieldName, newValue) {
   });
 }
 
+/**
+ * @template T
+ * @param {Aha.ApplicationModel} record
+ * @param {string} fieldName
+ * @param {((value: T|null) => T | Promise<T>)} replacer
+ */
 async function replaceField(record, fieldName, replacer) {
-  const fieldValue = await record.getExtensionField(identifier, fieldName);
+  const fieldValue = await record.getExtensionField(IDENTIFIER, fieldName);
   const newValue = await replacer(fieldValue);
-  await record.setExtensionField(identifier, fieldName, newValue);
+  await record.setExtensionField(IDENTIFIER, fieldName, newValue);
 }
 
+/**
+ * @param {number} number
+ * @param {string} ref
+ */
 function accountPrId(number, ref) {
   return [number, ref].join("");
 }
 
+async function linkPullRequestToRecord(pr, record) {
+  await appendField(record, PULL_REQUESTS_FIELD, {
+    id: pr.number,
+    name: pr.title,
+    url: pr.html_url || pr.url,
+    state: pr.merged ? "merged" : pr.state,
+  });
+
+  await appendField(aha.account, PULL_REQUESTS_FIELD, {
+    id: accountPrId(pr.number, record.referenceNum),
+    prNumber: pr.number,
+    ahaReference: [record.typename, record.referenceNum],
+  });
+}
+
 async function linkPullRequest(pr) {
   const record = await referenceToRecord(pr.title);
-  if (record) {
-    await appendField(record, "pullRequests", {
-      id: pr.number,
-      name: pr.title,
-      url: pr.html_url || pr.url,
-      state: pr.merged ? "merged" : pr.state,
-    });
 
-    await appendField(aha.account, "pullRequests", {
-      id: accountPrId(pr.number, record.referenceNum),
-      prNumber: pr.number,
-      ahaReference: [record.typename, record.referenceNum],
-    });
+  if (record) {
+    await linkPullRequestToRecord(pr, record);
   }
 
   return record;
 }
 
 async function unlinkPullRequest(record, number) {
-  await replaceField(record, "pullRequests", (prs) => {
+  await replaceField(record, PULL_REQUESTS_FIELD, (prs) => {
     if (prs) {
       return prs.filter((pr) => pr.id != number);
     } else {
@@ -61,7 +98,7 @@ async function unlinkPullRequest(record, number) {
     }
   });
 
-  await replaceField(aha.account, "pullRequests", (prs) => {
+  await replaceField(aha.account, PULL_REQUESTS_FIELD, (prs) => {
     if (prs) {
       return prs.filter(
         (pr) => pr.id == accountPrId(number, record.referenceNum)
@@ -72,15 +109,37 @@ async function unlinkPullRequest(record, number) {
   });
 }
 
+/**
+ * @param {Aha.RecordStub} record
+ */
+async function unlinkPullRequests(record) {
+  /** @type {PrLink[]} */
+  const prs =
+    (await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD)) || [];
+  const ids = prs.map((pr) => accountPrId(pr.id, record.referenceNum));
+
+  await replaceField(aha.account, PULL_REQUESTS_FIELD, (
+    /** @type {AccountPr[]} */ accountPrs
+  ) => {
+    if (!accountPrs) return [];
+    return accountPrs.filter((accountPr) => !ids.includes(accountPr.id));
+  });
+
+  await record.setExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD, []);
+}
+
 export async function allPrs() {
-  const prs = await aha.account.getExtensionField(identifier, "pullRequests");
+  const prs = await aha.account.getExtensionField(
+    IDENTIFIER,
+    PULL_REQUESTS_FIELD
+  );
   return prs || [];
 }
 
 async function linkBranch(branchName, url) {
   const record = await referenceToRecord(branchName);
   if (record) {
-    await appendField(ahaReference, "branches", {
+    await appendField(record, "branches", {
       id: branchName,
       name: branchName,
       url: url,
@@ -136,6 +195,8 @@ function extractReference(name) {
 export {
   appendField,
   linkPullRequest,
+  linkPullRequestToRecord,
   unlinkPullRequest,
+  unlinkPullRequests,
   linkBranch,
 };

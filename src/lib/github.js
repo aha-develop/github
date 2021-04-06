@@ -1,4 +1,5 @@
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
+import gql from "gql-tag";
 
 export async function githubApi(cachedOnly = false) {
   const options = { useCachedRetry: true, parameters: { scope: "repo" } };
@@ -16,15 +17,30 @@ export async function githubApi(cachedOnly = false) {
 }
 
 export function withGitHubApi(callback) {
-  githubApi(false).then((api) => callback(api));
+  return githubApi(false).then((api) => callback(api));
 }
 
 /**
  * @param {string} url
  */
 const repoFromUrl = (url) => new URL(url).pathname.split("/").slice(1, 3);
+/**
+ * @param {string} url
+ */
+const prNumberFromUrl = (url) => Number(new URL(url).pathname.split("/")[4]);
 
-const GetStatus = `
+const PrForLinkFragment = gql`
+  {
+    id
+    number
+    title
+    url
+    state
+    merged
+  }
+`;
+
+const GetStatus = gql`
   query GetStatus($name: String!, $owner: String!, $number: Int!) {
     repository(name: $name, owner: $owner) {
       pullRequest(number: $number) {
@@ -85,4 +101,54 @@ export async function fetchPrStatus(api, pr) {
   });
 
   return pullRequest.commits.nodes[0].commit;
+}
+
+const SearchForPr = gql`
+  query searchForPr($searchQuery: String!) {
+    search(query: $searchQuery, type: ISSUE, first: 20) {
+      edges {
+        node {
+          __typename
+          ... on PullRequest ${PrForLinkFragment}
+        }
+      }
+    }
+  }
+`;
+
+/**
+ *
+ * @param {*} api
+ * @param {string} searchQuery
+ * @returns
+ */
+export async function searchForPr(api, searchQuery) {
+  const { search } = await api(SearchForPr, { searchQuery });
+  return search;
+}
+
+const GetPr = gql`
+  query GetPr($name: String!, $owner: String!, $number: Int!) {
+    repository(name: $name, owner: $owner) {
+      pullRequest(number: $number) {
+        __typename
+        ... on PullRequest ${PrForLinkFragment}
+      }
+    }
+  }
+`;
+
+/**
+ * @param {*} api
+ * @param {string} url
+ */
+export async function getPrByUrl(api, url) {
+  const [owner, name] = repoFromUrl(url);
+  const number = prNumberFromUrl(url);
+
+  const {
+    repository: { pullRequest },
+  } = await api(GetPr, { owner, name, number });
+
+  return pullRequest;
 }

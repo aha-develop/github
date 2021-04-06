@@ -8,7 +8,8 @@
     "url": "https://github.com/aha-develop/github"
   },
   "dependencies": {
-    "@aha-app/aha-develop-react": "^1.0.0"
+    "@aha-app/aha-develop-react": "^1.0.0",
+    "gql-tag": "^1.0.1"
   },
   "license": "MIT",
   "ahaExtension": {
@@ -51,11 +52,19 @@
       "commands": {
         "createBranch": {
           "title": "GitHub: Create a branch",
-          "entryPoint": "src/createBranch.js"
+          "entryPoint": "src/commands/createBranch.js"
         },
         "sync": {
           "title": "GitHub: Sync pull requests",
-          "entryPoint": "src/sync.js"
+          "entryPoint": "src/commands/sync.js"
+        },
+        "addLink": {
+          "title": "GitHub: Link pull request to record",
+          "entryPoint": "src/commands/addLink.js"
+        },
+        "removeLinks": {
+          "title": "GitHub: Remove linked pull requests from record",
+          "entryPoint": "src/commands/removeLinks.js"
         }
       },
       "endpoints": {

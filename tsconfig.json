@@ -6,6 +6,7 @@
     "jsx": "preserve",
     "typeRoots": ["node_modules/@types", "node_modules/@aha-app"],
     "allowSyntheticDefaultImports": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "module": "ES6"
   }
 }
