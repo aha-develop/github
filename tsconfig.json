@@ -7,6 +7,8 @@
     "typeRoots": ["node_modules/@types", "node_modules/@aha-app"],
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
-    "module": "ES6"
+    "downlevelIteration": true,
+    "module": "ES6",
+    "moduleResolution": "node"
   }
 }

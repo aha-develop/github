@@ -1,43 +1,76 @@
-import React, { useState, useEffect } from "https://cdn.skypack.dev/react";
-import {
-  render,
-  unmountComponentAtNode,
-} from "https://cdn.skypack.dev/react-dom";
-import { allPrs } from "./lib/fields";
+import { AuthProvider } from "@aha-app/aha-develop-react";
+import React, { useMemo } from "react";
+import { render, unmountComponentAtNode } from "react-dom";
+import PullRequests from "./components/PullRequest";
+import Styles from "./components/Styles";
+import { searchForPr } from "./lib/github";
+import GithubQuery from "./lib/query";
+import { useGithubApi } from "./lib/useGithubApi";
 
-aha.on("prs", (container, props) => {
-  const Prs = (props) => {
-    const [prList, setPrList] = useState([]);
+const PrList = ({ query }) => {
+  const { data: prList, authed, loading, error } = useGithubApi(
+    async (api) => {
+      const prs = await searchForPr(api, { query, includeStatus: true });
+      return prs.edges.map((e) => e.node);
+    },
+    {},
+    [query]
+  );
 
-    useEffect(async () => {
-      const prs = await allPrs();
-      setPrList(prs);
-    }, []);
+  if (!authed || error) return null;
+  if (loading) return <aha-spinner></aha-spinner>;
 
-    const prs = prList.map((pr) => {
-      return (
-        <li>
-          {" "}
-          PR{" "}
-          <a href="#">
-            {"#"}
-            {pr.prNumber}
-          </a>{" "}
-          - {pr.ahaReference.join(" ")}
-        </li>
-      );
-    });
+  return (
+    <div>
+      <PullRequests prs={prList} />
+    </div>
+  );
+};
 
-    return (
-      <div>
-        <h1>GitHub Pull Requests</h1>
+const Page = ({ repos }) => {
+  const { authed, error } = useGithubApi(async () => {});
+  const baseQuery = useMemo(
+    () => new GithubQuery().repo(...repos, { quote: true }),
+    []
+  );
 
-        <ul>{prs}</ul>
-      </div>
+  let sections = null;
+
+  if (authed) {
+    sections = (
+      <>
+        <section>
+          <h2>Open</h2>
+          <PrList query={baseQuery.author("@me").state("open").toQuery()} />
+        </section>
+        <section>
+          <h2>Closed</h2>
+          <PrList query={baseQuery.author("@me").state("closed").toQuery()} />
+        </section>
+      </>
     );
-  };
+  } else {
+  }
 
-  render(<Prs />, container);
+  return (
+    <div>
+      <h1>Github Pull Requests</h1>
+      {sections}
+    </div>
+  );
+};
+
+aha.on("prs", (container, { settings }) => {
+  const repos = settings.repos || [];
+  render(
+    <>
+      <Styles />
+      <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
+        <Page repos={repos} />
+      </AuthProvider>
+    </>,
+    container
+  );
 
   return () => {
     unmountComponentAtNode(container);

@@ -1,6 +1,11 @@
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
 import gql from "gql-tag";
 
+/** @typedef {(query:string,options?:{})=>Promise<any>} GithubApi */
+
+/**
+ * @returns {Promise<GithubApi>}
+ */
 export async function githubApi(cachedOnly = false) {
   const options = { useCachedRetry: true, parameters: { scope: "repo" } };
   if (cachedOnly) {
@@ -16,6 +21,11 @@ export async function githubApi(cachedOnly = false) {
   });
 }
 
+/**
+ *
+ * @param {((api: GithubApi) => Promise<any>)} callback
+ * @returns
+ */
 export function withGitHubApi(callback) {
   return githubApi(false).then((api) => callback(api));
 }
@@ -30,7 +40,7 @@ const repoFromUrl = (url) => new URL(url).pathname.split("/").slice(1, 3);
 const prNumberFromUrl = (url) => Number(new URL(url).pathname.split("/")[4]);
 
 const PrForLinkFragment = gql`
-  {
+  fragment PrForLink on PullRequest {
     id
     number
     title
@@ -40,32 +50,52 @@ const PrForLinkFragment = gql`
   }
 `;
 
-const GetStatus = gql`
-  query GetStatus($name: String!, $owner: String!, $number: Int!) {
-    repository(name: $name, owner: $owner) {
-      pullRequest(number: $number) {
-        commits(last: 1) {
-          nodes {
-            commit {
-              statusCheckRollup {
-                state
-              }
-              status {
-                contexts {
-                  context
-                  description
-                  targetUrl
-                  avatarUrl
-                  state
-                  isRequired(pullRequestNumber: $number)
-                }
-              }
+/**
+ * @typedef PrForLink
+ * @prop {number} id
+ * @prop {number} number
+ * @prop {string} title
+ * @prop {string} url
+ * @prop {string} status
+ * @prop {boolean} merged
+ */
+
+/** @typedef {{commits: {nodes: {commit: CommitStatus}[]}}} PrWithStatus */
+/** @typedef {PrForLink & PrWithStatus} PrForLinkWithStatus */
+
+const PrStatusFragment = gql`
+  fragment PrStatus on PullRequest {
+    commits(last: 1) {
+      nodes {
+        commit {
+          statusCheckRollup {
+            state
+          }
+          status {
+            contexts {
+              context
+              description
+              targetUrl
+              avatarUrl
+              state
             }
           }
         }
       }
     }
   }
+`;
+
+const GetStatus = gql`
+  query GetStatus($name: String!, $owner: String!, $number: Int!) {
+    repository(name: $name, owner: $owner) {
+      pullRequest(number: $number) {
+        ...PrStatus
+      }
+    }
+  }
+
+  ${PrStatusFragment}
 `;
 
 /** @typedef {'EXPECTED'|'ERROR'|'FAILURE'|'SUCCESS'|'PENDING'} StatusState */
@@ -76,7 +106,6 @@ const GetStatus = gql`
  * @prop {string} description
  * @prop {string} targetUrl
  * @prop {StatusState} state
- * @prop {boolean} isRequired
  */
 
 /**
@@ -86,9 +115,8 @@ const GetStatus = gql`
  */
 
 /**
- * @param {*} api
- * @param {*} pr
- * @returns {Promise<CommitStatus>}
+ * @param {GithubApi} api
+ * @param {{id:number,url:string}} pr
  */
 export async function fetchPrStatus(api, pr) {
   const [owner, name] = repoFromUrl(pr.url);
@@ -100,30 +128,56 @@ export async function fetchPrStatus(api, pr) {
     number: Number(pr.id),
   });
 
-  return pullRequest.commits.nodes[0].commit;
+  return prStatusCommit(pullRequest);
+}
+
+/**
+ * @param {PrWithStatus} pr
+ */
+export function prStatusCommit(pr) {
+  return pr.commits.nodes[0].commit;
 }
 
 const SearchForPr = gql`
-  query searchForPr($searchQuery: String!) {
-    search(query: $searchQuery, type: ISSUE, first: 20) {
+  query searchForPr(
+    $searchQuery: String!
+    $count: Int!
+    $includeStatus: Boolean = false
+  ) {
+    search(query: $searchQuery, type: ISSUE, first: $count) {
       edges {
         node {
           __typename
-          ... on PullRequest ${PrForLinkFragment}
+          ... on PullRequest {
+            ...PrForLink
+            ...PrStatus @include(if: $includeStatus)
+          }
         }
       }
     }
   }
+
+  ${PrForLinkFragment}
+  ${PrStatusFragment}
 `;
 
 /**
- *
- * @param {*} api
- * @param {string} searchQuery
- * @returns
+ * @typedef SearchForPrOptions
+ * @prop {string} query
+ * @prop {number=} count
+ * @prop {boolean=} includeStatus
  */
-export async function searchForPr(api, searchQuery) {
-  const { search } = await api(SearchForPr, { searchQuery });
+
+/**
+ * @param {GithubApi} api
+ * @param {SearchForPrOptions} options
+ * @returns {Promise<{edges: {node: PrForLink}[] | {node: PrForLinkWithStatus}[]}>}
+ */
+export async function searchForPr(api, options) {
+  /** @type {{}} */
+  const variables = { count: 20, searchQuery: options.query, ...options };
+  delete variables["query"];
+  const { search } = await api(SearchForPr, variables);
   return search;
 }
 

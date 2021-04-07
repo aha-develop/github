@@ -11,6 +11,7 @@ import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
  * @param {((api: any) => Promise<R>)} callback
  * @param {Options} options
  * @param {*} deps
+ * @return {{data:R|null, loading:boolean, authed:boolean|null, error:string|null, fetchData():Promise<boolean>}}
  */
 export function useGithubApi(callback, options = {}, deps = []) {
   const authCallback = async (authData) => {

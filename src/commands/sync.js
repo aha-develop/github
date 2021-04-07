@@ -1,5 +1,6 @@
 import { linkPullRequest } from "../lib/fields.js";
 import { searchForPr, withGitHubApi } from "../lib/github.js";
+import GithubQuery from "../lib/query.js";
 
 aha.on("sync", (record, { settings }) => {
   console.log(
@@ -14,11 +15,15 @@ aha.on("sync", (record, { settings }) => {
     );
   }
 
-  const repoQuery = repos.map((repo) => `repo:"${repo}"`);
-  const searchQuery = `in:title in:body type:pr ${repoQuery} "${record.referenceNum}"`;
+  const query = new GithubQuery()
+    .in("title", "body")
+    .type("pr")
+    .repo(...repos, { quote: true })
+    .term(record.referenceNum, { quote: true })
+    .toQuery();
 
   withGitHubApi(async (api) => {
-    const search = await searchForPr(api, searchQuery);
+    const search = await searchForPr(api, { query });
 
     for (let prNode of search.edges) {
       await linkPullRequest(prNode.node);
