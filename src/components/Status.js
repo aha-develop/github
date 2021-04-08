@@ -114,7 +114,7 @@ function Status({ prStatus, showCount }) {
   );
 
   return (
-    <>
+    <span>
       <span
         className={`pr-status pr-status-${prStatus.statusCheckRollup.state.toLowerCase()}`}
         ref={setReferenceElement}
@@ -132,7 +132,7 @@ function Status({ prStatus, showCount }) {
       >
         {checks}
       </span>
-    </>
+    </span>
   );
 }
 

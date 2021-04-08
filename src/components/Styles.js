@@ -118,6 +118,7 @@ const Styles = () => {
           display: flex;
           padding: 16px;
           gap: 18px;
+          flex-wrap: wrap;
         }
 
         .sections section {
@@ -125,10 +126,12 @@ const Styles = () => {
           border: 1px solid #e1e1e1;
           box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
           border-radius: 4px;
-          min-width: 500px;
           min-height: 100px;
           display: flex;
           flex-direction: column;
+          flex-grow: 1;
+          flex-shrink: 1;
+          max-width: 800px;
         }
 
         .sections h2 {

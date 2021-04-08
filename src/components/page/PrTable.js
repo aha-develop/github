@@ -7,7 +7,7 @@ import { FetchStatus } from "../Status";
 const PrRow = ({ pr }) => {
   return (
     <tr>
-      <td>
+      <td style={{ textOverflow: "ellipsis" }}>
         <a href={pr.url} rel="noopener noreferrer nofollow" target="_blank">
           {pr.title}
         </a>

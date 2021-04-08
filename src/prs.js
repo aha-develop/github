@@ -1,6 +1,7 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React, { useMemo } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
+import BranchTable from "./components/page/BranchTable";
 import PrTable from "./components/page/PrTable";
 import Styles from "./components/Styles";
 import GithubQuery from "./lib/query";
@@ -35,7 +36,9 @@ const Page = ({ repos }) => {
         </section>
 
         <section>
-          <h2>My branches</h2>
+          <h2>Recent branches</h2>
+
+          <BranchTable repos={repos} />
         </section>
       </div>
     );

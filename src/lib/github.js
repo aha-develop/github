@@ -1,4 +1,5 @@
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
+import { classify } from "https://cdn.skypack.dev/inflected";
 import gql from "gql-tag";
 
 /** @typedef {(query:string,options?:{})=>Promise<any>} GithubApi */
@@ -205,4 +206,79 @@ export async function getPrByUrl(api, url) {
   } = await api(GetPr, { owner, name, number });
 
   return pullRequest;
+}
+
+const RepoFragment = gql`
+  fragment RepoFragment on Repository {
+    nameWithOwner
+    refs(
+      refPrefix: "refs/heads/"
+      orderBy: { field: TAG_COMMIT_DATE, direction: ASC }
+      first: 10
+    ) {
+      edges {
+        node {
+          __typename
+          name
+          target {
+            oid
+            commitUrl
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * @param {string} repo
+ * @returns {string}
+ */
+const repoAlias = (repo) => classify(repo).replace(/[^a-zA-Z]/g, "");
+
+const RepoBranches = (repo) => {
+  const [owner, name] = repo.split("/");
+  const alias = repoAlias(repo);
+
+  return gql`
+    ${alias}: repository(name: $${alias}Name, owner: $${alias}Owner) {
+      ...RepoFragment
+    }
+  `;
+};
+
+/**
+ * @param {GithubApi} api
+ * @param {string[]} repos
+ * @returns
+ */
+export async function recentBranches(api, repos) {
+  const repoAliases = repos.map(repoAlias);
+  const [queryArgs, queryVars] = repos.reduce(
+    (
+      /** @type {[string[], {[index:string]: string}]} */
+      acc,
+      repo
+    ) => {
+      const [owner, name] = repo.split("/");
+      const alias = repoAlias(repo);
+      acc[0].push("$" + alias + "Name: String!");
+      acc[0].push("$" + alias + "Owner: String!");
+      acc[1][alias + "Name"] = name;
+      acc[1][alias + "Owner"] = owner;
+      return acc;
+    },
+    [[], {}]
+  );
+
+  const query = gql`
+    query GetRecentBranches(${queryArgs.join(", ")}) {
+      ${repos.map(RepoBranches).join("\n")}
+    }
+
+    ${RepoFragment}
+  `;
+
+  const data = await api(query, queryVars);
+  return repoAliases.map((alias) => data[alias]);
 }
