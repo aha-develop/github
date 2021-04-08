@@ -77,22 +77,23 @@ function Status({ prStatus, showCount }) {
     }
   );
   const [showChecks, setShowChecks] = useState(false);
-  const [allowToggle, setAllowToggle] = useState(true);
-  console.log("comp", allowToggle);
+  const allowToggle = useRef(true);
 
   const toggleShowChecks = () => {
-    console.log("call", allowToggle);
-    if (allowToggle) setShowChecks((v) => !v);
+    if (allowToggle.current) setShowChecks((v) => !v);
   };
   useOutsideAlerter(popperElement, () => {
     if (showChecks) {
-      setAllowToggle(false);
+      allowToggle.current = false;
       setShowChecks(false);
+      // Hiding the react popper seems super slow for some reason, and it causes
+      // another re-render afterwards. When this was 100ms it still caused a
+      // click on the toggle button to re-show the popup
+      setTimeout(() => {
+        allowToggle.current = true;
+      }, 500);
     }
   });
-  useEffect(() => {
-    if (!allowToggle) setAllowToggle(true);
-  }, [allowToggle]);
 
   if (!prStatus.statusCheckRollup) {
     return null;
@@ -122,10 +123,6 @@ function Status({ prStatus, showCount }) {
         <StatusIcon status={prStatus.statusCheckRollup.state} />
         {count}
       </span>
-      <aha-tooltip type="popover">
-        <span slot="trigger">Foo</span>
-        {checks}
-      </aha-tooltip>
 
       <span
         style={styles.popper}
