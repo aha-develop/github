@@ -187,10 +187,12 @@ const GetPr = gql`
     repository(name: $name, owner: $owner) {
       pullRequest(number: $number) {
         __typename
-        ... on PullRequest ${PrForLinkFragment}
+        ...PrForLink
       }
     }
   }
+
+  ${PrForLinkFragment}
 `;
 
 /**
