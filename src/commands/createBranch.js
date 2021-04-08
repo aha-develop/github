@@ -1,8 +1,4 @@
-aha.on("createBranch", async (args) => {
-  console.log("createBranch");
-  console.log("Got args:");
-  console.log(args);
-
+aha.on("createBranch", async ({ record, settings }) => {
   const branchName = await aha.commandPrompt("Branch name", {
     default: "PLAT-4-branch-name",
     placeholder: "Enter a name for the branch",

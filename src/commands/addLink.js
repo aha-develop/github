@@ -4,7 +4,7 @@ import { getPrByUrl, withGitHubApi } from "../lib/github";
 const validPrUrl = (url) =>
   new URL(url).pathname.match(/\/[^\/]+\/[^\/]+\/pull\/\d+/);
 
-aha.on("addLink", async (record, context) => {
+aha.on("addLink", async ({ record, context }) => {
   const prUrl = await aha.commandPrompt("Link URL", {
     placeholder: "Enter the URL to a pull request",
   });

@@ -10,15 +10,15 @@ function createBranch(record) {
 }
 
 async function sync(record) {
-  await aha.command("aha-develop.github.sync", record);
+  await aha.command("aha-develop.github.sync", { record });
 }
 
 async function addLink(record) {
-  await aha.command("aha-develop.github.addLink", record);
+  await aha.command("aha-develop.github.addLink", { record });
 }
 
 async function removeLinks(record) {
-  await aha.command("aha-develop.github.removeLinks", record);
+  await aha.command("aha-develop.github.removeLinks", { record });
 }
 
 function Menu({ record }) {

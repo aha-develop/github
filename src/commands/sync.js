@@ -1,10 +1,12 @@
 import { linkPullRequest } from "../lib/fields.js";
 import { searchForPr, withGitHubApi } from "../lib/github.js";
 
-aha.on("sync", (record, { settings }) => {
-  console.log(
-    `Syncing PRs for ${record.typename} ${record.id} ${record.referenceNum}`
-  );
+aha.on("sync", ({ record, settings }) => {
+  if (!record) {
+    aha.commandOutput("Open a record first to sync PRs for that record");
+    return;
+  }
+  console.log(`Syncing PRs for ${record.referenceNum}`);
   /** @type {string[]} */
   const repos = settings.repos;
 
