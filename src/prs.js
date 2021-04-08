@@ -1,34 +1,13 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React, { useMemo } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import PullRequests from "./components/PullRequest";
+import PrTable from "./components/page/PrTable";
 import Styles from "./components/Styles";
-import { searchForPr } from "./lib/github";
 import GithubQuery from "./lib/query";
 import { useGithubApi } from "./lib/useGithubApi";
 
-const PrList = ({ query }) => {
-  const { data: prList, authed, loading, error } = useGithubApi(
-    async (api) => {
-      const prs = await searchForPr(api, { query, includeStatus: true });
-      return prs.edges.map((e) => e.node);
-    },
-    {},
-    [query]
-  );
-
-  if (!authed || error) return null;
-  if (loading) return <aha-spinner></aha-spinner>;
-
-  return (
-    <div>
-      <PullRequests prs={prList} />
-    </div>
-  );
-};
-
 const Page = ({ repos }) => {
-  const { authed, error } = useGithubApi(async () => {});
+  const { authed, error, fetchData } = useGithubApi(async () => {});
   const baseQuery = useMemo(
     () => new GithubQuery().repo(...repos, { quote: true }),
     []
@@ -38,23 +17,63 @@ const Page = ({ repos }) => {
 
   if (authed) {
     sections = (
-      <>
+      <div className="sections">
         <section>
-          <h2>Open</h2>
-          <PrList query={baseQuery.author("@me").state("open").toQuery()} />
+          <h2>My pull requests</h2>
+
+          <div className="subsection">
+            <h3>Open</h3>
+            <PrTable query={baseQuery.author("@me").state("open").toQuery()} />
+          </div>
+
+          <div className="subsection">
+            <h3>Closed</h3>
+            <PrTable
+              query={baseQuery.author("@me").state("closed").toQuery()}
+            />
+          </div>
         </section>
+
         <section>
-          <h2>Closed</h2>
-          <PrList query={baseQuery.author("@me").state("closed").toQuery()} />
+          <h2>My branches</h2>
         </section>
-      </>
+      </div>
+    );
+  } else if (error) {
+    sections = (
+      <div
+        className="sections"
+        style={{ justifyContent: "center", alignItems: "center" }}
+      >
+        <section className="error">
+          <p>An error occurred</p>
+        </section>
+      </div>
     );
   } else {
+    sections = (
+      <div className="sections" style={{ justifyContent: "center" }}>
+        <section
+          className="auth-prompt"
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          <aha-button onClick={() => fetchData()} type="primary">
+            Authenticate with Github
+          </aha-button>
+        </section>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Github Pull Requests</h1>
+    <div className="page">
+      <div className="page-nav">
+        <div className="page-nav__row  page-nav__row--justify-left page-nav__row--align-top">
+          <div className="page-nav__cell">
+            <h1>Github Pull Requests</h1>
+          </div>
+        </div>
+      </div>
       {sections}
     </div>
   );

@@ -3,9 +3,9 @@
 
 
 "@aha-app/aha-develop-react@^1.0.0":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@aha-app/aha-develop-react/-/aha-develop-react-1.0.3.tgz#6e2aca9067eff081775097fe612d7a3e87fa0485"
-  integrity sha512-KqHdFD4HK+KOQdSzPgQw1FyEzMCl14e6aUO+0dAOCucsV2m/yXcClToUuD9AkaMNiALRYB76lM4CUF6LJM09bQ==
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@aha-app/aha-develop-react/-/aha-develop-react-1.0.4.tgz#6bda4fc7f43b755194d32d511c69aed005b7223e"
+  integrity sha512-Um7IkuVeJJ5to01lSs7zn8Er5BsI8MfCkHGzEPFod623wrVwtsejy/fiJcsadYakFW/cfu3Zo/R/2KOfz6LTEA==
 
 "@types/prop-types@*":
   version "15.7.3"

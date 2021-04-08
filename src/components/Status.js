@@ -1,6 +1,12 @@
 import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 import { usePopper } from "https://cdn.skypack.dev/react-popper";
-import React, { useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { fetchPrStatus, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 
@@ -57,10 +63,10 @@ const StatusCheck = ({ context }) => {
 
 /**
  *
- * @param {{prStatus: import("../lib/github").CommitStatus}} param0
+ * @param {{prStatus: import("../lib/github").CommitStatus; showCount?: boolean}} param0
  * @returns
  */
-function Status({ prStatus }) {
+function Status({ prStatus, showCount }) {
   const [referenceElement, setReferenceElement] = useState(null);
   const popperElement = useRef(null);
   const { styles, attributes } = usePopper(
@@ -71,16 +77,22 @@ function Status({ prStatus }) {
     }
   );
   const [showChecks, setShowChecks] = useState(false);
+  const [allowToggle, setAllowToggle] = useState(true);
+  console.log("comp", allowToggle);
 
-  /** @type {React.MouseEventHandler<HTMLSpanElement>} */
-  const toggleShowChecks = (event) => {
-    setShowChecks((v) => !v);
+  const toggleShowChecks = () => {
+    console.log("call", allowToggle);
+    if (allowToggle) setShowChecks((v) => !v);
   };
   useOutsideAlerter(popperElement, () => {
     if (showChecks) {
+      setAllowToggle(false);
       setShowChecks(false);
     }
   });
+  useEffect(() => {
+    if (!allowToggle) setAllowToggle(true);
+  }, [allowToggle]);
 
   if (!prStatus.statusCheckRollup) {
     return null;
@@ -92,7 +104,7 @@ function Status({ prStatus }) {
     return <StatusCheck key={idx} context={context} />;
   });
 
-  const count = (
+  const count = showCount !== false && (
     <span className="pr-count">
       <span>{contexts.filter((v) => v.state === "SUCCESS").length}</span>
       <span>{"/"}</span>
@@ -128,9 +140,9 @@ function Status({ prStatus }) {
 }
 
 /**
- * @param {{pr:import("../lib/fields").PrLink}} param0
+ * @param {{pr:import("../lib/fields").PrLink; showCount: boolean?}} param0
  */
-function FetchStatus({ pr }) {
+function FetchStatus({ pr, showCount }) {
   const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
     async (api) => {
       if (pr.commits) return prStatusCommit(pr);
@@ -164,7 +176,7 @@ function FetchStatus({ pr }) {
     );
   }
 
-  return <Status prStatus={prStatus} />;
+  return <Status prStatus={prStatus} showCount={showCount} />;
 }
 
 export { FetchStatus, Status };
