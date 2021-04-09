@@ -216,7 +216,7 @@ const RepoFragment = gql`
     refs(
       refPrefix: "refs/heads/"
       orderBy: { field: TAG_COMMIT_DATE, direction: ASC }
-      first: 10
+      first: 5
     ) {
       edges {
         node {
