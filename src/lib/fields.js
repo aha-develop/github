@@ -64,13 +64,21 @@ function accountPrId(number, ref) {
   return [number, ref].join("");
 }
 
-async function linkPullRequestToRecord(pr, record) {
-  await appendField(record, PULL_REQUESTS_FIELD, {
+/**
+ * @param {*} pr
+ * @returns {PrLink}
+ */
+function githubPrToPrLink(pr) {
+  return {
     id: pr.number,
     name: pr.title,
     url: pr.html_url || pr.url,
     state: pr.merged ? "merged" : pr.state,
-  });
+  };
+}
+
+async function linkPullRequestToRecord(pr, record) {
+  await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
 
   await appendField(aha.account, PULL_REQUESTS_FIELD, {
     id: accountPrId(pr.number, record.referenceNum),
@@ -199,4 +207,5 @@ export {
   unlinkPullRequest,
   unlinkPullRequests,
   linkBranch,
+  githubPrToPrLink
 };

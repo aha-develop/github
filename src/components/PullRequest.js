@@ -1,182 +1,37 @@
-import React, { useRef, useState } from "react";
-import { unlinkPullRequest } from "../lib/fields";
-import { fetchPrStatus } from "../lib/github";
-import { useGithubApi } from "../lib/useGithubApi";
-import { usePopper } from "https://cdn.skypack.dev/react-popper";
-import { useOutsideAlerter } from "@aha-app/aha-develop-react";
+import React from "react";
+import { githubPrToPrLink } from "../lib/fields";
+import PrState from "./PrState";
+import { FetchStatus } from "./Status";
 
 /**
- * @param {import("../lib/github").StatusState} status
+ * @param {{pr:import("../lib/fields").PrLink}} param0
  */
-const statusIcon = (status) => {
-  switch (status) {
-    case "ERROR":
-      return "fa-regular fa-exclamation-triangle";
-    case "EXPECTED":
-      return "fa-regular fa-clock";
-    case "FAILURE":
-      return "fa-regular fa-times";
-    case "PENDING":
-      return "fa-regular fa-clock";
-    case "SUCCESS":
-      return "fa-regular fa-check";
+function PullRequest({ pr }) {
+  if (pr.title) {
+    pr = { ...pr, ...githubPrToPrLink(pr) };
   }
-};
-
-/**
- * @param {{status: import("../lib/github").StatusState}} param0
- */
-const StatusIcon = ({ status }) => {
-  return (
-    <span className={`pr-check pr-check-${status.toLowerCase()}`}>
-      <aha-icon icon={statusIcon(status)} />
-    </span>
-  );
-};
-
-const StatusCheck = ({ context }) => {
-  return (
-    <div className="pr-check-detail">
-      <span className="pr-check-icon">
-        <StatusIcon status={context.state} />
-      </span>
-      {context.avatarUrl?.length > 0 && (
-        <img src={context.avatarUrl} className="pr-check-avatar" />
-      )}
-      <span>
-        {context.targetUrl?.length > 0 ? (
-          <a href={context.targetUrl} target="_blank">
-            {context.context}
-          </a>
-        ) : (
-          context.context
-        )}
-      </span>
-    </div>
-  );
-};
-
-function Status({ record, pr }) {
-  const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
-    async (api) => await fetchPrStatus(api, pr)
-  );
-  const [referenceElement, setReferenceElement] = useState(null);
-  const popperElement = useRef(null);
-  const { styles, attributes } = usePopper(
-    referenceElement,
-    popperElement.current,
-    {
-      modifiers: [],
-    }
-  );
-  const [showChecks, setShowChecks] = useState(false);
-
-  const toggleShowChecks = (/** @type {MouseEvent} */ event) => {
-    setShowChecks((v) => !v);
-  };
-  useOutsideAlerter(popperElement, () => {
-    if (showChecks) {
-      setShowChecks(false);
-    }
-  });
-
-  if (error) {
-    return (
-      <span className="pr-status">
-        <aha-icon icon="fa-regular fa-warn"></aha-icon>
-      </span>
-    );
-  }
-
-  if (loading) {
-    return (
-      <span className="pr-status">
-        <aha-spinner />
-      </span>
-    );
-  }
-
-  if (!authed || !prStatus) {
-    return (
-      <span className="pr-status">
-        <aha-button onClick={fetchData}>
-          <aha-icon icon="fa-regular fa-refresh"></aha-icon>
-        </aha-button>
-      </span>
-    );
-  }
-
-  if (!prStatus.statusCheckRollup) {
-    return null;
-  }
-
-  const contexts = prStatus?.status?.contexts || [];
-
-  const checks = contexts.map((context, idx) => {
-    return <StatusCheck key={idx} context={context} />;
-  });
-
-  const count = (
-    <span className="pr-count">
-      <span>{contexts.filter((v) => v.state === "SUCCESS").length}</span>
-      <span>{"/"}</span>
-      <span>{contexts.length}</span>
-    </span>
-  );
-
-  return (
-    <>
-      <span
-        className={`pr-status pr-status-${prStatus.statusCheckRollup.state.toLowerCase()}`}
-        ref={setReferenceElement}
-        onClick={toggleShowChecks}
-      >
-        <StatusIcon status={prStatus.statusCheckRollup.state} />
-        {count}
-      </span>
-      <aha-tooltip type="popover">
-        <span slot="trigger">Foo</span>
-        {checks}
-      </aha-tooltip>
-
-      <span
-        style={styles.popper}
-        ref={popperElement}
-        className={`pr-checks ${showChecks ? "" : "hidden"}`}
-        {...attributes.popper}
-      >
-        {checks}
-      </span>
-    </>
-  );
-}
-
-function PullRequest({ record, pr }) {
-  const handleUnlink = (number) => async () => {
-    console.log("unlink", number);
-    unlinkPullRequest(record, number);
-  };
 
   return (
     <div style={{ marginBottom: 3 }}>
-      <aha-flex alignitems="center" justifycontent="space-between">
+      <aha-flex alignitems="center" justifycontent="space-between" gap="5px">
         <span>
-          <a href={pr.url} target="_blank">
+          <a href={pr.url} rel="noopener noreferrer nofollow" target="_blank">
             {pr.name}
           </a>
-          <Status record={record} pr={pr} />
         </span>
-        <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
-          {pr.state}
-        </span>
+        <PrState pr={pr} />
+        <FetchStatus pr={pr} />
       </aha-flex>
     </div>
   );
 }
 
-function PullRequests({ record, fields }) {
-  const pullRequests = (fields.pullRequests || []).map((pr, idx) => (
-    <PullRequest key={idx} record={record} pr={pr} />
+/**
+ * @param {{prs:import("../lib/fields").PrLink[]}} param0
+ */
+function PullRequests({ prs }) {
+  const pullRequests = (prs || []).map((pr, idx) => (
+    <PullRequest key={idx} pr={pr} />
   ));
 
   return <div className="pull-requests">{pullRequests}</div>;
