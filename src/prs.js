@@ -1,6 +1,5 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React, { useMemo } from "react";
-import { render, unmountComponentAtNode } from "react-dom";
 import BranchTable from "./components/page/BranchTable";
 import PrTable from "./components/page/PrTable";
 import Styles from "./components/Styles";
@@ -24,13 +23,15 @@ const Page = ({ repos }) => {
 
           <div className="subsection">
             <h3>Open</h3>
-            <PrTable query={baseQuery.author("@me").state("open").toQuery()} />
+            <PrTable
+              query={baseQuery.is("pr").author("@me").state("open").toQuery()}
+            />
           </div>
 
           <div className="subsection">
             <h3>Closed</h3>
             <PrTable
-              query={baseQuery.author("@me").state("closed").toQuery()}
+              query={baseQuery.is("pr").author("@me").state("closed").toQuery()}
             />
           </div>
         </section>
@@ -82,19 +83,14 @@ const Page = ({ repos }) => {
   );
 };
 
-aha.on("prs", (container, { settings }) => {
+aha.on("prs", ({ settings }) => {
   const repos = settings.repos || [];
-  render(
+  return (
     <>
       <Styles />
       <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
         <Page repos={repos} />
       </AuthProvider>
-    </>,
-    container
+    </>
   );
-
-  return () => {
-    unmountComponentAtNode(container);
-  };
 });

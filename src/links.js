@@ -34,20 +34,15 @@ function App({ fields, record }) {
 /**
  * @type {Aha.RenderExtension}
  */
-function links(container, { record, fields }) {
-  const root = container.parentNode;
-
-  render(
+function links({ record, fields }) {
+  return (
     <>
       <Styles />
       <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
         <App fields={fields} record={record} />
       </AuthProvider>
-    </>,
-    container
+    </>
   );
-
-  return () => unmountComponentAtNode(container);
 }
 
 aha.on("links", links);
