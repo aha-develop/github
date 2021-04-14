@@ -1,6 +1,7 @@
 aha.on(
   { event: "aha-develop.github.pr.labeled" },
-  async ({ record, label, payload }) => {
+  async ({ record, payload }) => {
+    let label = payload["label"];
     console.log(record);
     console.log(label);
 
