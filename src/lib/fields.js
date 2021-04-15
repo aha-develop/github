@@ -25,7 +25,6 @@ const PULL_REQUESTS_FIELD = "pullRequests";
  * @param {*} newValue
  */
 async function appendField(record, fieldName, newValue) {
-  console.log(record);
   // Link to Aha! record.
   console.log(`Link to ${record.typename}:${record.referenceNum || record.id}`);
 

@@ -55,12 +55,13 @@ const Styles = () => {
         }
 
         .pr-checks {
-          font-size: 85%;
+          font-size: 12px;
           z-index: 1000;
           background: white;
-          border: 1px solid #ccc;
-          box-shadow: 2px 2px 7px #eeee;
-          padding: 8px;
+          border: 1px solid #e8e8e8;
+          box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
+          border-radius: 4px;
+          padding: 15px;
         }
 
         .pr-check-detail {
@@ -72,8 +73,7 @@ const Styles = () => {
         }
 
         .pr-count {
-          font-size: 12px;
-          margin-left: 2px;
+          color: #999;
         }
 
         .hidden {
@@ -84,14 +84,19 @@ const Styles = () => {
         .pr-check {
           vertical-align: middle;
         }
-        .pr-check-detail {
-          display: flex;
-        }
         .pr-check-icon {
-          margin-right: 5px;
-          width: 20px;
+          width: 16px;
           display: flex;
           justify-content: center;
+        }
+        .pr-check-avatar {
+          width: 16px;
+          display: flex;
+          justify-content: center;
+        }
+        .pr-check-avatar img {
+          max-width: 14px;
+          max-height: 14px;
         }
         .pr-check-error,
         .pr-check-failure {
@@ -104,15 +109,6 @@ const Styles = () => {
         .pr-check-success {
           color: var(--aha-green-600);
         }
-        .pr-check-avatar {
-          width: 20px;
-          margin-right: 5px;
-        }
-        .pr-check-avatar img {
-          max-width: 18px;
-          max-height: 18px;
-        }
-
         .sections {
           background-color: var(--aha-gray-100);
           display: flex;

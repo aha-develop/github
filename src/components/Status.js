@@ -20,11 +20,11 @@ const statusIcon = (status) => {
     case "EXPECTED":
       return "fa-regular fa-clock";
     case "FAILURE":
-      return "fa-regular fa-times";
+      return "fa-regular fa-times-circle";
     case "PENDING":
       return "fa-regular fa-clock";
     case "SUCCESS":
-      return "fa-regular fa-check";
+      return "fa-regular fa-check-circle";
   }
 };
 
@@ -41,12 +41,14 @@ const StatusIcon = ({ status }) => {
 
 const StatusCheck = ({ context }) => {
   return (
-    <div className="pr-check-detail">
+    <aha-flex className="pr-check-detail" gap="5px">
       <span className="pr-check-icon">
         <StatusIcon status={context.state} />
       </span>
       {context.avatarUrl?.length > 0 && (
-        <img src={context.avatarUrl} className="pr-check-avatar" />
+        <div className="pr-check-avatar">
+          <img src={context.avatarUrl} />
+        </div>
       )}
       <span>
         {context.targetUrl?.length > 0 ? (
@@ -57,7 +59,7 @@ const StatusCheck = ({ context }) => {
           context.context
         )}
       </span>
-    </div>
+    </aha-flex>
   );
 };
 
@@ -107,9 +109,9 @@ function Status({ prStatus, showCount }) {
 
   const count = showCount !== false && (
     <span className="pr-count">
-      <span>{contexts.filter((v) => v.state === "SUCCESS").length}</span>
-      <span>{"/"}</span>
-      <span>{contexts.length}</span>
+      {contexts.filter((v) => v.state === "SUCCESS").length}
+      {"/"}
+      {contexts.length} passed
     </span>
   );
 
@@ -121,7 +123,6 @@ function Status({ prStatus, showCount }) {
         onClick={toggleShowChecks}
       >
         <StatusIcon status={prStatus.statusCheckRollup.state} />
-        {count}
       </span>
 
       <span
@@ -130,7 +131,14 @@ function Status({ prStatus, showCount }) {
         className={`pr-checks ${showChecks ? "" : "hidden"}`}
         {...attributes.popper}
       >
-        {checks}
+        <aha-flex direction="column" gap="4px">
+          <aha-flex justifyContent="space-between" alignItems="baseline">
+            <h5>Checks</h5>
+            {count}
+          </aha-flex>
+
+          {checks}
+        </aha-flex>
       </span>
     </span>
   );

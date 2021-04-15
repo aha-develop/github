@@ -31,18 +31,30 @@ function App({ fields, record }) {
   );
 }
 
+/** @type {HTMLDivElement} */
+let container;
+
 /**
  * @type {Aha.RenderExtension}
  */
-function links({ record, fields }) {
-  return (
+function links({ record, fields, onUnmounted }) {
+  container = document.createElement("div");
+  render(
     <>
       <Styles />
       <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
         <App fields={fields} record={record} />
       </AuthProvider>
-    </>
+    </>,
+    container
   );
+
+  onUnmounted(() => {
+    unmountComponentAtNode(container);
+    container.remove();
+  });
+
+  return container;
 }
 
 aha.on("links", links);

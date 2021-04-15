@@ -4,6 +4,7 @@ aha.on("webhook", async ({ headers, payload }) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
 
   console.log(`Received webhook '${event}' ${payload.action || ""}`);
+
   switch (event) {
     case "create":
       await handleCreateBranch(payload);
