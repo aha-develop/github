@@ -24,7 +24,7 @@ async function handlePullRequest(payload) {
   if (record) {
     aha.triggerServer(`aha-develop.github.pr.${payload.action}`, {
       record: record,
-      label: payload["label"],
+      payload: payload,
     });
   }
 }
