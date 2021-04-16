@@ -11,8 +11,6 @@ const Styles = () => {
 
         .type-icon {
           color: #3fad33;
-          padding-right: 5px;
-          vertical-align: middle;
         }
 
         .icon-button {

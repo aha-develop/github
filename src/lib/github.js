@@ -48,6 +48,12 @@ const PrForLinkFragment = gql`
     url
     state
     merged
+    repository {
+      url
+    }
+    headRef {
+      name
+    }
   }
 `;
 
@@ -59,6 +65,8 @@ const PrForLinkFragment = gql`
  * @prop {string} url
  * @prop {string} status
  * @prop {boolean} merged
+ * @prop {{url: string}} repository
+ * @prop {{name: string}|null} headRef
  */
 
 /** @typedef {{commits: {nodes: {commit: CommitStatus}[]}}} PrWithStatus */

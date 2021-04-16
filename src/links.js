@@ -10,7 +10,10 @@ function App({ fields, record }) {
   const { error, authed } = useAuth(async () => {});
   const authError = error && <div>{error}</div>;
 
-  const isLinked = (fields.branches || fields.pullRequests || []).length > 0;
+  const isLinked = [fields.branches, fields.pullRequests].some(
+    (ary) => ary?.length > 0
+  );
+
   const githubLinks = isLinked ? (
     <aha-flex direction="column" gap="8px" justifyContent="space-between">
       <Branches fields={fields} />
@@ -38,7 +41,8 @@ let container;
  * @type {Aha.RenderExtension}
  */
 function links({ record, fields, onUnmounted }) {
-  container = document.createElement("div");
+  if (!container) container = document.createElement("div");
+
   render(
     <>
       <Styles />
@@ -52,6 +56,7 @@ function links({ record, fields, onUnmounted }) {
   onUnmounted(() => {
     unmountComponentAtNode(container);
     container.remove();
+    container = undefined;
   });
 
   return container;

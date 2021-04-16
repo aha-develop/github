@@ -23,6 +23,10 @@ async function handlePullRequest(payload) {
 
   // Generate events.
   if (record) {
+    if (pr.head?.name) {
+      await linkBranch(pr.head.name, pr.repo.html_url);
+    }
+
     aha.triggerServer(`aha-develop.github.pr.${payload.action}`, {
       record: record,
       payload: payload,
@@ -36,8 +40,5 @@ async function handleCreateBranch(payload) {
     return;
   }
 
-  await linkBranch(
-    payload.ref,
-    `${payload.repository.html_url}/tree/${payload.ref}`
-  );
+  await linkBranch(payload.ref, payload.repository.html_url);
 }

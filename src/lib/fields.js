@@ -1,5 +1,6 @@
 const IDENTIFIER = "aha-develop.github";
 const PULL_REQUESTS_FIELD = "pullRequests";
+const BRANCHES_FIELD = "branches";
 
 /**
  * @typedef PrLink
@@ -143,15 +144,23 @@ export async function allPrs() {
   return prs || [];
 }
 
-async function linkBranch(branchName, url) {
+/**
+ * @param {string} branchName
+ * @param {string} repoUrl
+ */
+async function linkBranch(branchName, repoUrl) {
   const record = await referenceToRecord(branchName);
   if (record) {
-    await appendField(record, "branches", {
+    await appendField(record, BRANCHES_FIELD, {
       id: branchName,
       name: branchName,
-      url: url,
+      url: `${repoUrl}/tree/${branchName}`,
     });
   }
+}
+
+async function unlinkBranches(record) {
+  await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
 }
 
 async function referenceToRecord(str) {
@@ -206,5 +215,6 @@ export {
   unlinkPullRequest,
   unlinkPullRequests,
   linkBranch,
-  githubPrToPrLink
+  unlinkBranches,
+  githubPrToPrLink,
 };

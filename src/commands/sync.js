@@ -1,4 +1,4 @@
-import { linkPullRequest } from "../lib/fields.js";
+import { linkBranch, linkPullRequest } from "../lib/fields.js";
 import { searchForPr, withGitHubApi } from "../lib/github.js";
 import GithubQuery from "../lib/query.js";
 
@@ -28,7 +28,13 @@ aha.on("sync", ({ record, settings }) => {
     const search = await searchForPr(api, { query });
 
     for (let prNode of search.edges) {
-      await linkPullRequest(prNode.node);
+      const pr = prNode.node;
+
+      await linkPullRequest(pr);
+
+      if (pr.headRef) {
+        await linkBranch(pr.headRef.name, pr.repository.url);
+      }
     }
   });
 });
