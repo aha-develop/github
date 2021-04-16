@@ -21,7 +21,7 @@ const BRANCHES_FIELD = "branches";
  * Append a field/value pair to the given record. Returns an actual record
  * instance if one existed.
  *
- * @param {Aha.RecordStub} record
+ * @param {Aha.ApplicationModel} record
  * @param {string} fieldName
  * @param {*} newValue
  */
@@ -77,6 +77,10 @@ function githubPrToPrLink(pr) {
   };
 }
 
+/**
+ * @param {import("./github").PrForLink} pr
+ * @param {Aha.RecordStub} record
+ */
 async function linkPullRequestToRecord(pr, record) {
   await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
 
@@ -87,6 +91,9 @@ async function linkPullRequestToRecord(pr, record) {
   });
 }
 
+/**
+ * @param {import("./github").PrForLink} pr
+ */
 async function linkPullRequest(pr) {
   const record = await referenceToRecord(pr.title);
 
@@ -97,6 +104,10 @@ async function linkPullRequest(pr) {
   return record;
 }
 
+/**
+ * @param {Aha.RecordStub} record
+ * @param {*} number
+ */
 async function unlinkPullRequest(record, number) {
   await replaceField(record, PULL_REQUESTS_FIELD, (prs) => {
     if (prs) {
@@ -159,10 +170,17 @@ async function linkBranch(branchName, repoUrl) {
   }
 }
 
+/**
+ * @param {Aha.RecordStub} record
+ */
 async function unlinkBranches(record) {
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
 }
 
+/**
+ * @param {string} str
+ * @returns {Promise<Aha.RecordStub|null>}
+ */
 async function referenceToRecord(str) {
   const ahaReference = extractReference(str);
   if (!ahaReference) {
@@ -180,6 +198,9 @@ async function referenceToRecord(str) {
   );
 }
 
+/**
+ * @param {string} name
+ */
 function extractReference(name) {
   let matches;
 

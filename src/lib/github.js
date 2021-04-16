@@ -204,8 +204,9 @@ const GetPr = gql`
 `;
 
 /**
- * @param {*} api
+ * @param {GithubApi} api
  * @param {string} url
+ * @returns {Promise<PrForLink>}
  */
 export async function getPrByUrl(api, url) {
   const [owner, name] = repoFromUrl(url);

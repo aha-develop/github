@@ -8,10 +8,33 @@ import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
 
 /**
  * @template R
+ * @typedef ReturnLoading
+ * @prop {null} data
+ * @prop {true} loading
+ * @prop {boolean|null} authed
+ * @prop {string|null} error
+ * @prop {(() => Promise<boolean>)} fetchData
+ */
+/**
+ * @template R
+ * @typedef ReturnLoaded
+ * @prop {R} data
+ * @prop {false} loading
+ * @prop {boolean|null} authed
+ * @prop {string|null} error
+ * @prop {(() => Promise<boolean>)} fetchData
+ */
+/**
+ * @template R
+ * @typedef {ReturnLoading<R>|ReturnLoaded<R>} UseGithubResponse
+ */
+
+/**
+ * @template R
  * @param {((api: any) => Promise<R>)} callback
  * @param {Options} options
  * @param {*} deps
- * @return {{data:R|null, loading:boolean, authed:boolean|null, error:string|null, fetchData():Promise<boolean>}}
+ * @return {UseGithubResponse<R>}
  */
 export function useGithubApi(callback, options = {}, deps = []) {
   const authCallback = async (authData) => {

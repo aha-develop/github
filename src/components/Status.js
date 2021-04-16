@@ -1,12 +1,6 @@
 import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 import { usePopper } from "https://cdn.skypack.dev/react-popper";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useRef, useState } from "react";
 import { fetchPrStatus, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 
@@ -29,7 +23,7 @@ const statusIcon = (status) => {
 };
 
 /**
- * @param {{status: import("../lib/github").StatusState}} param0
+ * @type {React.FC<{status: import("../lib/github").StatusState}>}
  */
 const StatusIcon = ({ status }) => {
   return (
@@ -64,12 +58,12 @@ const StatusCheck = ({ context }) => {
 };
 
 /**
- *
- * @param {{prStatus: import("../lib/github").CommitStatus; showCount?: boolean}} param0
- * @returns
+ * @type {React.FC<{prStatus: import("../lib/github").CommitStatus}>}
  */
-function Status({ prStatus, showCount }) {
-  const [referenceElement, setReferenceElement] = useState(null);
+const Status = ({ prStatus }) => {
+  const [referenceElement, setReferenceElement] = useState(
+    /** @type {null|HTMLSpanElement} */ (null)
+  );
   const popperElement = useRef(null);
   const { styles, attributes } = usePopper(
     referenceElement,
@@ -107,7 +101,7 @@ function Status({ prStatus, showCount }) {
     return <StatusCheck key={idx} context={context} />;
   });
 
-  const count = showCount !== false && (
+  const count = (
     <span className="pr-count">
       {contexts.filter((v) => v.state === "SUCCESS").length}
       {"/"}
@@ -142,12 +136,12 @@ function Status({ prStatus, showCount }) {
       </span>
     </span>
   );
-}
+};
 
 /**
- * @param {{pr:import("../lib/fields").PrLink; showCount: boolean?}} param0
+ * @type {React.FC<{pr:import("../lib/github").PrForLinkWithStatus}>}
  */
-function FetchStatus({ pr, showCount }) {
+const FetchStatus = ({ pr }) => {
   const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
     async (api) => {
       if (pr.commits) return prStatusCommit(pr);
@@ -181,7 +175,7 @@ function FetchStatus({ pr, showCount }) {
     );
   }
 
-  return <Status prStatus={prStatus} showCount={showCount} />;
-}
+  return <Status prStatus={prStatus} />;
+};
 
 export { FetchStatus, Status };

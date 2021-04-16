@@ -4,9 +4,9 @@ import PrState from "./PrState";
 import { FetchStatus } from "./Status";
 
 /**
- * @param {{pr:import("../lib/fields").PrLink}} param0
+ * @type {React.FC<{pr:import("../lib/fields").PrLink}>}
  */
-function PullRequest({ pr }) {
+const PullRequest = ({ pr }) => {
   if (pr.title) {
     pr = { ...pr, ...githubPrToPrLink(pr) };
   }
@@ -24,17 +24,17 @@ function PullRequest({ pr }) {
       </aha-flex>
     </div>
   );
-}
+};
 
 /**
- * @param {{prs:import("../lib/fields").PrLink[]}} param0
+ * @type {React.FC<{prs:import("../lib/fields").PrLink[]}>}
  */
-function PullRequests({ prs }) {
+const PullRequests = ({ prs }) => {
   const pullRequests = (prs || []).map((pr, idx) => (
     <PullRequest key={idx} pr={pr} />
   ));
 
   return <div className="pull-requests">{pullRequests}</div>;
-}
+};
 
 export default PullRequests;

@@ -16,30 +16,30 @@ const PrRow = ({ pr }) => {
         <PrState pr={pr} />
       </td>
       <td>
-        <FetchStatus pr={pr} showCount={false} />
+        <FetchStatus pr={pr} />
       </td>
     </tr>
   );
 };
 
 const PrTable = ({ query }) => {
-  const { data: prList, authed, loading, error } = useGithubApi(
+  const response = useGithubApi(
     async (api) => {
-      const prs = await searchForPr(api, {
+      const { edges } = await searchForPr(api, {
         query,
         includeStatus: true,
         count: 10,
       });
-      return prs.edges.map((e) => e.node);
+      return edges.map((e) => e.node);
     },
     {},
     [query]
   );
 
-  if (!authed || error) return null;
-  if (loading) return <aha-spinner></aha-spinner>;
+  if (!response.authed || response.error) return null;
+  if (response.loading) return <aha-spinner></aha-spinner>;
 
-  const rows = prList.map((pr, idx) => <PrRow key={idx} pr={pr} />);
+  const rows = response.data.map((pr, idx) => <PrRow key={idx} pr={pr} />);
 
   return (
     <table className="record-table record-table--settings-page">
