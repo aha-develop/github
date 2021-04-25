@@ -83,7 +83,7 @@ const Page = ({ repos }) => {
   );
 };
 
-aha.on("prs", ({ settings }) => {
+aha.on("prs", (_, { settings }) => {
   const repos = settings.repos || [];
   return (
     <>

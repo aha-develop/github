@@ -2,7 +2,7 @@ import { linkBranch, linkPullRequest } from "../lib/fields.js";
 import { searchForPr, withGitHubApi } from "../lib/github.js";
 import GithubQuery from "../lib/query.js";
 
-aha.on("sync", ({ record, settings }) => {
+aha.on("sync", ({ record }, { settings }) => {
   if (!record) {
     aha.commandOutput("Open a record first to sync PRs for that record");
     return;
