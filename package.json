@@ -42,7 +42,7 @@
           ]
         },
         "prs": {
-          "title": "GitHub Pull Requests",
+          "title": "My Pull Requests",
           "host": "page",
           "entryPoint": "src/prs.js",
           "location": {
