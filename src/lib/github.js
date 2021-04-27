@@ -57,6 +57,17 @@ const PrForLinkFragment = gql`
   }
 `;
 
+const PrForReviewDecisionFragment = gql`
+  fragment PrForReviewDecision on PullRequest {
+    reviewDecision
+    latestReviews(first: 5) {
+      nodes {
+        state
+      }
+    }
+  }
+`;
+
 /**
  * @typedef PrForLink
  * @prop {number} id
@@ -69,7 +80,9 @@ const PrForLinkFragment = gql`
  * @prop {{name: string}|null} headRef
  */
 
+/** @typedef {'CHANGES_REQUESTED' | 'APPROVED' | 'REVIEW_REQUIRED'} PullRequestReviewDecision */
 /** @typedef {{commits: {nodes: {commit: CommitStatus}[]}}} PrWithStatus */
+/** @typedef {{reviewDecision: PullRequestReviewDecision, latestReviews: {nodes: {state: PullRequestReviewDecision}[]}}} PrForReviewDecision */
 /** @typedef {PrForLink & PrWithStatus} PrForLinkWithStatus */
 
 const PrStatusFragment = gql`
@@ -95,18 +108,6 @@ const PrStatusFragment = gql`
   }
 `;
 
-const GetStatus = gql`
-  query GetStatus($name: String!, $owner: String!, $number: Int!) {
-    repository(name: $name, owner: $owner) {
-      pullRequest(number: $number) {
-        ...PrStatus
-      }
-    }
-  }
-
-  ${PrStatusFragment}
-`;
-
 /** @typedef {'EXPECTED'|'ERROR'|'FAILURE'|'SUCCESS'|'PENDING'} StatusState */
 
 /**
@@ -122,23 +123,6 @@ const GetStatus = gql`
  * @prop {{state: StatusState} | null} statusCheckRollup
  * @prop {{contexts: Context[]} | null} status
  */
-
-/**
- * @param {GithubApi} api
- * @param {{id:number,url:string}} pr
- */
-export async function fetchPrStatus(api, pr) {
-  const [owner, name] = repoFromUrl(pr.url);
-  const {
-    repository: { pullRequest },
-  } = await api(GetStatus, {
-    owner,
-    name,
-    number: Number(pr.id),
-  });
-
-  return prStatusCommit(pullRequest);
-}
 
 /**
  * @param {PrWithStatus} pr
@@ -191,32 +175,60 @@ export async function searchForPr(api, options) {
 }
 
 const GetPr = gql`
-  query GetPr($name: String!, $owner: String!, $number: Int!) {
+  query GetPr(
+    $name: String!
+    $owner: String!
+    $number: Int!
+    $includeStatus: Boolean = false
+    $includeReviews: Boolean = false
+  ) {
     repository(name: $name, owner: $owner) {
       pullRequest(number: $number) {
         __typename
         ...PrForLink
+        ...PrStatus @include(if: $includeStatus)
+        ...PrForReviewDecision @include(if: $includeReviews)
       }
     }
   }
 
   ${PrForLinkFragment}
+  ${PrStatusFragment}
+  ${PrForReviewDecisionFragment}
 `;
+
+/**
+ * @typedef GetPrOptions
+ * @prop {boolean=} includeStatus
+ * @prop {boolean=} includeReviews
+ */
+
+/**
+ * @param {GithubApi} api
+ * @param {string} owner
+ * @param {string} name
+ * @param {number} number
+ * @param {GetPrOptions=} options
+ * @returns
+ */
+export async function getPr(api, owner, name, number, options = {}) {
+  const {
+    repository: { pullRequest },
+  } = await api(GetPr, { owner, name, number, ...options });
+  return pullRequest;
+}
 
 /**
  * @param {GithubApi} api
  * @param {string} url
+ * @param {GetPrOptions=} options
  * @returns {Promise<PrForLink>}
  */
-export async function getPrByUrl(api, url) {
+export async function getPrByUrl(api, url, options = {}) {
   const [owner, name] = repoFromUrl(url);
   const number = prNumberFromUrl(url);
 
-  const {
-    repository: { pullRequest },
-  } = await api(GetPr, { owner, name, number });
-
-  return pullRequest;
+  return getPr(api, owner, name, number, options);
 }
 
 const RepoFragment = gql`

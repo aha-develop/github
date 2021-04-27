@@ -47,6 +47,28 @@ const Styles = () => {
           background-color: #b8c0c9;
         }
 
+        .pr-reviews-icon {
+          color: var(--aha-gray-700);
+        }
+
+        .approved .pr-reviews-icon {
+          color: var(--aha-green-700);
+        }
+
+        .changes_requested .pr-reviews-icon {
+          color: var(--aha-red-700);
+        }
+
+        .pr-reviews-tooltip {
+          border: 1px solid #e8e8e8;
+          background: white;
+          box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
+          z-index: 1000;
+          font-size: 12px;
+          padding: 8px;
+          margin-top: 4px;
+        }
+
         .pr-status {
           cursor: pointer;
           white-space: nowrap;

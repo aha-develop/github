@@ -1,9 +1,8 @@
-import { useOutsideAlerter } from "@aha-app/aha-develop-react";
-import { usePopper } from "https://cdn.skypack.dev/react-popper";
-import React, { useRef, useState } from "react";
-import { fetchPrStatus, prStatusCommit } from "../lib/github";
+import React from "react";
+import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
-import GithubLink from './GithubLink';
+import { usePopperAlerter } from "../lib/usePopperAlerter";
+import GithubLink from "./GithubLink";
 
 /**
  * @param {import("../lib/github").StatusState} status
@@ -47,9 +46,7 @@ const StatusCheck = ({ context }) => {
       )}
       <span>
         {context.targetUrl?.length > 0 ? (
-          <GithubLink href={context.targetUrl}>
-            {context.context}
-          </GithubLink>
+          <GithubLink href={context.targetUrl}>{context.context}</GithubLink>
         ) : (
           context.context
         )}
@@ -62,35 +59,14 @@ const StatusCheck = ({ context }) => {
  * @type {React.FC<{prStatus: import("../lib/github").CommitStatus}>}
  */
 const Status = ({ prStatus }) => {
-  const [referenceElement, setReferenceElement] = useState(
-    /** @type {null|HTMLSpanElement} */ (null)
-  );
-  const popperElement = useRef(null);
-  const { styles, attributes } = usePopper(
-    referenceElement,
-    popperElement.current,
-    {
-      modifiers: [],
-    }
-  );
-  const [showChecks, setShowChecks] = useState(false);
-  const allowToggle = useRef(true);
-
-  const toggleShowChecks = () => {
-    if (allowToggle.current) setShowChecks((v) => !v);
-  };
-  useOutsideAlerter(popperElement, () => {
-    if (showChecks) {
-      allowToggle.current = false;
-      setShowChecks(false);
-      // Hiding the react popper seems super slow for some reason, and it causes
-      // another re-render afterwards. When this was 100ms it still caused a
-      // click on the toggle button to re-show the popup
-      setTimeout(() => {
-        allowToggle.current = true;
-      }, 500);
-    }
-  });
+  const {
+    attributes,
+    popperElement,
+    setReferenceElement,
+    styles,
+    toggle,
+    visible,
+  } = usePopperAlerter({ modifiers: [] });
 
   if (!prStatus.statusCheckRollup) {
     return null;
@@ -115,7 +91,7 @@ const Status = ({ prStatus }) => {
       <span
         className={`pr-status pr-status-${prStatus.statusCheckRollup.state.toLowerCase()}`}
         ref={setReferenceElement}
-        onClick={toggleShowChecks}
+        onClick={() => toggle()}
       >
         <StatusIcon status={prStatus.statusCheckRollup.state} />
       </span>
@@ -123,7 +99,7 @@ const Status = ({ prStatus }) => {
       <span
         style={styles.popper}
         ref={popperElement}
-        className={`pr-checks ${showChecks ? "" : "hidden"}`}
+        className={`pr-checks ${visible ? "" : "hidden"}`}
         {...attributes.popper}
       >
         <aha-flex direction="column" gap="4px">
@@ -143,10 +119,10 @@ const Status = ({ prStatus }) => {
  * @type {React.FC<{pr:import("../lib/github").PrForLinkWithStatus}>}
  */
 const FetchStatus = ({ pr }) => {
-  const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
+  const { data: fetchedPr, error, authed, loading, fetchData } = useGithubApi(
     async (api) => {
-      if (pr.commits) return prStatusCommit(pr);
-      return await fetchPrStatus(api, pr);
+      if (pr.commits) return pr;
+      return await getPrByUrl(api, pr.url, { includeStatus: true });
     }
   );
 
@@ -166,7 +142,7 @@ const FetchStatus = ({ pr }) => {
     );
   }
 
-  if (!authed || !prStatus) {
+  if (!authed || !fetchedPr) {
     return (
       <span className="pr-status">
         <aha-button onClick={fetchData}>
@@ -176,6 +152,7 @@ const FetchStatus = ({ pr }) => {
     );
   }
 
+  const prStatus = prStatusCommit(fetchedPr);
   return <Status prStatus={prStatus} />;
 };
 
