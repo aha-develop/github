@@ -1,4 +1,5 @@
 import React from "react";
+import GithubLink from './GithubLink';
 
 function Branches({ fields }) {
   const branches = (fields.branches || []).map((branch, idx) => (
@@ -7,9 +8,9 @@ function Branches({ fields }) {
         <span className="type-icon">
           <aha-icon icon="fa-regular fa-code-branch type-icon" />
         </span>
-        <a href={branch.url} target="_blank">
+        <GithubLink href={branch.url}>
           {branch.name}
-        </a>
+        </GithubLink>
       </aha-flex>
     </div>
   ));

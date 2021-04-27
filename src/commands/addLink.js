@@ -1,8 +1,10 @@
 import { linkPullRequestToRecord } from "../lib/fields";
 import { getPrByUrl, withGitHubApi } from "../lib/github";
 
-const validPrUrl = (url) =>
-  new URL(url).pathname.match(/\/[^\/]+\/[^\/]+\/pull\/\d+/);
+const validPrUrl = urlString => {
+  const url = new URL(urlString);
+  return url.origin === "https://github.com" && url.pathname.match(/\/[^\/]+\/[^\/]+\/pull\/\d+/);
+}
 
 aha.on("addLink", async ({ record, context }) => {
   const prUrl = await aha.commandPrompt("Link URL", {
