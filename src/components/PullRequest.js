@@ -2,6 +2,7 @@ import React from "react";
 import { githubPrToPrLink } from "../lib/fields";
 import PrState from "./PrState";
 import { FetchStatus } from "./Status";
+import LinkTargetBlank from './LinkTargetBlank';
 
 /**
  * @type {React.FC<{pr:import("../lib/fields").PrLink}>}
@@ -15,9 +16,9 @@ const PullRequest = ({ pr }) => {
     <div style={{ marginBottom: 3 }}>
       <aha-flex alignitems="center" justifycontent="space-between" gap="5px">
         <span>
-          <a href={pr.url} rel="noopener noreferrer nofollow" target="_blank">
+          <LinkTargetBlank href={pr.url}>
             {pr.name}
-          </a>
+          </LinkTargetBlank>
         </span>
         <PrState pr={pr} />
         <FetchStatus pr={pr} />

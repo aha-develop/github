@@ -3,18 +3,15 @@ import { recentBranches, searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
 import PrState from "../PrState";
 import { FetchStatus } from "../Status";
+import LinkTargetBlank from '../LinkTargetBlank';
 
 const BranchRow = ({ branch }) => {
   return (
     <tr>
       <td>
-        <a
-          href={branch.target.commitUrl}
-          rel="noopener noreferrer nofollow"
-          target="_blank"
-        >
+        <LinkTargetBlank href={branch.target.commitUrl}>
           {branch.name}
-        </a>
+        </LinkTargetBlank>
       </td>
     </tr>
   );
