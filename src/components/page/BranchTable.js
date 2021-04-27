@@ -1,8 +1,6 @@
 import React from "react";
-import { recentBranches, searchForPr } from "../../lib/github";
+import { recentBranches } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
-import PrState from "../PrState";
-import { FetchStatus } from "../Status";
 
 const BranchRow = ({ branch }) => {
   return (

@@ -1,7 +1,7 @@
 import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 import { usePopper } from "https://cdn.skypack.dev/react-popper";
 import React, { useRef, useState } from "react";
-import { fetchPrStatus, prStatusCommit } from "../lib/github";
+import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 
 /**
@@ -142,10 +142,10 @@ const Status = ({ prStatus }) => {
  * @type {React.FC<{pr:import("../lib/github").PrForLinkWithStatus}>}
  */
 const FetchStatus = ({ pr }) => {
-  const { data: prStatus, error, authed, loading, fetchData } = useGithubApi(
+  const { data: fetchedPr, error, authed, loading, fetchData } = useGithubApi(
     async (api) => {
-      if (pr.commits) return prStatusCommit(pr);
-      return await fetchPrStatus(api, pr);
+      if (pr.commits) return pr;
+      return await getPrByUrl(api, pr.url, { includeStatus: true });
     }
   );
 
@@ -165,7 +165,7 @@ const FetchStatus = ({ pr }) => {
     );
   }
 
-  if (!authed || !prStatus) {
+  if (!authed || !fetchedPr) {
     return (
       <span className="pr-status">
         <aha-button onClick={fetchData}>
@@ -175,6 +175,7 @@ const FetchStatus = ({ pr }) => {
     );
   }
 
+  const prStatus = prStatusCommit(fetchedPr);
   return <Status prStatus={prStatus} />;
 };
 

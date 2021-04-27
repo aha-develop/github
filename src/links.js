@@ -37,7 +37,7 @@ function App({ fields, record }) {
 /**
  * @type {Aha.RenderExtension}
  */
-function links({ record, fields }) {
+const links = ({ record, fields }) => {
   return (
     <>
       <Styles />
@@ -46,6 +46,6 @@ function links({ record, fields }) {
       </AuthProvider>
     </>
   );
-}
+};
 
 aha.on("links", links);
