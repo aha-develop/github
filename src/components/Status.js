@@ -3,7 +3,7 @@ import { usePopper } from "https://cdn.skypack.dev/react-popper";
 import React, { useRef, useState } from "react";
 import { fetchPrStatus, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
-import LinkTargetBlank from './LinkTargetBlank';
+import GithubLink from './GithubLink';
 
 /**
  * @param {import("../lib/github").StatusState} status
@@ -47,9 +47,9 @@ const StatusCheck = ({ context }) => {
       )}
       <span>
         {context.targetUrl?.length > 0 ? (
-          <LinkTargetBlank href={context.targetUrl}>
+          <GithubLink href={context.targetUrl}>
             {context.context}
-          </LinkTargetBlank>
+          </GithubLink>
         ) : (
           context.context
         )}

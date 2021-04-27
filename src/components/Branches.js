@@ -1,5 +1,5 @@
 import React from "react";
-import LinkTargetBlank from './LinkTargetBlank';
+import GithubLink from './GithubLink';
 
 function Branches({ fields }) {
   const branches = (fields.branches || []).map((branch, idx) => (
@@ -8,9 +8,9 @@ function Branches({ fields }) {
         <span className="type-icon">
           <aha-icon icon="fa-regular fa-code-branch type-icon" />
         </span>
-        <LinkTargetBlank href={branch.url}>
+        <GithubLink href={branch.url}>
           {branch.name}
-        </LinkTargetBlank>
+        </GithubLink>
       </aha-flex>
     </div>
   ));
