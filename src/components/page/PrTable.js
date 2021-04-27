@@ -3,14 +3,15 @@ import { searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
 import PrState from "../PrState";
 import { FetchStatus } from "../Status";
+import GithubLink from '../GithubLink';
 
 const PrRow = ({ pr }) => {
   return (
     <tr>
       <td style={{ textOverflow: "ellipsis" }}>
-        <a href={pr.url} rel="noopener noreferrer nofollow" target="_blank">
+        <GithubLink href={pr.url}>
           {pr.title}
-        </a>
+        </GithubLink>
       </td>
       <td>
         <PrState pr={pr} />
