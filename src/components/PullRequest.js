@@ -1,14 +1,17 @@
-import React from "react";
-import { githubPrToPrLink } from "../lib/fields";
+import React, { useEffect } from "react";
+import { githubPrToPrLink, linkPullRequestToRecord } from "../lib/fields";
 import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
+import { PrReviewStatus } from "./PrReviewStatus";
 import PrState from "./PrState";
 import { Status } from "./Status";
 
 /**
- * @type {React.FC<{pr:import("../lib/fields").PrLink}>}
+ * @type {React.FC<{record:Aha.RecordStub, pr:import("../lib/fields").PrLink}>}
  */
-const PullRequest = ({ pr }) => {
+const PullRequest = ({ record, pr }) => {
+  const originalPr = pr;
+
   if (pr.title) {
     pr = { ...pr, ...githubPrToPrLink(pr) };
   }
@@ -21,6 +24,17 @@ const PullRequest = ({ pr }) => {
       });
     }
   );
+
+  // If the reloaded PR has changed state then update the extension fields
+  useEffect(() => {
+    if (loading) return;
+    if (!fetchedPr) return;
+
+    const prLink = githubPrToPrLink(fetchedPr);
+    if (prLink.state === originalPr.state) return;
+
+    linkPullRequestToRecord(fetchedPr, record);
+  }, [fetchedPr, loading]);
 
   // Once fetched replace the prop with the fetched version
   if (authed && fetchedPr) {
@@ -48,18 +62,23 @@ const PullRequest = ({ pr }) => {
             </aha-button>
           </span>
         )}
-        {authed && fetchedPr && <Status prStatus={prStatusCommit(fetchedPr)} />}
+        {authed && fetchedPr && (
+          <>
+            <Status prStatus={prStatusCommit(fetchedPr)} />
+            <PrReviewStatus pr={fetchedPr} />
+          </>
+        )}
       </aha-flex>
     </div>
   );
 };
 
 /**
- * @type {React.FC<{prs:import("../lib/fields").PrLink[]}>}
+ * @type {React.FC<{record: Aha.RecordStub, prs:import("../lib/fields").PrLink[]}>}
  */
-const PullRequests = ({ prs }) => {
+const PullRequests = ({ record, prs }) => {
   const pullRequests = (prs || []).map((pr, idx) => (
-    <PullRequest key={idx} pr={pr} />
+    <PullRequest key={idx} record={record} pr={pr} />
   ));
 
   return <div className="pull-requests">{pullRequests}</div>;

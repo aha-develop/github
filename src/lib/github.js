@@ -80,7 +80,9 @@ const PrForReviewDecisionFragment = gql`
  * @prop {{name: string}|null} headRef
  */
 
+/** @typedef {'CHANGES_REQUESTED' | 'APPROVED' | 'REVIEW_REQUIRED'} PullRequestReviewDecision */
 /** @typedef {{commits: {nodes: {commit: CommitStatus}[]}}} PrWithStatus */
+/** @typedef {{reviewDecision: PullRequestReviewDecision, latestReviews: {nodes: {state: PullRequestReviewDecision}[]}}} PrForReviewDecision */
 /** @typedef {PrForLink & PrWithStatus} PrForLinkWithStatus */
 
 const PrStatusFragment = gql`
