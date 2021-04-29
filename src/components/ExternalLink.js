@@ -1,9 +1,9 @@
 import React from "react";
 
-const isValidGithubLink = (urlString) => {
+const isValidExternalLink = (urlString) => {
   try {
     const url = new URL(urlString);
-    return url.origin === "https://github.com";
+    return url.protocol === "https:";
   } catch (e) {
     return false;
   }
@@ -15,14 +15,14 @@ const isValidGithubLink = (urlString) => {
  * 
  * @type {React.FC<{href: string}>}
  */
-const GithubLink = (props) => {
-  if (isValidGithubLink(props.href)) {
+const ExternalLink = (props) => {
+  if (isValidExternalLink(props.href)) {
     return (
       <a {...props} target="_blank" rel="noopener noreferrer">
         {props.children}
       </a>
     );
-  } else return <>"Invalid Github URL."</>;
+  } else return <>"Invalid external URL."</>;
 };
 
-export default GithubLink;
+export default ExternalLink;

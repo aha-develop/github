@@ -1,15 +1,15 @@
 import React from "react";
 import { recentBranches } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
-import GithubLink from '../GithubLink';
+import ExternalLink from '../ExternalLink';
 
 const BranchRow = ({ branch }) => {
   return (
     <tr>
       <td>
-        <GithubLink href={branch.target.commitUrl}>
+        <ExternalLink href={branch.target.commitUrl}>
           {branch.name}
-        </GithubLink>
+        </ExternalLink>
       </td>
     </tr>
   );

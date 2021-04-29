@@ -3,15 +3,15 @@ import { searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
 import PrState from "../PrState";
 import { FetchStatus } from "../Status";
-import GithubLink from '../GithubLink';
+import ExternalLink from '../ExternalLink';
 
 const PrRow = ({ pr }) => {
   return (
     <tr>
       <td style={{ textOverflow: "ellipsis" }}>
-        <GithubLink href={pr.url}>
+        <ExternalLink href={pr.url}>
           {pr.title}
-        </GithubLink>
+        </ExternalLink>
       </td>
       <td>
         <PrState pr={pr} />

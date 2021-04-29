@@ -2,7 +2,7 @@ import React from "react";
 import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
-import GithubLink from "./GithubLink";
+import ExternalLink from "./ExternalLink";
 
 /**
  * @param {import("../lib/github").StatusState} status
@@ -46,7 +46,7 @@ const StatusCheck = ({ context }) => {
       )}
       <span>
         {context.targetUrl?.length > 0 ? (
-          <GithubLink href={context.targetUrl}>{context.context}</GithubLink>
+          <ExternalLink href={context.targetUrl}>{context.context}</ExternalLink>
         ) : (
           context.context
         )}
