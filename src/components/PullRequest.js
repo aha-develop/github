@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { githubPrToPrLink, linkPullRequestToRecord } from "../lib/fields";
 import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
-import GithubLink from "./GithubLink";
+import ExternalLink from "./ExternalLink";
 import { PrReviewStatus } from "./PrReviewStatus";
 import PrState from "./PrState";
 import { Status } from "./Status";
@@ -46,7 +46,7 @@ const PullRequest = ({ record, pr }) => {
     <div style={{ marginBottom: 3 }}>
       <aha-flex alignItems="center" justifyContent="space-between" gap="5px">
         <span>
-          <GithubLink href={pr.url}>{pr.name}</GithubLink>
+          <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
         </span>
         <PrState pr={pr} />
         {loading && (
