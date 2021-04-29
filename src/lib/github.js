@@ -136,6 +136,7 @@ const SearchForPr = gql`
     $searchQuery: String!
     $count: Int!
     $includeStatus: Boolean = false
+    $includeReviews: Boolean = false
   ) {
     search(query: $searchQuery, type: ISSUE, first: $count) {
       edges {
@@ -144,6 +145,7 @@ const SearchForPr = gql`
           ... on PullRequest {
             ...PrForLink
             ...PrStatus @include(if: $includeStatus)
+            ...PrForReviewDecision @include(if: $includeReviews)
           }
         }
       }
@@ -152,6 +154,7 @@ const SearchForPr = gql`
 
   ${PrForLinkFragment}
   ${PrStatusFragment}
+  ${PrForReviewDecisionFragment}
 `;
 
 /**
@@ -159,6 +162,7 @@ const SearchForPr = gql`
  * @prop {string} query
  * @prop {number=} count
  * @prop {boolean=} includeStatus
+ * @prop {boolean=} includeReviews
  */
 
 /**
@@ -167,7 +171,6 @@ const SearchForPr = gql`
  * @returns {Promise<{edges: {node: PrForLink}[] | {node: PrForLinkWithStatus}[]}>}
  */
 export async function searchForPr(api, options) {
-  /** @type {{}} */
   const variables = { count: 20, searchQuery: options.query, ...options };
   delete variables["query"];
   const { search } = await api(SearchForPr, variables);

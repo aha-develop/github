@@ -1,11 +1,34 @@
+/**
+ * @param {string[] | [...string[], string | {quote: boolean}]} values
+ * @returns {string[]}
+ */
 function quotedValues(values) {
   if (values.length === 0) return [];
   const options = values.slice(-1)[0];
   if (typeof options !== "string" && options.quote)
     return values.slice(0, -1).map((v) => `"${v}"`);
+  // @ts-ignore
   return values;
 }
 
+/**
+ * Class for building github search queries:
+ *
+ * ```
+ * const query = new GithubQuery()
+ *   .repo('repo1', 'repo2', { quote: true })
+ *   .is('pr')
+ *   .author('@me')
+ *   .term('text to search for')
+ *   .toQuery();
+ * ```
+ *
+ * produces:
+ *
+ * ```
+ * repo:'repo1' repo:'repo2' is:pr author:@me 'text to search for'
+ * ```
+ */
 class GithubQuery {
   /**
    * @param {Map<string, any[]>=} attrs
@@ -41,6 +64,7 @@ class GithubQuery {
     });
   }
 
+  /** @param {string[]} terms */
   term(...terms) {
     return new GithubQuery(
       this._attrs,

@@ -1,23 +1,25 @@
 import React from "react";
-import { searchForPr } from "../../lib/github";
+import { prStatusCommit, searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
+import ExternalLink from "../ExternalLink";
+import { PrReviewStatus } from "../PrReviewStatus";
 import PrState from "../PrState";
-import { FetchStatus } from "../Status";
-import ExternalLink from '../ExternalLink';
+import { Status } from "../Status";
 
 const PrRow = ({ pr }) => {
   return (
     <tr>
       <td style={{ textOverflow: "ellipsis" }}>
-        <ExternalLink href={pr.url}>
-          {pr.title}
-        </ExternalLink>
+        <ExternalLink href={pr.url}>{pr.title}</ExternalLink>
       </td>
       <td>
         <PrState pr={pr} />
       </td>
       <td>
-        <FetchStatus pr={pr} />
+        <Status prStatus={prStatusCommit(pr)} />
+      </td>
+      <td>
+        <PrReviewStatus pr={pr} />
       </td>
     </tr>
   );
@@ -29,6 +31,7 @@ const PrTable = ({ query }) => {
       const { edges } = await searchForPr(api, {
         query,
         includeStatus: true,
+        includeReviews: true,
         count: 10,
       });
       return edges.map((e) => e.node);
@@ -49,6 +52,7 @@ const PrTable = ({ query }) => {
           <th>Pull request name</th>
           <th style={{ minWidth: "100px" }}>Status</th>
           <th>Checks</th>
+          <th>Reviews</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>
