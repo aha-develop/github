@@ -103,7 +103,7 @@ const Status = ({ prStatus }) => {
         {...attributes.popper}
       >
         <aha-flex direction="column" gap="4px">
-          <aha-flex justifyContent="space-between" alignItems="baseline">
+          <aha-flex justify-content="space-between" align-items="baseline">
             <h5>Checks</h5>
             {count}
           </aha-flex>

@@ -44,7 +44,7 @@ const PullRequest = ({ record, pr }) => {
 
   return (
     <div style={{ marginBottom: 3 }}>
-      <aha-flex alignItems="center" justifyContent="space-between" gap="5px">
+      <aha-flex align-items="center" justify-content="space-between" gap="5px">
         <span>
           <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
         </span>

@@ -25,7 +25,7 @@ function App({ fields, record }) {
 
   return (
     <>
-      <aha-flex alignItems="center" justifycontent="space-between">
+      <aha-flex align-items="center" justify-content="space-between">
         {authError}
         {githubLinks}
         <Menu record={record} />
