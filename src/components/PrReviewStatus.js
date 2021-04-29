@@ -41,7 +41,7 @@ export const PrReviewStatus = ({ pr }) => {
   const count = pr.latestReviews.nodes.length;
 
   return (
-    <span className={`pr-reviews ${pr.reviewDecision.toLowerCase()}`}>
+    <span className={`pr-reviews ${pr.reviewDecision?.toLowerCase()}`}>
       <span
         onMouseOver={() => toggle(true)}
         ref={setReferenceElement}
