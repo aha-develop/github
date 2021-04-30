@@ -43,32 +43,30 @@ const PullRequest = ({ record, pr }) => {
   }
 
   return (
-    <div style={{ marginBottom: 3 }}>
-      <aha-flex align-items="center" justify-content="space-between" gap="5px">
-        <span>
-          <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
+    <aha-flex align-items="center" justify-content="space-between" gap="5px">
+      <span>
+        <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
+      </span>
+      <PrState pr={pr} />
+      {loading && (
+        <span className="pr-status">
+          <aha-spinner />
         </span>
-        <PrState pr={pr} />
-        {loading && (
-          <span className="pr-status">
-            <aha-spinner />
-          </span>
-        )}
-        {!loading && (!authed || !fetchedPr) && (
-          <span className="pr-status">
-            <aha-button onClick={fetchData} size="small">
-              <aha-icon icon="fa-regular fa-refresh"></aha-icon>
-            </aha-button>
-          </span>
-        )}
-        {authed && fetchedPr && (
-          <>
-            <Status prStatus={prStatusCommit(fetchedPr)} />
-            <PrReviewStatus pr={fetchedPr} />
-          </>
-        )}
-      </aha-flex>
-    </div>
+      )}
+      {!loading && (!authed || !fetchedPr) && (
+        <span className="pr-status">
+          <aha-button onClick={fetchData} size="small" type="attribute">
+            <aha-icon icon="fa-regular fa-refresh"></aha-icon>
+          </aha-button>
+        </span>
+      )}
+      {authed && fetchedPr && (
+        <>
+          <Status prStatus={prStatusCommit(fetchedPr)} />
+          <PrReviewStatus pr={fetchedPr} />
+        </>
+      )}
+    </aha-flex>
   );
 };
 
@@ -80,7 +78,13 @@ const PullRequests = ({ record, prs }) => {
     <PullRequest key={idx} record={record} pr={pr} />
   ));
 
-  return <div className="pull-requests">{pullRequests}</div>;
+  return (
+    <div className="pull-requests">
+      <aha-flex direction="column" gap="3px">
+        {pullRequests}
+      </aha-flex>
+    </div>
+  );
 };
 
 export default PullRequests;
