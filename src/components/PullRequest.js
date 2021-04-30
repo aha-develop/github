@@ -56,7 +56,7 @@ const PullRequest = ({ record, pr }) => {
         )}
         {!loading && (!authed || !fetchedPr) && (
           <span className="pr-status">
-            <aha-button onClick={fetchData}>
+            <aha-button onClick={fetchData} size="small">
               <aha-icon icon="fa-regular fa-refresh"></aha-icon>
             </aha-button>
           </span>

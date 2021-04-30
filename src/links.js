@@ -15,7 +15,7 @@ function App({ fields, record }) {
   );
 
   const githubLinks = isLinked ? (
-    <aha-flex direction="column" gap="8px" justifyContent="space-between">
+    <aha-flex direction="column" gap="8px" justify-content="space-between">
       <Branches fields={fields} />
       <PullRequests record={record} prs={fields.pullRequests}></PullRequests>
     </aha-flex>
@@ -25,7 +25,7 @@ function App({ fields, record }) {
 
   return (
     <>
-      <aha-flex align-items="center" justify-content="space-between">
+      <aha-flex align-items="center" justify-content="space-between" gap="5px">
         {authError}
         {githubLinks}
         <Menu record={record} />

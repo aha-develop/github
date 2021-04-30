@@ -14,7 +14,7 @@ async function removeLinks(record) {
 
 function Menu({ record }) {
   return (
-    <aha-action-menu buttonSize="medium" style={{ marginLeft: 5 }}>
+    <aha-action-menu buttonSize="medium">
       <aha-menu>
         <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
         <aha-menu-item onClick={() => addLink(record)}>
