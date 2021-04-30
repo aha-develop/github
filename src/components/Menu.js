@@ -14,20 +14,18 @@ async function removeLinks(record) {
 
 function Menu({ record }) {
   return (
-    <aha-menu style={{ marginLeft: 5 }}>
-      <aha-button slot="button" type="attribute" size="small">
-        <aha-icon icon="fas fa-ellipsis-h"></aha-icon>
-      </aha-button>
-
-      <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
-      <aha-menu-item onClick={() => addLink(record)}>
-        Link pull request
-      </aha-menu-item>
-      <aha-menu-item onClick={() => removeLinks(record)}>
-        Unlink pull requests
-      </aha-menu-item>
-    </aha-menu>
-  )
+    <aha-action-menu buttonSize="medium" style={{ marginLeft: 5 }}>
+      <aha-menu>
+        <aha-menu-item onClick={() => sync(record)}>Resync</aha-menu-item>
+        <aha-menu-item onClick={() => addLink(record)}>
+          Link pull request
+        </aha-menu-item>
+        <aha-menu-item onClick={() => removeLinks(record)}>
+          Unlink pull requests
+        </aha-menu-item>
+      </aha-menu>
+    </aha-action-menu>
+  );
 }
 
 export default Menu;
