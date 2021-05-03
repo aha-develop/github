@@ -168,7 +168,7 @@ const SearchForPr = gql`
 /**
  * @param {GithubApi} api
  * @param {SearchForPrOptions} options
- * @returns {Promise<{edges: {node: PrForLink}[] | {node: PrForLinkWithStatus}[]}>}
+ * @returns {Promise<{edges: {node: PrForLink}[]}>}
  */
 export async function searchForPr(api, options) {
   const variables = { count: 20, searchQuery: options.query, ...options };
