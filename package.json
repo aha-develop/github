@@ -77,15 +77,6 @@
           "entryPoint": "src/webhook.js",
           "public": true
         }
-      },
-      "events": {
-        "labels": {
-          "title": "Respond to labeled PR",
-          "entryPoint": "src/labeledPr.js",
-          "handles": [
-            "aha-develop.github.pr.labeled"
-          ]
-        }
       }
     }
   },
