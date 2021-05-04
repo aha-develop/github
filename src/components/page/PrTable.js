@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { prStatusCommit, searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
 import ExternalLink from "../ExternalLink";
@@ -6,11 +6,32 @@ import { PrReviewStatus } from "../PrReviewStatus";
 import PrState from "../PrState";
 import { Status } from "../Status";
 
-const PrRow = ({ pr }) => {
+const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
+
+/**
+ * @typedef RowProps
+ * @prop {import('../../lib/github').PrForLink} pr
+ * @prop {Aha.Feature=} feature
+ */
+
+/**
+ * @type {React.FC<RowProps>}
+ */
+const PrRow = ({ pr, feature }) => {
   return (
     <tr>
       <td style={{ textOverflow: "ellipsis" }}>
-        <ExternalLink href={pr.url}>{pr.title}</ExternalLink>
+        <div>
+          <ExternalLink href={pr.url}>{pr.title}</ExternalLink>
+        </div>
+        {feature && (
+          <div className="record-table--feature-link">
+            <span className="bottom-left">&nbsp;</span>
+            <a href={feature.path}>
+              {feature.referenceNum} {feature.name}
+            </a>
+          </div>
+        )}
       </td>
       <td>
         <PrState pr={pr} />
@@ -26,7 +47,7 @@ const PrRow = ({ pr }) => {
 };
 
 const PrTable = ({ query }) => {
-  const response = useGithubApi(
+  const { authed, error, loading, data } = useGithubApi(
     async (api) => {
       const { edges } = await searchForPr(api, {
         query,
@@ -39,11 +60,61 @@ const PrTable = ({ query }) => {
     {},
     [query]
   );
+  const [prRecords, setPrRecords] = useState({});
 
-  if (!response.authed || response.error) return null;
-  if (response.loading) return <aha-spinner></aha-spinner>;
+  useEffect(() => {
+    let mounted = true;
+    if (!data) return;
 
-  const rows = response.data.map((pr, idx) => <PrRow key={idx} pr={pr} />);
+    const refNums = [];
+    const prsByRefNum = {};
+
+    for (let pr of data) {
+      [pr.headRef?.name.toUpperCase(), pr.title]
+        .map(String)
+        .map((s) => refNumMatcher.exec(s))
+        .forEach((match) => {
+          if (match) {
+            refNums.push(match[0]);
+            prsByRefNum[match[0]] = pr;
+          }
+        });
+    }
+
+    if (refNums.length === 0) {
+      // No records to find
+      setPrRecords({});
+      return;
+    }
+
+    aha.models.Feature.select("id", "referenceNum", "name", "path")
+      .where({
+        id: refNums,
+      })
+      .all()
+      .then((features) => {
+        if (!mounted) return;
+
+        const prRecords = {};
+        for (let feature of features) {
+          const pr = prsByRefNum[feature.referenceNum];
+          if (!pr) continue;
+          prRecords[pr.number] = feature;
+        }
+        setPrRecords(prRecords);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [data]);
+
+  if (!authed || error) return null;
+  if (loading || !data) return <aha-spinner></aha-spinner>;
+
+  const rows = data.map((pr, idx) => (
+    <PrRow key={idx} pr={pr} feature={prRecords[pr.number]} />
+  ));
 
   return (
     <table className="record-table record-table--settings-page">

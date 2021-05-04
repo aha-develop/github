@@ -172,6 +172,27 @@ const Styles = () => {
           font-size: 18px;
           line-height: 21px;
         }
+
+        .record-table--feature-link {
+          font-size: 90%;
+          color: var(--aha-gray-700);
+          padding-left: 5px;
+        }
+
+        .record-table--feature-link .bottom-left {
+          margin-right: 3px;
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-left: 1px solid var(--aha-gray-700);
+          border-bottom: 1px solid var(--aha-gray-700);
+          position: relative;
+          top: 2px;
+        }
+
+        .record-table--feature-link a {
+          color: var(--aha-gray-700);
+        }
       `}
     </style>
   );
