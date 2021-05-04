@@ -6,6 +6,8 @@ import { PrReviewStatus } from "../PrReviewStatus";
 import PrState from "../PrState";
 import { Status } from "../Status";
 
+const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
+
 /**
  * @typedef RowProps
  * @prop {import('../../lib/github').PrForLink} pr
@@ -68,11 +70,15 @@ const PrTable = ({ query }) => {
     const prsByRefNum = {};
 
     for (let pr of data) {
-      const refNum = pr.title.split(" ")[0].toUpperCase();
-      if (!/[A-Z]+-[0-9]+/.test(refNum)) continue;
-
-      refNums.push(refNum);
-      prsByRefNum[refNum] = pr;
+      [pr.headRef?.name.toUpperCase(), pr.title]
+        .map(String)
+        .map((s) => refNumMatcher.exec(s))
+        .forEach((match) => {
+          if (match) {
+            refNums.push(match[0]);
+            prsByRefNum[match[0]] = pr;
+          }
+        });
     }
 
     if (refNums.length === 0) {
