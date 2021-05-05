@@ -2,7 +2,7 @@ import React from "react";
 import ExternalLink from "./ExternalLink";
 
 function Branches({ fields }) {
-  if (fields.branches.length === 0) return null;
+  if (!fields.branches || fields.branches.length === 0) return null;
 
   const branches = (fields.branches || []).map((branch, idx) => (
     <div key={idx}>
