@@ -22,6 +22,12 @@ aha.on({ event: 'aha-develop.github.pr.labeled' }, async ({ record, payload }) =
 });
 ```
 
+## Installing the extension
+
+**Note: In order to install an extension into your Aha! Develop account, you must be an account administrator.**
+
+Install the GitHub extension by clicking [here](https://secure.aha.io/settings/account/extensions/install?url=https%3A%2F%2Fsecure.aha.io%2Fextensions%2Faha-develop.github.gz).
+
 ## Working on the extension
 
 Install `aha-cli`:
