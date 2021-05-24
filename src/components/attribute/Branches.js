@@ -34,8 +34,8 @@ function Branch({ branch }) {
 export function Branches({ fields }) {
   if (!fields.branches || fields.branches.length === 0) return null;
 
-  const branches = (fields.branches || []).map((branch, idx) => (
-    <Branch branch={branch} key={idx} />
+  const branches = (fields.branches || []).map((branch) => (
+    <Branch branch={branch} key={branch.name} />
   ));
 
   return <div className="branches">{branches}</div>;
