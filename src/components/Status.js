@@ -2,7 +2,7 @@ import React from "react";
 import { getPrByUrl, prStatusCommit } from "../lib/github";
 import { useGithubApi } from "../lib/useGithubApi";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
-import ExternalLink from "./ExternalLink";
+import { ExternalLink } from "./ExternalLink";
 
 /**
  * @param {import("../lib/github").StatusState} status
@@ -46,7 +46,9 @@ const StatusCheck = ({ context }) => {
       )}
       <span>
         {context.targetUrl?.length > 0 ? (
-          <ExternalLink href={context.targetUrl}>{context.context}</ExternalLink>
+          <ExternalLink href={context.targetUrl}>
+            {context.context}
+          </ExternalLink>
         ) : (
           context.context
         )}
@@ -119,12 +121,16 @@ const Status = ({ prStatus }) => {
  * @type {React.FC<{pr:import("../lib/github").PrForLinkWithStatus}>}
  */
 const FetchStatus = ({ pr }) => {
-  const { data: fetchedPr, error, authed, loading, fetchData } = useGithubApi(
-    async (api) => {
-      if (pr.commits) return pr;
-      return await getPrByUrl(api, pr.url, { includeStatus: true });
-    }
-  );
+  const {
+    data: fetchedPr,
+    error,
+    authed,
+    loading,
+    fetchData,
+  } = useGithubApi(async (api) => {
+    if (pr.commits) return pr;
+    return await getPrByUrl(api, pr.url, { includeStatus: true });
+  });
 
   if (error) {
     return (

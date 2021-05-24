@@ -4,9 +4,7 @@ import { useCallback, useRef, useState } from "react";
 
 export function usePopperAlerter(options) {
   const delay = options.delay || 500;
-  const [referenceElement, setReferenceElement] = useState(
-    /** @type {null|HTMLElement} */ null
-  );
+  const [referenceElement, setReferenceElement] = useState(null);
   const popperElement = useRef(null);
   const { styles, attributes } = usePopper(
     referenceElement,
@@ -43,6 +41,7 @@ export function usePopperAlerter(options) {
   return {
     attributes,
     popperElement,
+    /** @type {React.Dispatch<React.SetStateAction<HTMLElement | null>>} */
     setReferenceElement,
     styles,
     toggle,

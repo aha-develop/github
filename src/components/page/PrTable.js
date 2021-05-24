@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { prStatusCommit, searchForPr } from "../../lib/github";
 import { useGithubApi } from "../../lib/useGithubApi";
-import ExternalLink from "../ExternalLink";
+import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
-import PrState from "../PrState";
+import { PrState } from "../PrState";
 import { Status } from "../Status";
 
 const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
@@ -18,6 +18,13 @@ const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
  * @type {React.FC<RowProps>}
  */
 const PrRow = ({ pr, feature }) => {
+  const showDrawer = (event) => {
+    if (feature) {
+      event.preventDefault();
+      aha.drawer.showRecord(feature);
+    }
+  };
+
   return (
     <tr>
       <td style={{ textOverflow: "ellipsis" }}>
@@ -27,7 +34,7 @@ const PrRow = ({ pr, feature }) => {
         {feature && (
           <div className="record-table--feature-link">
             <span className="bottom-left">&nbsp;</span>
-            <a href={feature.path}>
+            <a href={feature.path} onClick={showDrawer}>
               {feature.referenceNum} {feature.name}
             </a>
           </div>
