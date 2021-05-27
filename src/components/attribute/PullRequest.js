@@ -1,30 +1,34 @@
 import React, { useEffect } from "react";
-import { githubPrToPrLink, linkPullRequestToRecord } from "../lib/fields";
-import { getPrByUrl, prStatusCommit } from "../lib/github";
-import { useGithubApi } from "../lib/useGithubApi";
-import ExternalLink from "./ExternalLink";
-import { PrReviewStatus } from "./PrReviewStatus";
-import PrState from "./PrState";
-import { Status } from "./Status";
+import { githubPrToPrLink, linkPullRequestToRecord } from "../../lib/fields";
+import { getPrByUrl, prStatusCommit } from "../../lib/github";
+import { useGithubApi } from "../../lib/useGithubApi";
+import { ExternalLink } from "../ExternalLink";
+import { PrReviewStatus } from "../PrReviewStatus";
+import { PrState } from "../PrState";
+import { Status } from "../Status";
 
 /**
- * @type {React.FC<{record:Aha.RecordStub, pr:import("../lib/fields").PrLink}>}
+ * @type {React.FC<{record:import("../../lib/fields").LinkableRecord, pr:import("../../lib/fields").PrLink}>}
  */
-const PullRequest = ({ record, pr }) => {
+export const PullRequest = ({ record, pr }) => {
   const originalPr = pr;
 
   if (pr.title) {
     pr = { ...pr, ...githubPrToPrLink(pr) };
   }
 
-  const { authed, data: fetchedPr, loading, error, fetchData } = useGithubApi(
-    async (api) => {
-      return await getPrByUrl(api, pr.url, {
-        includeStatus: true,
-        includeReviews: true,
-      });
-    }
-  );
+  const {
+    authed,
+    data: fetchedPr,
+    loading,
+    error,
+    fetchData,
+  } = useGithubApi(async (api) => {
+    return await getPrByUrl(api, pr.url, {
+      includeStatus: true,
+      includeReviews: true,
+    });
+  });
 
   // If the reloaded PR has changed state then update the extension fields
   useEffect(() => {
@@ -69,22 +73,3 @@ const PullRequest = ({ record, pr }) => {
     </aha-flex>
   );
 };
-
-/**
- * @type {React.FC<{record: Aha.RecordStub, prs:import("../lib/fields").PrLink[]}>}
- */
-const PullRequests = ({ record, prs }) => {
-  const pullRequests = (prs || []).map((pr, idx) => (
-    <PullRequest key={idx} record={record} pr={pr} />
-  ));
-
-  return (
-    <div className="pull-requests">
-      <aha-flex direction="column" gap="3px">
-        {pullRequests}
-      </aha-flex>
-    </div>
-  );
-};
-
-export default PullRequests;

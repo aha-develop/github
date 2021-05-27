@@ -12,7 +12,7 @@ const icon = (state) => {
   }
 };
 
-const PrState = ({ pr }) => {
+export const PrState = ({ pr }) => {
   return (
     <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
       <aha-flex gap="4px">
@@ -24,5 +24,3 @@ const PrState = ({ pr }) => {
     </span>
   );
 };
-
-export default PrState;

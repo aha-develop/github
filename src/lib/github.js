@@ -172,6 +172,7 @@ const SearchForPr = gql`
  */
 export async function searchForPr(api, options) {
   const variables = { count: 20, searchQuery: options.query, ...options };
+  // @ts-ignore
   delete variables["query"];
   const { search } = await api(SearchForPr, variables);
   return search;

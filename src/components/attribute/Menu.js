@@ -12,7 +12,7 @@ async function removeLinks(record) {
   await aha.command("aha-develop.github.removeLinks", { record });
 }
 
-function Menu({ record }) {
+export function Menu({ record }) {
   return (
     <aha-menu>
       <aha-button slot="button" type="attribute" size="small">
@@ -26,7 +26,5 @@ function Menu({ record }) {
         Unlink pull requests
       </aha-menu-item>
     </aha-menu>
-  )
+  );
 }
-
-export default Menu;

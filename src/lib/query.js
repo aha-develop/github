@@ -1,5 +1,10 @@
 /**
- * @param {string[] | [...string[], string | {quote: boolean}]} values
+ * @typedef Options
+ * @prop {boolean} quote
+ */
+
+/**
+ * @param {string[] | [...string[], string | Options]} values
  * @returns {string[]}
  */
 function quotedValues(values) {
@@ -89,4 +94,14 @@ class GithubQuery {
   }
 }
 
-export default GithubQuery;
+/**
+ * @typedef {{[index: string]: (...args:[...string[], string | Options]) => DynamicGithubQuery} & GithubQuery} DynamicGithubQuery
+ */
+
+/**
+ * @type {{new (): DynamicGithubQuery}}
+ */
+// @ts-ignore
+const DynamicGithubQuery = GithubQuery;
+
+export default DynamicGithubQuery;
