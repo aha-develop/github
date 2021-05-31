@@ -206,6 +206,9 @@ async function referenceToRecord(str) {
   if (!ahaReference) {
     return null;
   }
+  console.log(
+    `Searching for ${ahaReference.type} ref ${ahaReference.referenceNum}`
+  );
 
   const RecordClass = aha.models[ahaReference.type];
   if (!RecordClass) {
