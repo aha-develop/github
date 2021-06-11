@@ -30,13 +30,13 @@ aha.on({ event: 'aha-develop.github.pr.labeled' }, async ({ record, payload }) =
 
 2. Configure a webhook in GitHub. The extension will automatically link Aha! records to branches and pull requests in GitHub if you include the Aha! reference number (like `APP-123`) in the name of the branch or pull request. To enable this:
 
-a) In Aha! go to Settings -> Account -> Extensions -> GitHub Integration -> Webhook from Github. Copy the hidden URL.
+   - In Aha! go to Settings -> Account -> Extensions -> GitHub Integration -> Webhook from Github. Copy the hidden URL.
 
-b) In GitHub go to each repo that you want to integrate with Aha!. In Settings -> Webhook create a new webhook. The payload URL is the URL you copied from the extension. The content type should be `application/json`. Select the following individual events: Branch or tag creation, Check runs, Pull requests, Pull request reviews, Pushes, Statuses. Enable the webhook.
+   - In GitHub go to each repo that you want to integrate with Aha!. In Settings -> Webhook create a new webhook. The payload URL is the URL you copied from the extension. The content type should be `application/json`. Select the following individual events: Branch or tag creation, Check runs, Pull requests, Pull request reviews, Pushes, Statuses. Enable the webhook.
 
-Instead of doing this at the repo level, it is also possible to create an organization-wide webhook that wil work for all repos.
+    - Instead of doing this at the repo level, it is also possible to create an organization-wide webhook that wil work for all repos.
 
-3. Configure the extension with your repos. 
+  3. Configure the extension with your repos. In Aha! go to Settings -> Account -> Extensions -> GitHub Integration. In the Related repositories section add each repo that should be considered when looking for PRs that match a feature ID.
 
 ## Working on the extension
 
