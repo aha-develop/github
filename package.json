@@ -34,7 +34,7 @@
         "links": {
           "title": "GitHub",
           "host": "attribute",
-          "entryPoint": "src/links.js",
+          "entryPoint": "src/attributes/links.js",
           "recordTypes": [
             "Feature",
             "Epic",
@@ -44,7 +44,7 @@
         "prs": {
           "title": "My Pull Requests",
           "host": "page",
-          "entryPoint": "src/prs.js",
+          "entryPoint": "src/pages/prs.js",
           "location": {
             "menu": "Work"
           }
@@ -71,7 +71,7 @@
       "endpoints": {
         "webhook": {
           "title": "Webhook from Github",
-          "entryPoint": "src/webhook.js",
+          "entryPoint": "src/webhooks/webhook.js",
           "public": true
         }
       }

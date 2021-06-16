@@ -1,10 +1,9 @@
 import { AuthProvider, useAuth } from "@aha-app/aha-develop-react";
 import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import Branches from "./components/Branches";
-import Menu from "./components/Menu";
-import PullRequests from "./components/PullRequest";
-import Styles from "./components/Styles";
+import Branches from "../components/Branches";
+import Menu from "../components/Menu";
+import PullRequests from "../components/PullRequest";
+import Styles from "../components/Styles";
 
 function App({ fields, record }) {
   const { error, authed } = useAuth(async () => {});

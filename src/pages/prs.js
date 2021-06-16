@@ -1,10 +1,10 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React, { useMemo } from "react";
-import BranchTable from "./components/page/BranchTable";
-import PrTable from "./components/page/PrTable";
-import Styles from "./components/Styles";
-import GithubQuery from "./lib/query";
-import { useGithubApi } from "./lib/useGithubApi";
+import BranchTable from "../components/page/BranchTable";
+import PrTable from "../components/page/PrTable";
+import Styles from "../components/Styles";
+import GithubQuery from "../lib/query";
+import { useGithubApi } from "../lib/useGithubApi";
 
 const Page = ({ repos }) => {
   const { authed, error, fetchData } = useGithubApi(async () => {});

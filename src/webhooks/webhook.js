@@ -1,4 +1,4 @@
-import { linkPullRequest, linkBranch } from "./lib/fields.js";
+import { linkBranch, linkPullRequest } from "../lib/fields.js";
 
 aha.on("webhook", async ({ headers, payload }) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
