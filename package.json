@@ -48,6 +48,11 @@
           "location": {
             "menu": "Work"
           }
+        },
+        "prPanel": {
+          "title": "GitHub pull requests",
+          "entryPoint": "src/panels/PrPanel.tsx",
+          "host": "panel"
         }
       },
       "commands": {
@@ -78,7 +83,6 @@
     }
   },
   "devDependencies": {
-    "@aha-app/aha-cli": "^1.9.2",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3"
   }

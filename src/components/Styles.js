@@ -1,7 +1,7 @@
 import React from "react";
 import css from "../lib/css";
 
-const Styles = () => {
+export const Styles = () => {
   return (
     <style>
       {css`
@@ -197,5 +197,3 @@ const Styles = () => {
     </style>
   );
 };
-
-export default Styles;

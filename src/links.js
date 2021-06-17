@@ -1,7 +1,7 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React from "react";
-import Styles from "./components/Styles";
 import { Attribute } from "./components/attribute/Attribute";
+import { Styles } from "./components/Styles";
 
 /**
  * @type {Aha.RenderExtension}

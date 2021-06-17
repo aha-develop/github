@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import BranchTable from "./BranchTable";
-import PrTable from "./PrTable";
 import GithubQuery from "../../lib/query";
 import { useGithubApi } from "../../lib/useGithubApi";
+import BranchTable from "./BranchTable";
+import { PrTableWithQuery } from "./PrTable";
 
 export const Page = ({ repos }) => {
   const { authed, error, fetchData } = useGithubApi(async () => {});
@@ -22,14 +22,14 @@ export const Page = ({ repos }) => {
 
           <div className="subsection">
             <h3>Open</h3>
-            <PrTable
+            <PrTableWithQuery
               query={baseQuery.is("pr").author("@me").state("open").toQuery()}
             />
           </div>
 
           <div className="subsection">
             <h3>Closed</h3>
-            <PrTable
+            <PrTableWithQuery
               query={baseQuery.is("pr").author("@me").state("closed").toQuery()}
             />
           </div>
