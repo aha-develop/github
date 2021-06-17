@@ -34,7 +34,7 @@
         "links": {
           "title": "GitHub",
           "host": "attribute",
-          "entryPoint": "src/links.js",
+          "entryPoint": "src/views/attribute.js",
           "recordTypes": [
             "Feature",
             "Epic",
@@ -44,14 +44,14 @@
         "prs": {
           "title": "My Pull Requests",
           "host": "page",
-          "entryPoint": "src/prs.js",
+          "entryPoint": "src/views/prsPage.js",
           "location": {
             "menu": "Work"
           }
         },
         "prPanel": {
           "title": "GitHub pull requests",
-          "entryPoint": "src/panels/PrPanel.tsx",
+          "entryPoint": "src/views/prPanel.tsx",
           "host": "panel"
         }
       },
@@ -76,7 +76,7 @@
       "endpoints": {
         "webhook": {
           "title": "Webhook from Github",
-          "entryPoint": "src/webhook.js",
+          "entryPoint": "src/webhooks/webhook.js",
           "public": true
         }
       }

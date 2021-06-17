@@ -1,17 +1,10 @@
 import React from "react";
 import { PrTable } from "../components/page/PrTable";
-import { IDENTIFIER } from "../extension";
 import { searchForPr } from "../lib/github";
 import GithubQuery from "../lib/query";
 import { useGithubApi } from "../lib/useGithubApi";
-import { AuthProvider } from "@aha-app/aha-develop-react";
-import { Styles } from "../components/Styles";
 
-const panel = aha.getPanel(IDENTIFIER, "prPanel", {
-  name: "GitHub pull requests",
-});
-
-const PrPanel: React.FC<{
+export const PrPanel: React.FC<{
   filter: string;
   repos: string[];
 }> = ({ filter, repos }) => {
@@ -75,27 +68,3 @@ const PrPanel: React.FC<{
 
   return <PrTable prs={data} />;
 };
-
-panel.on("render", ({ props: { panel } }, { settings }) => {
-  const filter = panel?.settings?.github_filter as string;
-  const repos = (settings.repos || []) as string[];
-
-  return (
-    <>
-      <Styles />
-      <AuthProvider serviceName="github" serviceParameters={{}}>
-        <PrPanel repos={repos} filter={filter} />
-      </AuthProvider>
-    </>
-  );
-});
-
-panel.on({ action: "settings" }, () => {
-  return [
-    {
-      type: "Text",
-      key: "github_filter",
-      title: "GitHub search query",
-    },
-  ];
-});
