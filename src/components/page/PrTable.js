@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { prStatusCommit, searchForPr } from "../../lib/github";
+import { loadRelatedFeatures } from "../../lib/loadRelatedFeatures";
 import { useGithubApi } from "../../lib/useGithubApi";
 import ExternalLink from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import PrState from "../PrState";
 import { Status } from "../Status";
 
-const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
+/**
+ * @typedef QueryTableProps
+ * @prop {string} query
+ */
+
+/**
+ * @typedef TableProps
+ * @prop {import('../../lib/github').PrForLink[]} prs
+ */
 
 /**
  * @typedef RowProps
@@ -46,7 +55,10 @@ const PrRow = ({ pr, feature }) => {
   );
 };
 
-const PrTable = ({ query }) => {
+/**
+ * @type {React.FC<QueryTableProps>}
+ */
+export const PrTableWithQuery = ({ query }) => {
   const { authed, error, loading, data } = useGithubApi(
     async (api) => {
       const { edges } = await searchForPr(api, {
@@ -60,59 +72,34 @@ const PrTable = ({ query }) => {
     {},
     [query]
   );
-  const [prRecords, setPrRecords] = useState({});
-
-  useEffect(() => {
-    let mounted = true;
-    if (!data) return;
-
-    const refNums = [];
-    const prsByRefNum = {};
-
-    for (let pr of data) {
-      [pr.headRef?.name.toUpperCase(), pr.title]
-        .map(String)
-        .map((s) => refNumMatcher.exec(s))
-        .forEach((match) => {
-          if (match) {
-            refNums.push(match[0]);
-            prsByRefNum[match[0]] = pr;
-          }
-        });
-    }
-
-    if (refNums.length === 0) {
-      // No records to find
-      setPrRecords({});
-      return;
-    }
-
-    aha.models.Feature.select("id", "referenceNum", "name", "path")
-      .where({
-        id: refNums,
-      })
-      .all()
-      .then((features) => {
-        if (!mounted) return;
-
-        const prRecords = {};
-        for (let feature of features) {
-          const pr = prsByRefNum[feature.referenceNum];
-          if (!pr) continue;
-          prRecords[pr.number] = feature;
-        }
-        setPrRecords(prRecords);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [data]);
 
   if (!authed || error) return null;
   if (loading || !data) return <aha-spinner></aha-spinner>;
 
-  const rows = data.map((pr, idx) => (
+  return <PrTable prs={data} />;
+};
+
+/**
+ * @type {React.FC<TableProps>}
+ */
+export const PrTable = ({ prs }) => {
+  const [prRecords, setPrRecords] = useState({});
+
+  useEffect(() => {
+    let mounted = true;
+    if (!prs) return;
+
+    loadRelatedFeatures(prs).then((prRecords) => {
+      if (!mounted) return;
+      setPrRecords(prRecords);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [prs]);
+
+  const rows = prs.map((pr, idx) => (
     <PrRow key={idx} pr={pr} feature={prRecords[pr.number]} />
   ));
 
@@ -130,5 +117,3 @@ const PrTable = ({ query }) => {
     </table>
   );
 };
-
-export default PrTable;

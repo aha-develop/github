@@ -3,7 +3,7 @@ import React from "react";
 import Branches from "../components/Branches";
 import Menu from "../components/Menu";
 import PullRequests from "../components/PullRequest";
-import Styles from "../components/Styles";
+import { Styles } from "../components/Styles";
 
 function App({ fields, record }) {
   const { error, authed } = useAuth(async () => {});

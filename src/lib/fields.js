@@ -1,4 +1,5 @@
-const IDENTIFIER = "aha-develop.github";
+import { IDENTIFIER } from "../extension";
+
 const PULL_REQUESTS_FIELD = "pullRequests";
 const BRANCHES_FIELD = "branches";
 
@@ -21,13 +22,13 @@ const BRANCHES_FIELD = "branches";
  * Append a field/value pair to the given record. Returns an actual record
  * instance if one existed.
  *
- * @param {Aha.ApplicationModel} record
+ * @param {Aha.ApplicationModel & Aha.HasExtensionFields} record
  * @param {string} fieldName
  * @param {*} newValue
  */
 async function appendField(record, fieldName, newValue) {
   // Link to Aha! record.
-  console.log(`Link to ${record.typename}:${record.referenceNum || record.id}`);
+  console.log(`Link to ${record.typename}:${record.referenceNum || record.uniqueId}`);
 
   await replaceField(record, fieldName, (value) => {
     /** @type {{id:any}[]} */
@@ -46,7 +47,7 @@ async function appendField(record, fieldName, newValue) {
 
 /**
  * @template T
- * @param {Aha.ApplicationModel} record
+ * @param {Aha.HasExtensionFields} record
  * @param {string} fieldName
  * @param {((value: T|null) => T | Promise<T>)} replacer
  */
@@ -79,7 +80,7 @@ function githubPrToPrLink(pr) {
 
 /**
  * @param {import("./github").PrForLink} pr
- * @param {Aha.RecordStub} record
+ * @param {Aha.HasExtensionFields & Aha.ReferenceInterface} record
  */
 async function linkPullRequestToRecord(pr, record) {
   await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
@@ -105,7 +106,7 @@ async function linkPullRequest(pr) {
 }
 
 /**
- * @param {Aha.RecordStub} record
+ * @param {Aha.HasExtensionFields & Aha.ReferenceInterface} record
  * @param {*} number
  */
 async function unlinkPullRequest(record, number) {
@@ -129,7 +130,7 @@ async function unlinkPullRequest(record, number) {
 }
 
 /**
- * @param {Aha.RecordStub} record
+ * @param {Aha.HasExtensionFields & Aha.ReferenceInterface} record
  */
 async function unlinkPullRequests(record) {
   /** @type {PrLink[]} */
@@ -137,12 +138,14 @@ async function unlinkPullRequests(record) {
     (await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD)) || [];
   const ids = prs.map((pr) => accountPrId(pr.id, record.referenceNum));
 
-  await replaceField(aha.account, PULL_REQUESTS_FIELD, (
-    /** @type {AccountPr[]} */ accountPrs
-  ) => {
-    if (!accountPrs) return [];
-    return accountPrs.filter((accountPr) => !ids.includes(accountPr.id));
-  });
+  await replaceField(
+    aha.account,
+    PULL_REQUESTS_FIELD,
+    (/** @type {AccountPr[]} */ accountPrs) => {
+      if (!accountPrs) return [];
+      return accountPrs.filter((accountPr) => !ids.includes(accountPr.id));
+    }
+  );
 
   await record.setExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD, []);
 }
@@ -171,7 +174,7 @@ async function linkBranch(branchName, repoUrl) {
 }
 
 /**
- * @param {Aha.RecordStub} record
+ * @param {Aha.HasExtensionFields} record
  */
 async function unlinkBranches(record) {
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
@@ -179,7 +182,7 @@ async function unlinkBranches(record) {
 
 /**
  * @param {string} str
- * @returns {Promise<Aha.RecordStub|null>}
+ * @returns {Promise<(Aha.HasExtensionFields & Aha.ReferenceInterface)|null>}
  */
 async function referenceToRecord(str) {
   const ahaReference = extractReference(str);
