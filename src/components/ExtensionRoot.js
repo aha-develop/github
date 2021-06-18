@@ -1,16 +1,17 @@
 import { AuthProvider } from "@aha-app/aha-develop-react";
 import React from "react";
-import Styles from "./components/Styles";
-import { Page } from "./components/page/Page";
+import { Styles } from "./Styles";
 
-aha.on("prs", (_, { settings }) => {
-  const repos = settings.repos || [];
+/**
+ * Set up the styles and auth provider
+ */
+export const ExtensionRoot = ({ children }) => {
   return (
     <>
       <Styles />
       <AuthProvider serviceName="github" serviceParameters={{ scope: "repo" }}>
-        <Page repos={repos} />
+        {children}
       </AuthProvider>
     </>
   );
-});
+};

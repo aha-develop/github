@@ -34,7 +34,7 @@
         "links": {
           "title": "GitHub",
           "host": "attribute",
-          "entryPoint": "src/links.js",
+          "entryPoint": "src/views/attribute.js",
           "recordTypes": [
             "Feature",
             "Epic",
@@ -44,10 +44,15 @@
         "prs": {
           "title": "My Pull Requests",
           "host": "page",
-          "entryPoint": "src/prs.js",
+          "entryPoint": "src/views/prsPage.js",
           "location": {
             "menu": "Work"
           }
+        },
+        "prPanel": {
+          "title": "GitHub pull requests",
+          "entryPoint": "src/views/prPanel.tsx",
+          "host": "panel"
         }
       },
       "commands": {
@@ -71,14 +76,13 @@
       "endpoints": {
         "webhook": {
           "title": "Webhook from Github",
-          "entryPoint": "src/webhook.js",
+          "entryPoint": "src/webhooks/webhook.js",
           "public": true
         }
       }
     }
   },
   "devDependencies": {
-    "@aha-app/aha-cli": "^1.9.2",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3"
   }
