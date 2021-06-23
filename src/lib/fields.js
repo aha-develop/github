@@ -1,4 +1,5 @@
-const IDENTIFIER = "aha-develop.github";
+import { IDENTIFIER } from "../extension";
+
 const PULL_REQUESTS_FIELD = "pullRequests";
 const BRANCHES_FIELD = "branches";
 
@@ -200,7 +201,7 @@ async function unlinkBranches(record) {
 
 /**
  * @param {string} str
- * @returns {Promise<Aha.ReferenceInterface & Aha.HasExtensionFields|null>}
+ * @returns {Promise<(Aha.HasExtensionFields & Aha.ReferenceInterface)|null>}
  */
 export async function referenceToRecord(str) {
   const ahaReference = extractReference(str);

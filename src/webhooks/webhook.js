@@ -2,7 +2,7 @@ import {
   linkPullRequest,
   linkBranch,
   referenceToRecord,
-} from "./lib/fields.js";
+} from "../lib/fields.js";
 
 aha.on("webhook", async ({ headers, payload }) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
