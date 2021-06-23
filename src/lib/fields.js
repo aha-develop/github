@@ -187,7 +187,8 @@ async function linkBranchToRecord(branchName, repoUrl, record) {
 async function linkBranch(branchName, repoUrl) {
   const record = await referenceToRecord(branchName);
   if (record) {
-    return await linkBranchToRecord(branchName, repoUrl, record);
+    await linkBranchToRecord(branchName, repoUrl, record);
+    return record;
   }
 }
 
@@ -202,7 +203,7 @@ async function unlinkBranches(record) {
  * @param {string} str
  * @returns {Promise<(Aha.HasExtensionFields & Aha.ReferenceInterface)|null>}
  */
-async function referenceToRecord(str) {
+export async function referenceToRecord(str) {
   const ahaReference = extractReference(str);
   if (!ahaReference) {
     return null;
