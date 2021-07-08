@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import GithubQuery from "../../lib/query";
 import { useGithubApi } from "../../lib/useGithubApi";
 import BranchTable from "./BranchTable";
-import { PrTableWithQuery } from "./PrTable";
+import { PrTableWithQuery } from "../PrTable";
 
 export const PrPage = ({ repos }) => {
   const { authed, error, fetchData } = useGithubApi(async () => {});
