@@ -1,5 +1,5 @@
 import React from "react";
-import { PrTable } from "../components/page/PrTable";
+import { PrTable } from "./PrTable";
 import { searchForPr } from "../lib/github";
 import GithubQuery from "../lib/query";
 import { useGithubApi } from "../lib/useGithubApi";
@@ -7,7 +7,8 @@ import { useGithubApi } from "../lib/useGithubApi";
 export const PrPanel: React.FC<{
   filter: string;
   repos: string[];
-}> = ({ filter, repos }) => {
+  columns: import("./PrTable/PrTable").TableCols;
+}> = ({ filter, repos, columns }) => {
   const query = [
     new GithubQuery()
       .repo(...repos, { quote: true })
@@ -66,5 +67,5 @@ export const PrPanel: React.FC<{
     );
   }
 
-  return <PrTable prs={data} />;
+  return <PrTable prs={data} columns={columns} />;
 };

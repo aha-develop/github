@@ -34,7 +34,7 @@ export function withGitHubApi(callback) {
 /**
  * @param {string} url
  */
-const repoFromUrl = (url) => new URL(url).pathname.split("/").slice(1, 3);
+export const repoFromUrl = (url) => new URL(url).pathname.split("/").slice(1, 3);
 /**
  * @param {string} url
  */
