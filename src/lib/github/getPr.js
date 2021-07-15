@@ -13,7 +13,7 @@ import { repoFromUrl } from "./repoFromUrl";
  * @param {string} name
  * @param {number} number
  * @param {GetPrOptions=} options
- * @returns
+ * @returns {Promise<Github.Pr>}
  */
 export async function getPr(api, owner, name, number, options = {}) {
   const {
@@ -31,7 +31,6 @@ const prNumberFromUrl = (url) => Number(new URL(url).pathname.split("/")[4]);
  * @param {import('./api').GithubApi} api
  * @param {string} url
  * @param {GetPrOptions=} options
- * @returns {Promise<import('./queries').PrForLink>}
  */
 export async function getPrByUrl(api, url, options = {}) {
   const [owner, name] = repoFromUrl(url);

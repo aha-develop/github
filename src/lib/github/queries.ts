@@ -1,38 +1,5 @@
 import gql from "gql-tag";
 
-/**
- * @typedef PrForLink
- * @prop {number} id
- * @prop {number} number
- * @prop {string} title
- * @prop {string} url
- * @prop {string} status
- * @prop {boolean} merged
- * @prop {{url: string}} repository
- * @prop {{name: string}|null} headRef
- */
-
-/** @typedef {'CHANGES_REQUESTED' | 'APPROVED' | 'REVIEW_REQUIRED'} PullRequestReviewDecision */
-/** @typedef {{commits: {nodes: {commit: CommitStatus}[]}}} PrWithStatus */
-/** @typedef {{reviewDecision: PullRequestReviewDecision, latestReviews: {nodes: {state: PullRequestReviewDecision}[]}}} PrForReviewDecision */
-/** @typedef {PrForLink & PrWithStatus} PrForLinkWithStatus */
-
-/** @typedef {'EXPECTED'|'ERROR'|'FAILURE'|'SUCCESS'|'PENDING'} StatusState */
-
-/**
- * @typedef Context
- * @prop {string} context
- * @prop {string} description
- * @prop {string} targetUrl
- * @prop {StatusState} state
- */
-
-/**
- * @typedef CommitStatus
- * @prop {{state: StatusState} | null} statusCheckRollup
- * @prop {{contexts: Context[]} | null} status
- */
-
 export const PrForLinkFragment = gql`
   fragment PrForLink on PullRequest {
     id
@@ -84,22 +51,42 @@ export const PrStatusFragment = gql`
   }
 `;
 
+export const PrLabelsFragment = gql`
+  fragment PrLabels on PullRequest {
+    labels(first: 5) {
+      nodes {
+        color
+        name
+      }
+    }
+  }
+`;
+
+const PrIncludeParams = `
+    $includeStatus: Boolean = false
+    $includeReviews: Boolean = false
+    $includeLabels: Boolean = false
+`;
+
+const PrIncludes = `
+  ...PrForLink
+  ...PrStatus @include(if: $includeStatus)
+  ...PrForReviewDecision @include(if: $includeReviews)
+  ...PrLabels @include(if: $includeLabels)
+`;
 
 export const SearchForPr = gql`
   query searchForPr(
     $searchQuery: String!
     $count: Int!
-    $includeStatus: Boolean = false
-    $includeReviews: Boolean = false
+    ${PrIncludeParams}
   ) {
     search(query: $searchQuery, type: ISSUE, first: $count) {
       edges {
         node {
           __typename
           ... on PullRequest {
-            ...PrForLink
-            ...PrStatus @include(if: $includeStatus)
-            ...PrForReviewDecision @include(if: $includeReviews)
+            ${PrIncludes}
           }
         }
       }
@@ -109,6 +96,7 @@ export const SearchForPr = gql`
   ${PrForLinkFragment}
   ${PrStatusFragment}
   ${PrForReviewDecisionFragment}
+  ${PrLabelsFragment}
 `;
 
 export const GetPr = gql`
@@ -116,15 +104,12 @@ export const GetPr = gql`
     $name: String!
     $owner: String!
     $number: Int!
-    $includeStatus: Boolean = false
-    $includeReviews: Boolean = false
+    ${PrIncludeParams}
   ) {
     repository(name: $name, owner: $owner) {
       pullRequest(number: $number) {
         __typename
-        ...PrForLink
-        ...PrStatus @include(if: $includeStatus)
-        ...PrForReviewDecision @include(if: $includeReviews)
+        ${PrIncludes}
       }
     }
   }
@@ -155,3 +140,17 @@ export const RepoFragment = gql`
     }
   }
 `;
+
+export function isPrForReviewDecision(
+  pr: Github.Pr
+): pr is Github.PrForReviewDecision {
+  return Boolean(pr.latestReviews?.nodes);
+}
+
+export function isPrWithStatus(pr: Github.Pr): pr is Github.PrWithStatus {
+  return Object.keys(pr).includes("commits");
+}
+
+export function isPrWithLabels(pr: Github.Pr): pr is Github.PrWithLabels {
+  return Boolean(pr.labels?.nodes);
+}

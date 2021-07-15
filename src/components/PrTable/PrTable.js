@@ -13,7 +13,7 @@ import { PrRow } from "./PrRow";
 
 /**
  * @typedef TableProps
- * @prop {import('../../lib/github/queries').PrForLink[]} prs
+ * @prop {Github.PrForLink[]} prs
  * @prop {TableCols=} columns
  */
 

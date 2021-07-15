@@ -1,15 +1,14 @@
 import React from "react";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 
-/** @typedef {import('../lib/github/queries').PrForLink & import('../lib/github/queries').PrForReviewDecision} Pr */
 /**
  * @typedef Props
- * @prop {Pr} pr
+ * @prop {Github.PrForReviewDecision} pr
  */
 
 /**
  *
- * @param {import('../lib/github/queries').PullRequestReviewDecision} reviewStatus
+ * @param {Github.PullRequestReviewDecision} reviewStatus
  */
 function icon(reviewStatus) {
   switch (reviewStatus) {
