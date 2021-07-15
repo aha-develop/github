@@ -1,5 +1,6 @@
 import { linkPullRequestToRecord } from "../lib/fields";
-import { getPrByUrl, withGitHubApi } from "../lib/github";
+import { withGitHubApi } from "../lib/github/api";
+import { getPrByUrl } from "../lib/github/getPr";
 
 const validPrUrl = urlString => {
   const url = new URL(urlString);

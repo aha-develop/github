@@ -1,5 +1,6 @@
 import React from "react";
-import { prStatusCommit, repoFromUrl } from "../../lib/github";
+import { prStatusCommit } from "../../lib/github/prStatusCommit";
+import { repoFromUrl } from "../../lib/github/repoFromUrl";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
@@ -7,7 +8,7 @@ import { Status } from "../Status";
 
 /**
  * @typedef RowProps
- * @prop {import('../../lib/github').PrForLink} pr
+ * @prop {import('../../lib/github/queries').PrForLink} pr
  * @prop {Aha.Feature=} feature
  * @prop {import('./PrTable').TableCols} columns
  */

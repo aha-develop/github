@@ -1,11 +1,12 @@
 import React from "react";
-import { getPrByUrl, prStatusCommit } from "../lib/github";
+import { getPrByUrl } from "../lib/github/getPr";
+import { prStatusCommit } from "../lib/github/prStatusCommit";
 import { useGithubApi } from "../lib/useGithubApi";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
 
 /**
- * @param {import("../lib/github").StatusState} status
+ * @param {import("../lib/github/queries").StatusState} status
  */
 const statusIcon = (status) => {
   switch (status) {
@@ -23,7 +24,7 @@ const statusIcon = (status) => {
 };
 
 /**
- * @type {React.FC<{status: import("../lib/github").StatusState}>}
+ * @type {React.FC<{status: import("../lib/github/queries").StatusState}>}
  */
 const StatusIcon = ({ status }) => {
   return (
@@ -58,7 +59,7 @@ const StatusCheck = ({ context }) => {
 };
 
 /**
- * @type {React.FC<{prStatus: import("../lib/github").CommitStatus}>}
+ * @type {React.FC<{prStatus: import("../lib/github/queries").CommitStatus}>}
  */
 const Status = ({ prStatus }) => {
   const {

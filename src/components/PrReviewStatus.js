@@ -1,7 +1,7 @@
 import React from "react";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 
-/** @typedef {import('../lib/github').PrForLink & import('../lib/github').PrForReviewDecision} Pr */
+/** @typedef {import('../lib/github/queries').PrForLink & import('../lib/github/queries').PrForReviewDecision} Pr */
 /**
  * @typedef Props
  * @prop {Pr} pr
@@ -9,7 +9,7 @@ import { usePopperAlerter } from "../lib/usePopperAlerter";
 
 /**
  *
- * @param {import('../lib/github').PullRequestReviewDecision} reviewStatus
+ * @param {import('../lib/github/queries').PullRequestReviewDecision} reviewStatus
  */
 function icon(reviewStatus) {
   switch (reviewStatus) {

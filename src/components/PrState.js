@@ -1,4 +1,5 @@
 import React from "react";
+// @ts-ignore
 import { titleize } from "https://cdn.skypack.dev/inflected";
 
 const icon = (state) => {
