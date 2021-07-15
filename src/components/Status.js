@@ -130,7 +130,7 @@ const FetchStatus = ({ pr }) => {
     loading,
     fetchData,
   } = useGithubApi(async (api) => {
-    if(isPrWithStatus(pr)) return pr;
+    if (isPrWithStatus(pr)) return pr;
     return await getPrByUrl(api, pr.url, { includeStatus: true });
   });
 

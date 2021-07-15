@@ -23,7 +23,7 @@ export const PrPanel: React.FC<{
     async (api) => {
       const { edges } = await searchForPr(api, {
         query,
-        includeStatus: columns.status,
+        includeStatus: columns.checks,
         includeReviews: columns.reviews,
         includeLabels: columns.labels,
         count: 10,
