@@ -69,7 +69,7 @@ class GithubQuery {
     });
   }
 
-  /** @param {string[]} terms */
+  /** @param {[...string[], string | Options]} terms */
   term(...terms) {
     return new GithubQuery(
       this._attrs,

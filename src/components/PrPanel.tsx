@@ -1,7 +1,7 @@
 import React from "react";
 import { PrTable } from "./PrTable";
-import { searchForPr } from "../lib/github";
-import GithubQuery from "../lib/query";
+import { searchForPr } from "../lib/github/searchForPr";
+import GithubSearchQuery from "../lib/github/GithubSearchQuery";
 import { useGithubApi } from "../lib/useGithubApi";
 
 export const PrPanel: React.FC<{
@@ -10,7 +10,7 @@ export const PrPanel: React.FC<{
   columns: import("./PrTable/PrTable").TableCols;
 }> = ({ filter, repos, columns }) => {
   const query = [
-    new GithubQuery()
+    new GithubSearchQuery()
       .repo(...repos, { quote: true })
       .is("pr")
       .toQuery(),
@@ -23,14 +23,15 @@ export const PrPanel: React.FC<{
     async (api) => {
       const { edges } = await searchForPr(api, {
         query,
-        includeStatus: true,
-        includeReviews: true,
+        includeStatus: columns.status,
+        includeReviews: columns.reviews,
+        includeLabels: columns.labels,
         count: 10,
       });
       return edges.map((e) => e.node);
     },
     {},
-    [query]
+    [query, columns]
   );
 
   if (!authed || error) {

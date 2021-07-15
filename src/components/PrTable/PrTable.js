@@ -9,11 +9,12 @@ import { PrRow } from "./PrRow";
  * @prop {boolean} status
  * @prop {boolean} checks
  * @prop {boolean} reviews
+ * @prop {boolean} labels
  */
 
 /**
  * @typedef TableProps
- * @prop {import('../../lib/github').PrForLink[]} prs
+ * @prop {Github.PrForLink[]} prs
  * @prop {TableCols=} columns
  */
 
@@ -24,6 +25,7 @@ const defaultColumns = {
   status: true,
   checks: true,
   reviews: true,
+  labels: false,
 };
 
 /**
@@ -66,6 +68,7 @@ export const PrTable = ({ prs, columns }) => {
           {shownColumns.status && <th style={{ minWidth: "100px" }}>Status</th>}
           {shownColumns.checks && <th>Checks</th>}
           {shownColumns.reviews && <th>Reviews</th>}
+          {shownColumns.labels && <th>Labels</th>}
         </tr>
       </thead>
       <tbody>{rows}</tbody>

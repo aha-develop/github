@@ -1,6 +1,7 @@
 import { useAuth } from "@aha-app/aha-develop-react";
+// @ts-ignore
 import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
-import { GithubApi } from "./github";
+import { GithubApi } from "./github/api";
 
 interface UseGithubOptions<R> {
   /**

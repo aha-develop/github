@@ -1,5 +1,5 @@
 import React from "react";
-import { searchForPr } from "../../lib/github";
+import { searchForPr } from "../../lib/github/searchForPr";
 import { useGithubApi } from "../../lib/useGithubApi";
 import { PrTable } from "./PrTable";
 

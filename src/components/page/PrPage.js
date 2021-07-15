@@ -1,14 +1,14 @@
 import React, { useMemo } from "react";
-import GithubQuery from "../../lib/query";
+import GithubSearchQuery from "../../lib/github/GithubSearchQuery";
 import { useGithubApi } from "../../lib/useGithubApi";
-import BranchTable from "./BranchTable";
 import { PrTableWithQuery } from "../PrTable";
+import BranchTable from "./BranchTable";
 
 export const PrPage = ({ repos }) => {
   const { authed, error, fetchData } = useGithubApi(async () => {});
 
   const baseQuery = useMemo(
-    () => new GithubQuery().repo(...repos, { quote: true }),
+    () => new GithubSearchQuery().repo(...repos, { quote: true }),
     []
   );
 

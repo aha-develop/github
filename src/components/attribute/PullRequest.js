@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { githubPrToPrLink, linkPullRequestToRecord } from "../../lib/fields";
-import { getPrByUrl, prStatusCommit } from "../../lib/github";
+import { getPrByUrl } from "../../lib/github/getPr";
+import { prStatusCommit } from "../../lib/github/prStatusCommit";
 import { useGithubApi } from "../../lib/useGithubApi";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";

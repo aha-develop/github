@@ -84,7 +84,7 @@ function githubPrToPrLink(pr) {
 }
 
 /**
- * @param {import("./github").PrForLink} pr
+ * @param {Github.PrForLink} pr
  * @param {LinkableRecord} record
  */
 async function linkPullRequestToRecord(pr, record) {
@@ -102,7 +102,7 @@ async function linkPullRequestToRecord(pr, record) {
 }
 
 /**
- * @param {import("./github").PrForLink} pr
+ * @param {Github.PrForLink} pr
  */
 async function linkPullRequest(pr) {
   const record = await referenceToRecord(pr.title);

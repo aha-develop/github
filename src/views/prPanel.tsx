@@ -18,6 +18,7 @@ panel.on("render", ({ props: { panel } }, { settings }) => {
     checks: isTrue(panel.settings.show_checks),
     reviews: isTrue(panel.settings.show_reviews),
     status: isTrue(panel.settings.show_status),
+    labels: isTrue(panel.settings.show_labels),
   };
 
   return (
@@ -58,6 +59,11 @@ panel.on({ action: "settings" }, () => {
       type: "Checkbox",
       key: "show_reviews",
       title: "Show reviewers",
+    },
+    {
+      type: "Checkbox",
+      key: "show_labels",
+      title: "Show labels",
     },
   ] as Aha.PanelSetting[];
 });

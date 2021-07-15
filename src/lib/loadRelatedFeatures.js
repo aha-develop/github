@@ -3,7 +3,7 @@ const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
 /**
  * Given a list of PRs, load the corresponding features if they exist
  *
- * @param {import('./github').PrForLink[]} prs
+ * @param {import('./github/queries').PrForLink[]} prs
  */
 export async function loadRelatedFeatures(prs) {
   const refNums = [];

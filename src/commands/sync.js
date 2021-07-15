@@ -1,6 +1,7 @@
-import { linkBranch, linkPullRequest } from "../lib/fields.js";
-import { searchForPr, withGitHubApi } from "../lib/github.js";
-import GithubQuery from "../lib/query.js";
+import { linkBranch, linkPullRequest } from "../lib/fields";
+import { withGitHubApi } from "../lib/github/api";
+import GithubSearchQuery from "../lib/github/GithubSearchQuery";
+import { searchForPr } from "../lib/github/searchForPr";
 
 aha.on("sync", ({ record }, { settings }) => {
   if (!record) {
@@ -17,7 +18,7 @@ aha.on("sync", ({ record }, { settings }) => {
     );
   }
 
-  const query = new GithubQuery()
+  const query = new GithubSearchQuery()
     .in("title", "body")
     .type("pr")
     .repo(...repos, { quote: true })

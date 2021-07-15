@@ -1,11 +1,13 @@
 import React from "react";
-import { getPrByUrl, prStatusCommit } from "../lib/github";
+import { getPrByUrl } from "../lib/github/getPr";
+import { prStatusCommit } from "../lib/github/prStatusCommit";
+import { isPrWithStatus } from "../lib/github/queries";
 import { useGithubApi } from "../lib/useGithubApi";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
 
 /**
- * @param {import("../lib/github").StatusState} status
+ * @param {Github.StatusState} status
  */
 const statusIcon = (status) => {
   switch (status) {
@@ -23,7 +25,7 @@ const statusIcon = (status) => {
 };
 
 /**
- * @type {React.FC<{status: import("../lib/github").StatusState}>}
+ * @type {React.FC<{status: Github.StatusState}>}
  */
 const StatusIcon = ({ status }) => {
   return (
@@ -58,7 +60,7 @@ const StatusCheck = ({ context }) => {
 };
 
 /**
- * @type {React.FC<{prStatus: import("../lib/github").CommitStatus}>}
+ * @type {React.FC<{prStatus: Github.CommitStatus}>}
  */
 const Status = ({ prStatus }) => {
   const {
@@ -118,7 +120,7 @@ const Status = ({ prStatus }) => {
 };
 
 /**
- * @type {React.FC<{pr:import("../lib/github").PrForLinkWithStatus}>}
+ * @type {React.FC<{pr:Github.Pr}>}
  */
 const FetchStatus = ({ pr }) => {
   const {
@@ -128,7 +130,7 @@ const FetchStatus = ({ pr }) => {
     loading,
     fetchData,
   } = useGithubApi(async (api) => {
-    if (pr.commits) return pr;
+    if(isPrWithStatus(pr)) return pr;
     return await getPrByUrl(api, pr.url, { includeStatus: true });
   });
 

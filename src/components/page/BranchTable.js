@@ -1,7 +1,7 @@
 import React from "react";
-import { recentBranches } from "../../lib/github";
+import { recentBranches } from "../../lib/github/recentBranches";
 import { useGithubApi } from "../../lib/useGithubApi";
-import { ExternalLink } from '../ExternalLink';
+import { ExternalLink } from "../ExternalLink";
 
 const BranchRow = ({ branch }) => {
   return (

@@ -1,6 +1,10 @@
 import React from "react";
+// @ts-ignore
 import { titleize } from "https://cdn.skypack.dev/inflected";
 
+/**
+ * @param {'open'|'merged'|'closed'} state
+ */
 const icon = (state) => {
   switch (state) {
     case "open":

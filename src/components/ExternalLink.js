@@ -1,6 +1,9 @@
 import React from "react";
 
-const isValidExternalLink = (urlString) => {
+/**
+ * @param {string} urlString
+ */
+function isValidExternalLink(urlString) {
   try {
     const url = new URL(urlString);
     return url.protocol === "https:";
