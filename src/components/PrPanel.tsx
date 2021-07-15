@@ -23,14 +23,15 @@ export const PrPanel: React.FC<{
     async (api) => {
       const { edges } = await searchForPr(api, {
         query,
-        includeStatus: true,
-        includeReviews: true,
+        includeStatus: columns.status,
+        includeReviews: columns.reviews,
+        includeLabels: columns.labels,
         count: 10,
       });
       return edges.map((e) => e.node);
     },
     {},
-    [query]
+    [query, columns]
   );
 
   if (!authed || error) {

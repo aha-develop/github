@@ -47,6 +47,11 @@ export const Styles = () => {
           background-color: #b8c0c9;
         }
 
+        .pr-label {
+          font-size: 12px;
+          white-space: nowrap;
+        }
+
         .pr-reviews-icon {
           color: var(--aha-gray-700);
         }

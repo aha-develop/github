@@ -6,6 +6,7 @@ import { SearchForPr } from "./queries";
  * @prop {number=} count
  * @prop {boolean=} includeStatus
  * @prop {boolean=} includeReviews
+ * @prop {boolean=} includeLabels
  */
 
 /**
