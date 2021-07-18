@@ -117,6 +117,7 @@ export const GetPr = gql`
   ${PrForLinkFragment}
   ${PrStatusFragment}
   ${PrForReviewDecisionFragment}
+  ${PrLabelsFragment}
 `;
 
 export const RepoFragment = gql`
