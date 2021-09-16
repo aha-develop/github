@@ -1,5 +1,5 @@
-import React from "react";
-import css from "../lib/css";
+import React from 'react';
+import css from '../lib/css';
 
 export const Styles = () => {
   return (
@@ -31,16 +31,16 @@ export const Styles = () => {
           text-transform: capitalize;
         }
         .pr-state-open {
-          color: #4f8f0e;
-          background-color: #e5f3d6;
+          color: var(--theme-green-text);
+          background-color: var(--theme-green-background);
         }
         .pr-state-merged {
           color: #463159;
           background-color: #e5dced;
         }
         .pr-state-closed {
-          color: #992e0b;
-          background-color: #fae7e1;
+          color: var(--theme-red-text);
+          background-color: var(--theme-red-background);
         }
         .pr-state-draft {
           color: #0b0b0b;
@@ -57,16 +57,16 @@ export const Styles = () => {
         }
 
         .approved .pr-reviews-icon {
-          color: var(--aha-green-700);
+          color: var(--theme-green-text);
         }
 
         .changes_requested .pr-reviews-icon {
-          color: var(--aha-red-700);
+          color: var(--theme-red-text);
         }
 
         .pr-reviews-tooltip {
-          border: 1px solid #e8e8e8;
-          background: white;
+          border: 1px solid var(--theme-primary-border);
+          background: var(--theme-primary-background);
           box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
           z-index: 1000;
           font-size: 12px;
@@ -82,8 +82,8 @@ export const Styles = () => {
         .pr-checks {
           font-size: 12px;
           z-index: 1000;
-          background: white;
-          border: 1px solid #e8e8e8;
+          background: var(--theme-primary-background);
+          border: 1px solid var(--theme-primary-border);
           box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
           border-radius: 4px;
           padding: 15px;
@@ -98,7 +98,7 @@ export const Styles = () => {
         }
 
         .pr-count {
-          color: #999;
+          color: var(--theme-tertiary-text);
         }
 
         .hidden {
@@ -135,7 +135,7 @@ export const Styles = () => {
           color: var(--aha-green-600);
         }
         .sections {
-          background-color: var(--aha-gray-100);
+          background-color: var(--theme-secondary-background);
           display: flex;
           padding: 16px;
           gap: 18px;
@@ -143,8 +143,8 @@ export const Styles = () => {
         }
 
         .sections section {
-          background: white;
-          border: 1px solid #e1e1e1;
+          background: var(--theme-primary-background);
+          border: 1px solid var(--theme-primary-border);
           box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
           border-radius: 4px;
           min-height: 100px;
@@ -156,7 +156,7 @@ export const Styles = () => {
         }
 
         .sections h2 {
-          border-bottom: 1px solid var(--aha-gray-400);
+          border-bottom: 1px solid var(--theme-primary-border);
           padding: 15px 21px;
           margin: 0;
 
@@ -164,7 +164,7 @@ export const Styles = () => {
           font-weight: 600;
           font-size: 18px;
           line-height: 18px;
-          color: #000000;
+          color: var(--theme-primary-text);
         }
 
         .sections .subsection {
@@ -180,7 +180,7 @@ export const Styles = () => {
 
         .record-table--feature-link {
           font-size: 90%;
-          color: var(--aha-gray-700);
+          color: var(--theme-tertiary-text);
           padding-left: 5px;
         }
 
@@ -189,14 +189,14 @@ export const Styles = () => {
           display: inline-block;
           width: 6px;
           height: 6px;
-          border-left: 1px solid var(--aha-gray-700);
-          border-bottom: 1px solid var(--aha-gray-700);
+          border-left: 1px solid var(--theme-tertiary-text);
+          border-bottom: 1px solid var(--theme-tertiary-text);
           position: relative;
           top: 2px;
         }
 
         .record-table--feature-link a {
-          color: var(--aha-gray-700);
+          color: var(--theme-tertiary-text);
         }
       `}
     </style>
