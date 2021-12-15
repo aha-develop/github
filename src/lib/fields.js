@@ -88,10 +88,10 @@ function githubPrToPrLink(pr) {
  * @param {LinkableRecord} record
  */
 async function linkPullRequestToRecord(pr, record) {
-  console.log("Appending field to record")
+  console.log("Appending field to record");
   await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
 
-  console.log("Appending field to account")
+  console.log("Appending field to account");
   await appendField(aha.account, PULL_REQUESTS_FIELD, {
     id: accountPrId(pr.number, record.referenceNum),
     prNumber: pr.number,
@@ -99,7 +99,7 @@ async function linkPullRequestToRecord(pr, record) {
   });
 
   if (pr.headRef) {
-    console.log("Linking pr headeref branch to record")
+    console.log("Linking pr headRef branch to record");
     await linkBranchToRecord(pr.headRef.name, pr.repository.url, record);
   }
 }
@@ -108,11 +108,11 @@ async function linkPullRequestToRecord(pr, record) {
  * @param {Github.PrForLink} pr
  */
 async function linkPullRequest(pr) {
-  console.log('Getting record from reference')
+  console.log("Getting record from reference");
   const record = await referenceToRecord(pr.title);
 
   if (record) {
-    console.log("Got record, linking pull request to record")
+    console.log("Got record, linking pull request to record");
 
     await linkPullRequestToRecord(pr, record);
   }

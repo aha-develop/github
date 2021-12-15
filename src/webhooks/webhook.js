@@ -25,24 +25,23 @@ aha.on("webhook", async ({ headers, payload }) => {
 async function handlePullRequest(payload) {
   const pr = payload.pull_request;
 
-  console.log("Linking pull request")
+  console.log("Linking pull request");
 
   // Make sure the PR is linked to its record.
   const record = await linkPullRequest(pr);
-  console.log("Done linking pull request")
-
+  console.log("Done linking pull request");
 
   // Generate events.
   if (record) {
-    console.log("Generating events");
+    console.log("Triggering event with record");
     await triggerEvent("pr", payload, record);
 
     if (pr.head?.name) {
-      console.log("Linking branch")
+      console.log("Linking branch");
       await linkBranch(pr.head.name, pr.repo.html_url);
     }
   } else {
-    console.log("null record, triggering event anyway")
+    console.log("Triggering event without record");
     await triggerEvent("pr", payload, null);
   }
 }
