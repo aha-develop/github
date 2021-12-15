@@ -35,13 +35,12 @@ async function handlePullRequest(payload) {
   // Generate events.
   if (record) {
     console.log("Generating events");
+    await triggerEvent("pr", payload, record);
 
     if (pr.head?.name) {
       console.log("Linking branch")
       await linkBranch(pr.head.name, pr.repo.html_url);
     }
-
-    await triggerEvent("pr", payload, record);
   } else {
     console.log("null record, triggering event anyway")
     await triggerEvent("pr", payload, null);
