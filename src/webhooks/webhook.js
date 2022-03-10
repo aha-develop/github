@@ -1,3 +1,4 @@
+import { IDENTIFIER } from "../extension.js";
 import {
   linkPullRequest,
   linkBranch,
@@ -35,6 +36,39 @@ async function handlePullRequest(payload) {
     }
 
     await triggerEvent("pr", payload, record);
+
+    if (
+      record.typename === "Epic" ||
+      record.typename === "Feature" ||
+      record.typename === "Requirement"
+    ) {
+      switch (payload.action) {
+        case "closed":
+          if (payload.pull_request?.merged) {
+            console.log("Triggering automation");
+            await aha.triggerAutomationOn(
+              record,
+              [IDENTIFIER, "prMerged"].join("."),
+              true
+            );
+          } else {
+            await aha.triggerAutomationOn(
+              record,
+              [IDENTIFIER, "prState"].join("."),
+              "closed"
+            );
+          }
+          break;
+        case "opened":
+        case "reopened":
+          await aha.triggerAutomationOn(
+            record,
+            [IDENTIFIER, "prState"].join("."),
+            "opened"
+          );
+          break;
+      }
+    }
   } else {
     await triggerEvent("pr", payload, null);
   }

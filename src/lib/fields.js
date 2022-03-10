@@ -81,6 +81,7 @@ function githubPrToPrLink(pr) {
  */
 async function linkPullRequestToRecord(pr, record) {
   await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
+  await aha.account.setExtensionField(IDENTIFIER, pr.url, record.referenceNum);
 
   if (pr.headRef) {
     await linkBranchToRecord(pr.headRef.name, pr.repository.url, record);
@@ -90,11 +91,14 @@ async function linkPullRequestToRecord(pr, record) {
 /**
  * @param {Github.PrForLink} pr
  */
-async function linkPullRequest(pr) {
-  const record = await referenceToRecord(pr.title);
+async function getOrLinkPullRequestRecord(pr) {
+  let record = await referenceFromPr(pr);
 
-  if (record) {
-    await linkPullRequestToRecord(pr, record);
+  if (!record) {
+    record = await referenceToRecord(pr.title);
+    if (record) {
+      await linkPullRequestToRecord(pr, record);
+    }
   }
 
   return record;
@@ -105,19 +109,32 @@ async function linkPullRequest(pr) {
  * @param {*} number
  */
 async function unlinkPullRequest(record, number) {
-  await replaceField(record, PULL_REQUESTS_FIELD, (prs) => {
-    if (prs) {
-      return prs.filter((pr) => pr.id != number);
-    } else {
-      return [];
-    }
-  });
+  /** @type {null|Github.PrForLink[]} */
+  const prs = await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD);
+  const pr = prs?.find((pr) => pr.id === number);
+  await record.setExtensionField(
+    IDENTIFIER,
+    PULL_REQUESTS_FIELD,
+    prs?.filter((pr) => pr.id != number) || []
+  );
+
+  if (pr) {
+    await aha.account.clearExtensionField(IDENTIFIER, pr.url);
+  }
 }
 
 /**
  * @param {Aha.ReferenceInterface & Aha.HasExtensionFields} record
  */
 async function unlinkPullRequests(record) {
+  /** @type {null|Github.PrForLink[]} */
+  const prs = await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD);
+  if (prs) {
+    for (let pr of prs) {
+      await aha.account.clearExtensionField(IDENTIFIER, pr.url);
+    }
+  }
+
   await record.setExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD, []);
 }
 
@@ -158,7 +175,7 @@ async function unlinkBranches(record) {
  * @returns {Promise<(Aha.HasExtensionFields & Aha.ReferenceInterface)|null>}
  */
 export async function referenceToRecord(str) {
-  const ahaReference = extractReference(str);
+  const ahaReference = extractReferenceFromName(str);
   if (!ahaReference) {
     return null;
   }
@@ -178,9 +195,20 @@ export async function referenceToRecord(str) {
 }
 
 /**
+ * @param {Github.PrForLink | PrLink} pr
+ */
+export async function referenceFromPr(pr) {
+  const prLink = githubPrToPrLink(pr);
+  const ref = await aha.account.getExtensionField(IDENTIFIER, prLink.url);
+  if (!ref) return null;
+
+  return referenceToRecord(ref);
+}
+
+/**
  * @param {string} name
  */
-function extractReference(name) {
+function extractReferenceFromName(name) {
   let matches;
 
   // Requirement
@@ -210,7 +238,7 @@ function extractReference(name) {
 
 export {
   appendField,
-  linkPullRequest,
+  getOrLinkPullRequestRecord as linkPullRequest,
   linkPullRequestToRecord,
   unlinkPullRequest,
   unlinkPullRequests,
