@@ -94,6 +94,28 @@
           "entryPoint": "src/webhooks/webhook.js",
           "public": true
         }
+      },
+      "automationTriggers": {
+        "prState": {
+          "recordTypes": [
+            "Epic",
+            "Feature",
+            "Requirement"
+          ],
+          "title": "Github PR State",
+          "options": [
+            "opened",
+            "closed"
+          ]
+        },
+        "prMerged": {
+          "recordTypes": [
+            "Epic",
+            "Feature",
+            "Requirement"
+          ],
+          "title": "Github PR Merged"
+        }
       }
     }
   },
