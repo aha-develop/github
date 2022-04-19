@@ -59,15 +59,33 @@
       "commands": {
         "sync": {
           "title": "GitHub: Sync pull requests",
-          "entryPoint": "src/commands/sync.js"
+          "entryPoint": "src/commands/sync.js",
+          "commandType": "recordAction",
+          "recordTypes": [
+            "Epic",
+            "Feature",
+            "Requirement"
+          ]
         },
         "addLink": {
           "title": "GitHub: Link pull request to record",
-          "entryPoint": "src/commands/addLink.js"
+          "entryPoint": "src/commands/addLink.js",
+          "commandType": "recordAction",
+          "recordTypes": [
+            "Epic",
+            "Feature",
+            "Requirement"
+          ]
         },
         "removeLinks": {
           "title": "GitHub: Remove linked pull requests from record",
-          "entryPoint": "src/commands/removeLinks.js"
+          "entryPoint": "src/commands/removeLinks.js",
+          "commandType": "recordAction",
+          "recordTypes": [
+            "Epic",
+            "Feature",
+            "Requirement"
+          ]
         }
       },
       "endpoints": {
