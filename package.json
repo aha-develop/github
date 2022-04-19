@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@aha-app/aha-develop-react": "^1.0.0",
-    "gql-tag": "^1.0.1"
+    "gql-tag": "^1.0.1",
+    "prettier": "^2.6.2"
   },
   "type": "module",
   "license": "MIT",
