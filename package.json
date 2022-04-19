@@ -57,10 +57,6 @@
         }
       },
       "commands": {
-        "createBranch": {
-          "title": "GitHub: Create a branch",
-          "entryPoint": "src/commands/createBranch.js"
-        },
         "sync": {
           "title": "GitHub: Sync pull requests",
           "entryPoint": "src/commands/sync.js"
