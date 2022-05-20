@@ -1,6 +1,7 @@
 import React from "react";
 // @ts-ignore
 import { titleize } from "https://cdn.skypack.dev/inflected";
+import { PrLink } from "../lib/fields";
 
 /**
  * @param {'open'|'merged'|'closed'} state
@@ -16,9 +17,17 @@ const icon = (state) => {
   }
 };
 
-export const PrState = ({ pr }) => {
+interface PrStateProps {
+  pr: PrLink;
+  style?: React.CSSProperties;
+}
+
+export const PrState: React.FC<PrStateProps> = ({ pr, style }) => {
   return (
-    <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
+    <span
+      className={`pr-state pr-state-${pr.state.toLowerCase()}`}
+      style={style}
+    >
       <aha-flex gap="4px">
         <aha-icon
           icon={"fa-regular fa-" + icon(pr.state.toLowerCase())}

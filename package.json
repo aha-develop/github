@@ -54,6 +54,11 @@
           "title": "GitHub pull requests",
           "entryPoint": "src/views/prPanel.tsx",
           "host": "panel"
+        },
+        "prCard": {
+          "title": "GitHub pull request",
+          "host": "card",
+          "entryPoint": "src/views/prCard.tsx"
         }
       },
       "commands": {
