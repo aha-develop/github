@@ -20,17 +20,17 @@ export function Menu({ record }) {
       </aha-button>
       <aha-menu-content>
         <aha-menu-item>
-          <a href="#" onClick={() => sync(record)}>Resync</a>
+          <aha-button kind="plain" onClick={() => sync(record)}>Resync</aha-button>
         </aha-menu-item>
         <aha-menu-item>
-          <a href="#" onClick={() => addLink(record)}>
+          <aha-button kind="plain" onClick={() => addLink(record)}>
             Link pull request
-          </a>
+          </aha-button>
         </aha-menu-item>
         <aha-menu-item>
-          <a href="#" onClick={() => removeLinks(record)}>
+          <aha-button kind="plain" onClick={() => removeLinks(record)}>
             Unlink pull requests
-          </a>
+          </aha-button>
         </aha-menu-item>
       </aha-menu-content>
     </aha-menu>
