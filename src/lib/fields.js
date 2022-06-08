@@ -184,21 +184,21 @@ function extractReference(name) {
   let matches;
 
   // Requirement
-  if ((matches = name.match(/[a-z]{1,10}-[0-9]+-[0-9]+/i))) {
+  if ((matches = name.match(/[a-z][a-z0-9]{1,9}-[0-9]+-[0-9]+/i))) {
     return {
       type: "Requirement",
       referenceNum: matches[0],
     };
   }
   // Epic
-  if ((matches = name.match(/[a-z]{1,10}-E-[0-9]+/i))) {
+  if ((matches = name.match(/[a-z][a-z0-9]{1,9}-E-[0-9]+/i))) {
     return {
       type: "Epic",
       referenceNum: matches[0],
     };
   }
   // Feature
-  if ((matches = name.match(/[a-z]{1,10}-[0-9]+/i))) {
+  if ((matches = name.match(/[a-z][a-z0-9]{1,9}-[0-9]+/i))) {
     return {
       type: "Feature",
       referenceNum: matches[0],
