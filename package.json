@@ -91,30 +91,25 @@
       "endpoints": {
         "webhook": {
           "title": "Webhook from Github",
-          "entryPoint": "src/webhooks/webhook.js",
+          "entryPoint": "src/webhooks/webhook.ts",
           "public": true
         }
       },
       "automationTriggers": {
-        "prState": {
-          "recordTypes": [
-            "Epic",
-            "Feature",
-            "Requirement"
-          ],
-          "title": "Github PR State",
-          "options": [
-            "opened",
-            "closed"
-          ]
+        "draftPrOpened": {
+          "title": "Draft PR opened"
+        },
+        "prOpened": {
+          "title": "PR opened"
         },
         "prMerged": {
-          "recordTypes": [
-            "Epic",
-            "Feature",
-            "Requirement"
-          ],
-          "title": "Github PR Merged"
+          "title": "PR merged"
+        },
+        "prClosed": {
+          "title": "PR closed"
+        },
+        "prReopened": {
+          "title": "PR Re-opened"
         }
       }
     }
