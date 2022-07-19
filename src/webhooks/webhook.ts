@@ -1,3 +1,4 @@
+import { IDENTIFIER } from "../extension.js";
 import {
   linkPullRequest,
   linkBranch,
@@ -22,6 +23,34 @@ aha.on("webhook", async ({ headers, payload }) => {
   }
 });
 
+async function triggerAutomation(payload, record) {
+  if (!payload?.pull_request) return;
+
+  // Check the record is a supported type
+  if (!["Epic", "Feature", "Requirement"].includes(record.typename)) {
+    return;
+  }
+
+  const triggers: Record<string, (pr: any) => string> = {
+    closed: (pr) => (pr.merged ? "prMerged" : "prClosed"),
+    opened: (pr) => (pr.draft ? "draftPrOpened" : "prOpened"),
+    reopened: () => "prReopened",
+  };
+
+  const trigger = (triggers[payload.action] || (() => null))(
+    payload.pull_request
+  );
+
+  if (trigger) {
+    console.log("Automation trigger");
+    await aha.triggerAutomationOn(
+      record,
+      [IDENTIFIER, trigger].join("."),
+      true
+    );
+  }
+}
+
 async function handlePullRequest(payload) {
   const pr = payload.pull_request;
 
@@ -35,6 +64,7 @@ async function handlePullRequest(payload) {
     }
 
     await triggerEvent("pr", payload, record);
+    await triggerAutomation(payload, record);
   } else {
     await triggerEvent("pr", payload, null);
   }
