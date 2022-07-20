@@ -110,6 +110,12 @@
         },
         "prReopened": {
           "title": "PR Re-opened"
+        },
+        "prApproved": {
+          "title": "PR approved"
+        },
+        "prChangesRequested": {
+          "title": "PR changes requested"
         }
       }
     }
