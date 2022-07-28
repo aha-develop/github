@@ -79,8 +79,14 @@ function githubPrToPrLink(pr) {
  * @param {Github.PrForLink} pr
  * @param {LinkableRecord} record
  */
-async function linkPullRequestToRecord(pr, record) {
-  await appendField(record, PULL_REQUESTS_FIELD, githubPrToPrLink(pr));
+async function updatePullRequestLinkOnRecord(pr, record) {
+  const prLink = githubPrToPrLink(pr);
+
+  console.debug(
+    `Updating PR #${pr.number} on ${record.typename} ${record.referenceNum}`
+  );
+
+  await appendField(record, PULL_REQUESTS_FIELD, prLink);
   await aha.account.setExtensionField(IDENTIFIER, pr.url, record.referenceNum);
 
   if (pr.headRef) {
@@ -92,13 +98,12 @@ async function linkPullRequestToRecord(pr, record) {
  * @param {Github.PrForLink} pr
  */
 async function getOrLinkPullRequestRecord(pr) {
-  let record = await referenceFromPr(pr);
+  let record =
+    (await referenceFromPr(pr)) || (await referenceToRecord(pr.title));
 
-  if (!record) {
-    record = await referenceToRecord(pr.title);
-    if (record) {
-      await linkPullRequestToRecord(pr, record);
-    }
+  if (record) {
+    // Always update the PR info on the record
+    await updatePullRequestLinkOnRecord(pr, record);
   }
 
   return record;
@@ -172,7 +177,7 @@ async function unlinkBranches(record) {
 
 /**
  * @param {string} str
- * @returns {Promise<(Aha.HasExtensionFields & Aha.ReferenceInterface)|null>}
+ * @returns {Promise<(LinkableRecord)|null>}
  */
 export async function referenceToRecord(str) {
   const ahaReference = extractReferenceFromName(str);
@@ -239,7 +244,7 @@ function extractReferenceFromName(name) {
 export {
   appendField,
   getOrLinkPullRequestRecord as linkPullRequest,
-  linkPullRequestToRecord,
+  updatePullRequestLinkOnRecord as linkPullRequestToRecord,
   unlinkPullRequest,
   unlinkPullRequests,
   linkBranch,

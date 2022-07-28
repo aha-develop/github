@@ -3,6 +3,7 @@ import {
   linkPullRequest,
   linkBranch,
   referenceToRecord,
+  LinkableRecord,
 } from "../lib/fields.js";
 
 aha.on("webhook", async ({ headers, payload }) => {
@@ -66,7 +67,7 @@ async function handlePullRequest(payload) {
     await triggerEvent("pr", payload, record);
     await triggerAutomation(payload, record);
   } else {
-    await triggerEvent("pr", payload, null);
+    await triggerEvent("pr", payload);
   }
 }
 
@@ -80,16 +81,17 @@ async function handleCreateBranch(payload) {
   await triggerEvent("create", payload, record);
 }
 
-/**
- * @param {string} event
- * @param {*} payload
- * @param {*} referenceText
- */
-async function triggerEvent(event, payload, referenceText) {
-  let record = referenceText;
+async function triggerEvent(
+  event: string,
+  payload,
+  referenceText?: string | LinkableRecord
+) {
+  let record: null | LinkableRecord = null;
 
   if (typeof referenceText === "string") {
     record = await referenceToRecord(referenceText);
+  } else if (referenceText) {
+    record = referenceText;
   }
 
   aha.triggerServer(`aha-develop.github.${event}.${payload.action}`, {
