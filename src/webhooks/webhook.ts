@@ -23,15 +23,8 @@ aha.on("webhook", async ({ headers, payload }) => {
   }
 });
 
-async function triggerAutomation(payload, record) {
-  if (!payload?.pull_request) return;
-
-  // Check the record is a supported type
-  if (!["Epic", "Feature", "Requirement"].includes(record.typename)) {
-    return;
-  }
-
-  const triggers: Record<string, (pr: any) => string> = {
+const findAutomationTrigger = (payload): string => {
+  const triggers: Record<string, (payload: any) => string>  = {
     closed: (payload) => (payload.pull_request.merged ? "prMerged" : "prClosed"),
     opened: (payload) => (payload.pull_request.draft ? "draftPrOpened" : "prOpened"),
     reopened: () => "prReopened",
@@ -47,9 +40,20 @@ async function triggerAutomation(payload, record) {
     }
   };
 
-  const trigger = (triggers[payload.action] || (() => null))(payload);
+  return (triggers[payload.action] || (() => null))(payload);
+}
 
+async function triggerAutomation(payload, record) {
+  if (!payload?.pull_request) return;
+
+  // Check the record is a supported type
+  if (!["Epic", "Feature", "Requirement"].includes(record.typename)) {
+    return;
+  }
+
+  const trigger = findAutomationTrigger(payload)
   if (trigger) {
+    console.log(`Found automation trigger ${trigger} from payload`)
     await aha.triggerAutomationOn(
       record,
       [IDENTIFIER, trigger].join("."),
