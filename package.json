@@ -1,7 +1,7 @@
 {
   "name": "@aha-develop/github",
   "description": "GitHub",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "author": "Aha! (support@aha.io)",
   "repository": {
     "type": "git",
