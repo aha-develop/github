@@ -19,10 +19,30 @@ aha.on("webhook", async ({ headers, payload }) => {
       await handlePullRequest(payload);
       break;
     case "pull_request_review":
-      await triggerEvent(event, payload, payload.pull_request?.title);
+      await handlePullRequestReview(payload);
       break;
   }
 });
+
+const findAutomationTrigger = (payload): string => {
+  const triggers: Record<string, (payload: any) => string>  = {
+    closed: (payload) => (payload.pull_request.merged ? "prMerged" : "prClosed"),
+    opened: (payload) => (payload.pull_request.draft ? "draftPrOpened" : "prOpened"),
+    reopened: () => "prReopened",
+    submitted: (payload) => {
+      switch (payload.review.state) {
+        case 'approved':
+          return "prApproved"
+        case 'changes_requested':
+          return "prChangesRequested"
+        default:
+          return ""
+      }
+    }
+  };
+
+  return (triggers[payload.action] || (() => null))(payload);
+}
 
 async function triggerAutomation(payload, record) {
   if (!payload?.pull_request) return;
@@ -32,18 +52,9 @@ async function triggerAutomation(payload, record) {
     return;
   }
 
-  const triggers: Record<string, (pr: any) => string> = {
-    closed: (pr) => (pr.merged ? "prMerged" : "prClosed"),
-    opened: (pr) => (pr.draft ? "draftPrOpened" : "prOpened"),
-    reopened: () => "prReopened",
-  };
-
-  const trigger = (triggers[payload.action] || (() => null))(
-    payload.pull_request
-  );
-
+  const trigger = findAutomationTrigger(payload)
   if (trigger) {
-    console.log("Automation trigger");
+    console.log(`Found automation trigger ${trigger} from payload`)
     await aha.triggerAutomationOn(
       record,
       [IDENTIFIER, trigger].join("."),
@@ -79,6 +90,18 @@ async function handleCreateBranch(payload) {
 
   const record = await linkBranch(payload.ref, payload.repository.html_url);
   await triggerEvent("create", payload, record);
+}
+
+async function handlePullRequestReview(payload) {
+  const pr = payload.pull_request;
+
+  // Make sure the PR is linked to its record.
+  const record = await linkPullRequest(pr);
+  if (record) {
+    await triggerAutomation(payload, record)
+  }
+
+  await triggerEvent("pull_request_review", payload, payload.pull_request?.title);
 }
 
 async function triggerEvent(
