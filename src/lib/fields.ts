@@ -4,10 +4,6 @@ const PULL_REQUESTS_FIELD = "pullRequests";
 const BRANCHES_FIELD = "branches";
 
 /**
- * @typedef {Aha.ReferenceInterface & Aha.HasExtensionFields} LinkableRecord
- */
-
-/**
  * @typedef PrLink
  * @prop {number} id
  * @prop {string} name

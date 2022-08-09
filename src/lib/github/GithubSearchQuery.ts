@@ -1,19 +1,15 @@
-/**
- * @typedef Options
- * @prop {boolean} quote
- */
+interface Options {
+  quote: boolean;
+}
 
-/**
- * @param {string[] | [...string[], string | Options]} values
- * @returns {string[]}
- */
-function quotedValues(values) {
+type TermsWithOptions = string[] | [...string[], string | Options];
+
+function quotedValues(values: TermsWithOptions) {
   if (values.length === 0) return [];
   const options = values.slice(-1)[0];
   if (typeof options !== "string" && options.quote)
     return values.slice(0, -1).map((v) => `"${v}"`);
-  // @ts-ignore
-  return values;
+  return values as string[];
 }
 
 /**
@@ -35,11 +31,14 @@ function quotedValues(values) {
  * ```
  */
 class GithubQuery {
+  private _attrs: Map<string, any>;
+  private _terms: string[];
+
   /**
    * @param {Map<string, any[]>=} attrs
    * @param {string[]=} terms
    */
-  constructor(attrs, terms) {
+  constructor(attrs: Map<string, any>, terms: string[]) {
     /** @type {Map<string, any[]>} */
     this._attrs = attrs || new Map();
     /** @type {string[]} */
@@ -69,19 +68,15 @@ class GithubQuery {
     });
   }
 
-  /** @param {[...string[], string | Options]} terms */
-  term(...terms) {
+  term(...terms: TermsWithOptions) {
     return new GithubQuery(
       this._attrs,
       this._terms.concat(quotedValues(terms))
     );
   }
 
-  /**
-   * @returns {string}
-   */
   toQuery() {
-    let strings = [];
+    let strings: string[] = [];
 
     this._attrs.forEach((values, key) => {
       strings = strings.concat(
@@ -94,14 +89,12 @@ class GithubQuery {
   }
 }
 
-/**
- * @typedef {{[index: string]: (...args:[...string[], string | Options]) => DynamicGithubQuery} & GithubQuery} DynamicGithubQuery
- */
+type DynamicGithubQuery = {
+  new (): {
+    [index: string]: (
+      ...args: [...string[], string | Options]
+    ) => DynamicGithubQuery;
+  } & GithubQuery;
+};
 
-/**
- * @type {{new (): DynamicGithubQuery}}
- */
-// @ts-ignore
-const DynamicGithubQuery = GithubQuery;
-
-export default DynamicGithubQuery;
+export default GithubQuery as DynamicGithubQuery;

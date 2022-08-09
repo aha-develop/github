@@ -3,10 +3,15 @@ import {
   linkPullRequest,
   linkBranch,
   referenceToRecord,
-  LinkableRecord,
 } from "../lib/fields.js";
+import { LinkableRecord } from "../types.js";
 
-aha.on("webhook", async ({ headers, payload }) => {
+interface WebhookProps {
+  headers: Record<string, string>;
+  payload: any;
+}
+
+aha.on("webhook", async ({ headers, payload }: WebhookProps) => {
   const event = headers.HTTP_X_GITHUB_EVENT;
 
   console.log(`Received webhook '${event}' ${payload.action || ""}`);
@@ -25,24 +30,26 @@ aha.on("webhook", async ({ headers, payload }) => {
 });
 
 const findAutomationTrigger = (payload): string => {
-  const triggers: Record<string, (payload: any) => string>  = {
-    closed: (payload) => (payload.pull_request.merged ? "prMerged" : "prClosed"),
-    opened: (payload) => (payload.pull_request.draft ? "draftPrOpened" : "prOpened"),
+  const triggers: Record<string, (payload: any) => string> = {
+    closed: (payload) =>
+      payload.pull_request.merged ? "prMerged" : "prClosed",
+    opened: (payload) =>
+      payload.pull_request.draft ? "draftPrOpened" : "prOpened",
     reopened: () => "prReopened",
     submitted: (payload) => {
       switch (payload.review.state) {
-        case 'approved':
-          return "prApproved"
-        case 'changes_requested':
-          return "prChangesRequested"
+        case "approved":
+          return "prApproved";
+        case "changes_requested":
+          return "prChangesRequested";
         default:
-          return ""
+          return "";
       }
-    }
+    },
   };
 
   return (triggers[payload.action] || (() => null))(payload);
-}
+};
 
 async function triggerAutomation(payload, record) {
   if (!payload?.pull_request) return;
@@ -52,9 +59,9 @@ async function triggerAutomation(payload, record) {
     return;
   }
 
-  const trigger = findAutomationTrigger(payload)
+  const trigger = findAutomationTrigger(payload);
   if (trigger) {
-    console.log(`Found automation trigger ${trigger} from payload`)
+    console.log(`Found automation trigger ${trigger} from payload`);
     await aha.triggerAutomationOn(
       record,
       [IDENTIFIER, trigger].join("."),
@@ -98,10 +105,14 @@ async function handlePullRequestReview(payload) {
   // Make sure the PR is linked to its record.
   const record = await linkPullRequest(pr);
   if (record) {
-    await triggerAutomation(payload, record)
+    await triggerAutomation(payload, record);
   }
 
-  await triggerEvent("pull_request_review", payload, payload.pull_request?.title);
+  await triggerEvent(
+    "pull_request_review",
+    payload,
+    payload.pull_request?.title
+  );
 }
 
 async function triggerEvent(

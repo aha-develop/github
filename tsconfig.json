@@ -6,6 +6,7 @@
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
+    "strict": true,
     "downlevelIteration": true,
     "module": "ES6",
     "moduleResolution": "node",
