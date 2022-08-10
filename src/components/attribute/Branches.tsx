@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import { useClipboard } from "@lib/useClipboard";
+import React from "react";
 import { ExternalLink } from "../ExternalLink";
 
-function Branch({ branch }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = () => {
-    navigator.clipboard.writeText(branch.name);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
-  };
+const Branch: React.FC<{ branch: Github.BranchLink }> = ({ branch }) => {
+  const [onCopy, copied] = useClipboard();
 
   return (
     <aha-flex gap="4px">
@@ -18,7 +13,7 @@ function Branch({ branch }) {
       <ExternalLink href={branch.url}>{branch.name}</ExternalLink>
       <a
         href="#"
-        onClick={onCopy}
+        onClick={() => onCopy(branch.name)}
         style={{
           color: copied ? "var(--aha-green-600)" : "",
         }}
@@ -29,9 +24,11 @@ function Branch({ branch }) {
       </a>
     </aha-flex>
   );
-}
+};
 
-export function Branches({ fields }) {
+export const Branches: React.FC<{ fields: Github.IRecordExtensionFields }> = ({
+  fields,
+}) => {
   if (!fields.branches || fields.branches.length === 0) return null;
 
   const branches = (fields.branches || []).map((branch) => (
@@ -39,4 +36,4 @@ export function Branches({ fields }) {
   ));
 
   return <div className="branches">{branches}</div>;
-}
+};
