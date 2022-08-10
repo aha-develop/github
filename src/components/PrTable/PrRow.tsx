@@ -1,11 +1,11 @@
 import React from "react";
-import { prStatusCommit } from "../../lib/github/prStatusCommit";
+import { prStatusCommit } from "@lib/github/prStatusCommit";
 import {
   isPrForReviewDecision,
   isPrWithLabels,
   isPrWithStatus,
-} from "../../lib/github/queries";
-import { repoFromUrl } from "../../lib/github/repoFromUrl";
+} from "@lib/github/queries";
+import { repoFromUrl } from "@lib/github/repoFromUrl";
 import { ExternalLink } from "../ExternalLink";
 import { PrLabels } from "../PrLabels";
 import { PrReviewStatus } from "../PrReviewStatus";

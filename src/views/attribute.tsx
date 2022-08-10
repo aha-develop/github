@@ -1,6 +1,6 @@
 import React from "react";
-import { Attribute } from "../components/attribute/Attribute";
-import { ExtensionRoot } from "../components/ExtensionRoot";
+import { Attribute } from "@components/attribute/Attribute";
+import { ExtensionRoot } from "@components/ExtensionRoot";
 
 const links: Aha.RenderExtension = ({ record, fields }) => {
   return (

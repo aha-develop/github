@@ -89,12 +89,12 @@ class GithubQuery {
   }
 }
 
-type DynamicGithubQuery = {
-  new (): {
-    [index: string]: (
-      ...args: [...string[], string | Options]
-    ) => DynamicGithubQuery;
-  } & GithubQuery;
-};
+type KnownKeys = "in" | "type" | "repo";
 
-export default GithubQuery as DynamicGithubQuery;
+type DynamicGithubQuery = {
+  [K in KnownKeys]: (
+    ...args: [...string[], string | Options]
+  ) => DynamicGithubQuery;
+} & GithubQuery;
+
+export default GithubQuery as { new (): DynamicGithubQuery };

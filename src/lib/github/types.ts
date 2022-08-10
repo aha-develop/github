@@ -1,4 +1,15 @@
 declare namespace Github {
+  interface BranchLink {
+    id: string;
+    name: string;
+    url: string;
+  }
+
+  interface IRecordExtensionFields {
+    branches?: BranchLink[];
+    pullRequests?: PrLink[];
+  }
+
   type PullRequestReviewDecision =
     | "CHANGES_REQUESTED"
     | "APPROVED"

@@ -1,8 +1,8 @@
 import React from "react";
-import { ExtensionRoot } from "../components/ExtensionRoot";
-import { PrPanel } from "../components/PrPanel";
-import { TableCols } from "../components/PrTable/PrTable";
-import { IDENTIFIER } from "../extension";
+import { ExtensionRoot } from "@components/ExtensionRoot";
+import { PrPanel } from "@components/PrPanel";
+import { TableCols } from "@components/PrTable/PrTable";
+import { IDENTIFIER } from "@lib/extension";
 
 const panel = aha.getPanel(IDENTIFIER, "prPanel", {
   name: "GitHub pull requests",

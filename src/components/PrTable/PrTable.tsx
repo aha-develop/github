@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { loadRelatedFeatures } from "../../lib/loadRelatedFeatures";
+import { loadRelatedFeatures } from "@lib/loadRelatedFeatures";
 import { PrRow } from "./PrRow";
 
 export interface TableCols {

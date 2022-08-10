@@ -1,6 +1,6 @@
 import React from "react";
-import { searchForPr } from "../../lib/github/searchForPr";
-import { useGithubApi } from "../../lib/useGithubApi";
+import { searchForPr } from "@lib/github/searchForPr";
+import { useGithubApi } from "@lib/useGithubApi";
 import { PrTable, TableCols } from "./PrTable";
 
 interface QueryTableProps {

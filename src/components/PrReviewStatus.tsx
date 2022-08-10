@@ -1,5 +1,5 @@
 import React from "react";
-import { usePopperAlerter } from "../lib/usePopperAlerter";
+import { usePopperAlerter } from "@lib/usePopperAlerter";
 
 interface Props {
   pr: Github.PrForReviewDecision;

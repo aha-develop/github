@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import GithubSearchQuery from "../../lib/github/GithubSearchQuery";
-import { useGithubApi } from "../../lib/useGithubApi";
-import { PrTableWithQuery } from "../PrTable";
+import GithubSearchQuery from "@lib/github/GithubSearchQuery";
+import { useGithubApi } from "@lib/useGithubApi";
+import { PrTableWithQuery } from "@components/PrTable";
 import BranchTable from "./BranchTable";
 
 export const PrPage = ({ repos }) => {

@@ -1,16 +1,20 @@
-import { linkBranch, getOrLinkPullRequestRecord } from "../lib/fields";
-import { withGitHubApi } from "../lib/github/api";
-import GithubSearchQuery from "../lib/github/GithubSearchQuery";
-import { searchForPr } from "../lib/github/searchForPr";
+import { linkBranch, getOrLinkPullRequestRecord } from "@lib/fields";
+import { withGitHubApi } from "@lib/github/api";
+import GithubSearchQuery from "@lib/github/GithubSearchQuery";
+import { searchForPr } from "@lib/github/searchForPr";
+import { LinkableRecord } from "@lib/linkableRecord";
 
-aha.on("sync", ({ record }, { settings }) => {
+const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
+  { record },
+  { settings }
+) => {
   if (!record) {
     aha.commandOutput("Open a record first to sync PRs for that record");
     return;
   }
   console.log(`Syncing PRs for ${record.referenceNum}`);
   /** @type {string[]} */
-  const repos = settings.repos;
+  const repos = settings.repos as string[];
 
   if (!repos || repos.length === 0) {
     throw new Error(
@@ -28,6 +32,13 @@ aha.on("sync", ({ record }, { settings }) => {
   withGitHubApi(async (api) => {
     const search = await searchForPr(api, { query });
 
+    if (search.edges.length === 0) {
+      aha.commandOutput(
+        `No pull requests found with ${record.referenceNum} in the title`
+      );
+      return;
+    }
+
     for (let prNode of search.edges) {
       const pr = prNode.node;
 
@@ -38,4 +49,6 @@ aha.on("sync", ({ record }, { settings }) => {
       }
     }
   });
-});
+};
+
+aha.on("sync", SyncCommand);

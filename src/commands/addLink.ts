@@ -1,16 +1,12 @@
-import { updatePullRequestLinkOnRecord } from "../lib/fields";
-import { withGitHubApi } from "../lib/github/api";
-import { getPrByUrl } from "../lib/github/getPr";
+import { updatePullRequestLinkOnRecord } from "@lib/fields";
+import { withGitHubApi } from "@lib/github/api";
+import { getPrByUrl } from "@lib/github/getPr";
+import { LinkableRecord } from "@lib/linkableRecord";
+import { validPrUrl } from "@lib/validPrUrl";
 
-function validPrUrl(urlString: string) {
-  const url = new URL(urlString);
-  return (
-    url.origin === "https://github.com" &&
-    url.pathname.match(/\/[^\/]+\/[^\/]+\/pull\/\d+/)
-  );
-}
-
-const AddLink: Aha.CommandExtension<void> = async ({ record }) => {
+const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
+  record,
+}) => {
   if (!record) return;
 
   const prUrl = await aha.commandPrompt("Link URL", {

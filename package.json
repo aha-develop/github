@@ -38,7 +38,7 @@
         "links": {
           "title": "GitHub",
           "host": "attribute",
-          "entryPoint": "src/views/attribute.js",
+          "entryPoint": "src/views/attribute.tsx",
           "recordTypes": [
             "Feature",
             "Epic",
@@ -48,7 +48,7 @@
         "prs": {
           "title": "My Pull Requests",
           "host": "page",
-          "entryPoint": "src/views/prsPage.js",
+          "entryPoint": "src/views/prsPage.tsx",
           "location": {
             "menu": "Work"
           }
@@ -62,7 +62,7 @@
       "commands": {
         "sync": {
           "title": "Sync pull requests",
-          "entryPoint": "src/commands/sync.js",
+          "entryPoint": "src/commands/sync.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",
@@ -72,7 +72,7 @@
         },
         "addLink": {
           "title": "Link pull request to record",
-          "entryPoint": "src/commands/addLink.js",
+          "entryPoint": "src/commands/addLink.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",
@@ -82,7 +82,7 @@
         },
         "removeLinks": {
           "title": "Remove linked pull requests from record",
-          "entryPoint": "src/commands/removeLinks.js",
+          "entryPoint": "src/commands/removeLinks.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",

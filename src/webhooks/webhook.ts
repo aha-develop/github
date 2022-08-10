@@ -1,10 +1,10 @@
-import { IDENTIFIER } from "../extension.js";
+import { IDENTIFIER } from "@lib/extension.js";
 import {
   getOrLinkPullRequestRecord,
   linkBranch,
   referenceToRecord,
-} from "../lib/fields.js";
-import { LinkableRecord } from "../lib/linkableRecord.js";
+} from "@lib/fields.js";
+import { LinkableRecord } from "@lib/linkableRecord.js";
 import {
   CreateEvent,
   PullRequestEvent,
@@ -18,6 +18,8 @@ interface WebhookProps {
   payload: WebhookEvent;
 }
 
+// Github has a list of all available events but for some reason its stuffed in
+// an array type
 type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 type GithubWebhookEvent = ArrayElement<WebhookEvents>;
@@ -28,6 +30,9 @@ aha.on("webhook", async ({ headers, payload }: WebhookProps) => {
   console.log(
     `Received webhook '${event}' ${"action" in payload ? payload.action : ""}`
   );
+
+  // Flag the account as having successfully set up the webhook
+  aha.account.setExtensionField(IDENTIFIER, "webhookConfigured", true);
 
   switch (event) {
     case "create":

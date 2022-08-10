@@ -2,7 +2,7 @@ import {
   PullRequestEvent,
   PullRequestReviewEvent,
 } from "@octokit/webhooks-types";
-import { IDENTIFIER } from "../extension";
+import { IDENTIFIER } from "./extension";
 import { LinkableRecord } from "./linkableRecord";
 
 const PULL_REQUESTS_FIELD = "pullRequests";

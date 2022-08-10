@@ -1,18 +1,15 @@
 import React, { useEffect } from "react";
-import {
-  githubPrToPrLink,
-  updatePullRequestLinkOnRecord,
-} from "../../lib/fields";
-import { getPrByUrl } from "../../lib/github/getPr";
-import { prStatusCommit } from "../../lib/github/prStatusCommit";
-import { useGithubApi } from "../../lib/useGithubApi";
+import { githubPrToPrLink, updatePullRequestLinkOnRecord } from "@lib/fields";
+import { getPrByUrl } from "@lib/github/getPr";
+import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { useGithubApi } from "@lib/useGithubApi";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
 
 /**
- * @type {React.FC<{record:import("../../lib/fields").LinkableRecord, pr:import("../../lib/fields").PrLink}>}
+ * @type {React.FC<{record:import("@lib/fields").LinkableRecord, pr:import("@lib/fields").PrLink}>}
  */
 export const PullRequest = ({ record, pr }) => {
   const originalPr = pr;

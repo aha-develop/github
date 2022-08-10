@@ -1,5 +1,5 @@
 import React from 'react';
-import css from '../lib/css';
+import css from "@lib/css";
 
 export const Styles = () => {
   return (

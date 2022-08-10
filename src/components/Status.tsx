@@ -1,9 +1,9 @@
 import React from "react";
-import { getPrByUrl } from "../lib/github/getPr";
-import { prStatusCommit } from "../lib/github/prStatusCommit";
-import { isPrWithStatus } from "../lib/github/queries";
-import { useGithubApi } from "../lib/useGithubApi";
-import { usePopperAlerter } from "../lib/usePopperAlerter";
+import { getPrByUrl } from "@lib/github/getPr";
+import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { isPrWithStatus } from "@lib/github/queries";
+import { useGithubApi } from "@lib/useGithubApi";
+import { usePopperAlerter } from "@lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
 
 const statusIcon = (status: Github.StatusState) => {
