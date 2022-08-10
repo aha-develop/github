@@ -3,7 +3,7 @@ import { useOutsideAlerter } from "@aha-app/aha-develop-react";
 import { usePopper } from "https://cdn.skypack.dev/react-popper";
 import { useCallback, useRef, useState } from "react";
 
-export function usePopperAlerter(options) {
+export function usePopperAlerter(options: any) {
   const delay = options.delay || 500;
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null
