@@ -2,10 +2,8 @@ import React from "react";
 
 /**
  * Display the pull request labels as pills with the correct colors
- *
- * @type {React.FC<{pr: Github.PrWithLabels}>}
  */
-export const PrLabels = ({ pr }) => {
+export const PrLabels: React.FC<{ pr: Github.PrWithLabels }> = ({ pr }) => {
   const labels = pr.labels.nodes.map(({ name, color }, idx) => (
     <span key={idx} className="pr-label">
       <aha-pill color={"#" + color}>{name}</aha-pill>

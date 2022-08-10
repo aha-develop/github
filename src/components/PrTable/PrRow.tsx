@@ -11,19 +11,16 @@ import { PrLabels } from "../PrLabels";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
+import { TableCols } from "./PrTable";
 
-/**
- * @typedef RowProps
- * @prop {Github.Pr} pr
- * @prop {Aha.Feature=} feature
- * @prop {import('./PrTable').TableCols} columns
- */
+interface RowProps {
+  pr: Github.Pr;
+  feature?: Aha.Feature;
+  columns: TableCols;
+}
 
-/**
- * @type {React.FC<RowProps>}
- */
-export const PrRow = ({ pr, feature, columns }) => {
-  const showDrawer = (event) => {
+export const PrRow: React.FC<RowProps> = ({ pr, feature, columns }) => {
+  const showDrawer: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
     if (feature) {
       event.preventDefault();
       aha.drawer.showRecord(feature);

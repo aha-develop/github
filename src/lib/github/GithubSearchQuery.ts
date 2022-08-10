@@ -52,7 +52,7 @@ class GithubQuery {
         if (!(typeof prop === "string")) return;
 
         const self = target;
-        return function (...args) {
+        return function (...args: TermsWithOptions) {
           const values = (self._attrs.get(prop) || []).concat(
             quotedValues(args)
           );
@@ -80,7 +80,7 @@ class GithubQuery {
 
     this._attrs.forEach((values, key) => {
       strings = strings.concat(
-        values.map((v) => [key, String(v).trim()].join(":"))
+        values.map((v: any) => [key, String(v).trim()].join(":"))
       );
     });
 

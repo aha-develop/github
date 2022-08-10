@@ -5,7 +5,9 @@ import { useCallback, useRef, useState } from "react";
 
 export function usePopperAlerter(options) {
   const delay = options.delay || 500;
-  const [referenceElement, setReferenceElement] = useState(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null
+  );
   const popperElement = useRef(null);
   const { styles, attributes } = usePopper(
     referenceElement,
@@ -16,7 +18,7 @@ export function usePopperAlerter(options) {
   const allowToggle = useRef(true);
 
   const toggle = useCallback(
-    (/** @type {boolean=} */ value) => {
+    (value?: boolean) => {
       if (allowToggle.current) setVisible((v) => value ?? !v);
     },
     [setVisible]

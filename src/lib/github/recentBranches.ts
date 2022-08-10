@@ -1,19 +1,11 @@
-// @ts-ignore
-import { classify } from "https://cdn.skypack.dev/inflected";
+import { classify } from "inflected";
 import gql from "gql-tag";
 import { RepoFragment } from "./queries";
+import { graphql } from "@octokit/graphql";
 
-/**
- * @param {string} repo
- * @returns {string}
- */
-const repoAlias = (repo) => classify(repo).replace(/[^a-zA-Z]/g, "");
+const repoAlias = (repo: string) => classify(repo).replace(/[^a-zA-Z]/g, "");
 
-/**
- * @param {string} repo
- */
-const RepoBranches = (repo) => {
-  const [owner, name] = repo.split("/");
+const RepoBranches = (repo: string) => {
   const alias = repoAlias(repo);
 
   return gql`
@@ -23,19 +15,26 @@ const RepoBranches = (repo) => {
   `;
 };
 
-/**
- * @param {import('./api').GithubApi} api
- * @param {string[]} repos
- * @returns
- */
-export async function recentBranches(api, repos) {
+interface RecentBranch {
+  nameWithOwner: string;
+  refs: {
+    edges: {
+      node: {
+        __typename: string;
+        name: string;
+        target: {
+          oid: string;
+          commitUrl: string;
+        };
+      };
+    }[];
+  };
+}
+
+export async function recentBranches(api: typeof graphql, repos: string[]) {
   const repoAliases = repos.map(repoAlias);
   const [queryArgs, queryVars] = repos.reduce(
-    (
-      /** @type {[string[], {[index:string]: string}]} */
-      acc,
-      repo
-    ) => {
+    (acc, repo) => {
       const [owner, name] = repo.split("/");
       const alias = repoAlias(repo);
       acc[0].push("$" + alias + "Name: String!");
@@ -44,7 +43,7 @@ export async function recentBranches(api, repos) {
       acc[1][alias + "Owner"] = owner;
       return acc;
     },
-    [[], {}]
+    [[] as string[], {} as Record<string, string>]
   );
 
   const query = gql`
@@ -55,6 +54,6 @@ export async function recentBranches(api, repos) {
     ${RepoFragment}
   `;
 
-  const data = await api(query, queryVars);
+  const data = await api<Record<string, RecentBranch>>(query, queryVars);
   return repoAliases.map((alias) => data[alias]);
 }

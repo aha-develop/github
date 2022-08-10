@@ -1,23 +1,23 @@
+import { graphql } from "@octokit/graphql";
 import { SearchForPr } from "./queries";
 
-/**
- * @typedef SearchForPrOptions
- * @prop {string} query
- * @prop {number=} count
- * @prop {boolean=} includeStatus
- * @prop {boolean=} includeReviews
- * @prop {boolean=} includeLabels
- */
+interface SearchForPrOptions {
+  query: string;
+  count?: number;
+  includeStatus?: boolean;
+  includeReviews?: boolean;
+  includeLabels?: boolean;
+}
 
-/**
- * @param {import('./api').GithubApi} api
- * @param {SearchForPrOptions} options
- * @returns {Promise<{edges: {node: Github.Pr}[]}>}
- */
-export async function searchForPr(api, options) {
+export async function searchForPr(
+  api: typeof graphql,
+  options: SearchForPrOptions
+) {
   const variables = { count: 20, searchQuery: options.query, ...options };
   // @ts-ignore
   delete variables["query"];
-  const { search } = await api(SearchForPr, variables);
+  const { search } = await api<{
+    search: { edges: { node: Github.Pr }[] };
+  }>(SearchForPr, variables);
   return search;
 }

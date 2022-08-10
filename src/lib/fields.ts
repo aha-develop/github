@@ -1,15 +1,17 @@
+import {
+  PullRequestEvent,
+  PullRequestReviewEvent,
+} from "@octokit/webhooks-types";
 import { IDENTIFIER } from "../extension";
+import { LinkableRecord } from "./linkableRecord";
 
 const PULL_REQUESTS_FIELD = "pullRequests";
 const BRANCHES_FIELD = "branches";
 
-/**
- * @typedef PrLink
- * @prop {number} id
- * @prop {string} name
- * @prop {string} url
- * @prop {string} state
- */
+type PullRequest =
+  | PullRequestEvent["pull_request"]
+  | PullRequestReviewEvent["pull_request"]
+  | Github.PrForLink;
 
 /**
  * @typedef AccountPr
@@ -20,20 +22,19 @@ const BRANCHES_FIELD = "branches";
 
 /**
  * Append a field/value pair to the given record.
- *
- * @param {Aha.ApplicationModel & Aha.HasExtensionFields} record
- * @param {string} fieldName
- * @param {*} newValue
  */
-async function appendField(record, fieldName, newValue) {
+async function appendField(
+  record: LinkableRecord,
+  fieldName: string,
+  newValue: any
+) {
   // Link to Aha! record.
   console.log(
     `Link to ${record.typename}:${record["referenceNum"] || record.uniqueId}`
   );
 
-  await replaceField(record, fieldName, (value) => {
-    /** @type {{id:any}[]} */
-    const list = [...(value || [])];
+  await replaceField<any[]>(record, fieldName, (value) => {
+    const list: { id: any }[] = [...(value || [])];
     const existing = list.findIndex((item) => item.id == newValue.id);
 
     if (existing > -1) {
@@ -46,36 +47,37 @@ async function appendField(record, fieldName, newValue) {
   });
 }
 
-/**
- * @template T
- * @param {Aha.HasExtensionFields} record
- * @param {string} fieldName
- * @param {((value: T|null) => T | Promise<T>)} replacer
- */
-async function replaceField(record, fieldName, replacer) {
+async function replaceField<T>(
+  record: Aha.HasExtensionFields,
+  fieldName: string,
+  replacer: (value: T | null) => T | Promise<T>
+) {
   const fieldValue = await record.getExtensionField(IDENTIFIER, fieldName);
-  const newValue = await replacer(fieldValue);
+  const newValue = await replacer(fieldValue as T);
   await record.setExtensionField(IDENTIFIER, fieldName, newValue);
 }
 
 /**
- * @param {*} pr
- * @returns {PrLink}
+ * Convert a PR from either a webhook or graphql to the basic state information
+ * held in the extension field
  */
-function githubPrToPrLink(pr) {
+function githubPrToPrLink(pr: PullRequest): Github.PrLink {
+  const url = "html_url" in pr ? pr.html_url : pr.url;
+  const merged = "merged" in pr ? pr.merged : false;
+  const state = merged ? "merged" : "state" in pr ? pr.state : pr.status;
+
   return {
     id: pr.number,
     name: pr.title,
-    url: pr.html_url || pr.url,
-    state: pr.merged ? "merged" : pr.state,
+    url,
+    state,
   };
 }
 
-/**
- * @param {Github.PrForLink} pr
- * @param {LinkableRecord} record
- */
-async function updatePullRequestLinkOnRecord(pr, record) {
+async function updatePullRequestLinkOnRecord(
+  pr: PullRequest,
+  record: LinkableRecord
+) {
   const prLink = githubPrToPrLink(pr);
 
   console.debug(
@@ -85,15 +87,14 @@ async function updatePullRequestLinkOnRecord(pr, record) {
   await appendField(record, PULL_REQUESTS_FIELD, prLink);
   await aha.account.setExtensionField(IDENTIFIER, pr.url, record.referenceNum);
 
-  if (pr.headRef) {
+  if ("headRef" in pr && pr.headRef) {
     await linkBranchToRecord(pr.headRef.name, pr.repository.url, record);
+  } else if ("head" in pr && pr.head) {
+    await linkBranchToRecord(pr.head.ref, pr.head.repo.url, record);
   }
 }
 
-/**
- * @param {Github.PrForLink} pr
- */
-async function getOrLinkPullRequestRecord(pr) {
+async function getOrLinkPullRequestRecord(pr: PullRequest) {
   let record =
     (await referenceFromPr(pr)) || (await referenceToRecord(pr.title));
 
@@ -105,13 +106,11 @@ async function getOrLinkPullRequestRecord(pr) {
   return record;
 }
 
-/**
- * @param {LinkableRecord} record
- * @param {*} number
- */
-async function unlinkPullRequest(record, number) {
-  /** @type {null|Github.PrForLink[]} */
-  const prs = await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD);
+async function unlinkPullRequest(record: LinkableRecord, number: number) {
+  const prs = await record.getExtensionField<Github.PrForLink[]>(
+    IDENTIFIER,
+    PULL_REQUESTS_FIELD
+  );
   const pr = prs?.find((pr) => pr.id === number);
   await record.setExtensionField(
     IDENTIFIER,
@@ -124,12 +123,11 @@ async function unlinkPullRequest(record, number) {
   }
 }
 
-/**
- * @param {Aha.ReferenceInterface & Aha.HasExtensionFields} record
- */
-async function unlinkPullRequests(record) {
-  /** @type {null|Github.PrForLink[]} */
-  const prs = await record.getExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD);
+async function unlinkPullRequests(record: LinkableRecord) {
+  const prs = await record.getExtensionField<Github.PrForLink[]>(
+    IDENTIFIER,
+    PULL_REQUESTS_FIELD
+  );
   if (prs) {
     for (let pr of prs) {
       await aha.account.clearExtensionField(IDENTIFIER, pr.url);
@@ -139,12 +137,11 @@ async function unlinkPullRequests(record) {
   await record.setExtensionField(IDENTIFIER, PULL_REQUESTS_FIELD, []);
 }
 
-/**
- * @param {LinkableRecord} record
- * @param {string} branchName
- * @param {string} repoUrl
- */
-async function linkBranchToRecord(branchName, repoUrl, record) {
+async function linkBranchToRecord(
+  branchName: string,
+  repoUrl: string,
+  record: LinkableRecord
+) {
   await appendField(record, BRANCHES_FIELD, {
     id: branchName,
     name: branchName,
@@ -152,11 +149,7 @@ async function linkBranchToRecord(branchName, repoUrl, record) {
   });
 }
 
-/**
- * @param {string} branchName
- * @param {string} repoUrl
- */
-async function linkBranch(branchName, repoUrl) {
+async function linkBranch(branchName: string, repoUrl: string) {
   const record = await referenceToRecord(branchName);
   if (record) {
     await linkBranchToRecord(branchName, repoUrl, record);
@@ -164,18 +157,13 @@ async function linkBranch(branchName, repoUrl) {
   }
 }
 
-/**
- * @param {Aha.HasExtensionFields} record
- */
-async function unlinkBranches(record) {
+async function unlinkBranches(record: Aha.HasExtensionFields) {
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
 }
 
-/**
- * @param {string} str
- * @returns {Promise<(LinkableRecord)|null>}
- */
-export async function referenceToRecord(str) {
+export async function referenceToRecord(
+  str: string
+): Promise<null | LinkableRecord> {
   const ahaReference = extractReferenceFromName(str);
   if (!ahaReference) {
     return null;
@@ -190,26 +178,26 @@ export async function referenceToRecord(str) {
     return null;
   }
 
-  return await RecordClass.select("id", "referenceNum").find(
+  // @ts-ignore
+  return await RecordClass.select(["id", "referenceNum"]).find(
     ahaReference.referenceNum
   );
 }
 
-/**
- * @param {Github.PrForLink | PrLink} pr
- */
-export async function referenceFromPr(pr) {
+export async function referenceFromPr(pr: PullRequest) {
   const prLink = githubPrToPrLink(pr);
-  const ref = await aha.account.getExtensionField(IDENTIFIER, prLink.url);
+  const ref = await aha.account.getExtensionField<string>(
+    IDENTIFIER,
+    prLink.url
+  );
   if (!ref) return null;
 
   return referenceToRecord(ref);
 }
 
-/**
- * @param {string} name
- */
-function extractReferenceFromName(name) {
+function extractReferenceFromName(
+  name: string
+): null | { type: "Requirement" | "Epic" | "Feature"; referenceNum: string } {
   let matches;
 
   // Requirement
@@ -239,8 +227,8 @@ function extractReferenceFromName(name) {
 
 export {
   appendField,
-  getOrLinkPullRequestRecord as linkPullRequest,
-  updatePullRequestLinkOnRecord as linkPullRequestToRecord,
+  getOrLinkPullRequestRecord,
+  updatePullRequestLinkOnRecord,
   unlinkPullRequest,
   unlinkPullRequests,
   linkBranch,

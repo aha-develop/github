@@ -6,10 +6,7 @@ import { useGithubApi } from "../lib/useGithubApi";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
 
-/**
- * @param {Github.StatusState} status
- */
-const statusIcon = (status) => {
+const statusIcon = (status: Github.StatusState) => {
   switch (status) {
     case "ERROR":
       return "fa-regular fa-exclamation-triangle";
@@ -24,10 +21,7 @@ const statusIcon = (status) => {
   }
 };
 
-/**
- * @type {React.FC<{status: Github.StatusState}>}
- */
-const StatusIcon = ({ status }) => {
+const StatusIcon: React.FC<{ status: Github.StatusState }> = ({ status }) => {
   return (
     <span className={`pr-check pr-check-${status.toLowerCase()}`}>
       <aha-icon icon={statusIcon(status)} />
@@ -35,13 +29,13 @@ const StatusIcon = ({ status }) => {
   );
 };
 
-const StatusCheck = ({ context }) => {
+const StatusCheck: React.FC<{ context: Github.Context }> = ({ context }) => {
   return (
     <aha-flex className="pr-check-detail" gap="5px">
       <span className="pr-check-icon">
         <StatusIcon status={context.state} />
       </span>
-      {context.avatarUrl?.length > 0 && (
+      {context.avatarUrl && context.avatarUrl.length > 0 && (
         <div className="pr-check-avatar">
           <img src={context.avatarUrl} />
         </div>
@@ -59,10 +53,7 @@ const StatusCheck = ({ context }) => {
   );
 };
 
-/**
- * @type {React.FC<{prStatus: Github.CommitStatus}>}
- */
-const Status = ({ prStatus }) => {
+const Status: React.FC<{ prStatus: Github.CommitStatus }> = ({ prStatus }) => {
   const {
     attributes,
     popperElement,
@@ -119,10 +110,7 @@ const Status = ({ prStatus }) => {
   );
 };
 
-/**
- * @type {React.FC<{pr:Github.Pr}>}
- */
-const FetchStatus = ({ pr }) => {
+const FetchStatus: React.FC<{ pr: Github.Pr }> = ({ pr }) => {
   const {
     data: fetchedPr,
     error,

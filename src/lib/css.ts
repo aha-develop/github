@@ -1,4 +1,4 @@
-export default function css(literals) {
+export default function css(literals: TemplateStringsArray) {
   const values = [];
   for (var _i = 1; _i < arguments.length; _i++) {
     values[_i - 1] = arguments[_i];

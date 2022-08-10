@@ -2,24 +2,21 @@ import React, { useEffect, useState } from "react";
 import { loadRelatedFeatures } from "../../lib/loadRelatedFeatures";
 import { PrRow } from "./PrRow";
 
-/**
- * @typedef TableCols
- * @prop {boolean} repoName
- * @prop {boolean} ahaLink
- * @prop {boolean} status
- * @prop {boolean} checks
- * @prop {boolean} reviews
- * @prop {boolean} labels
- */
+export interface TableCols {
+  repoName: boolean;
+  ahaLink: boolean;
+  status: boolean;
+  checks: boolean;
+  reviews: boolean;
+  labels: boolean;
+}
 
-/**
- * @typedef TableProps
- * @prop {Github.PrForLink[]} prs
- * @prop {TableCols=} columns
- */
+export interface TableProps {
+  prs: Github.PrForLink[];
+  columns?: TableCols;
+}
 
-/** @type {TableCols} */
-const defaultColumns = {
+const defaultColumns: TableCols = {
   repoName: false,
   ahaLink: true,
   status: true,
@@ -28,12 +25,9 @@ const defaultColumns = {
   labels: false,
 };
 
-/**
- * @type {React.FC<TableProps>}
- */
-export const PrTable = ({ prs, columns }) => {
+export const PrTable: React.FC<TableProps> = ({ prs, columns }) => {
   const shownColumns = columns ?? defaultColumns;
-  const [prRecords, setPrRecords] = useState({});
+  const [prRecords, setPrRecords] = useState<Record<string, Aha.Feature>>({});
 
   useEffect(() => {
     let mounted = true;

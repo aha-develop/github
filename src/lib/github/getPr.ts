@@ -1,38 +1,38 @@
+import { graphql } from "@octokit/graphql";
 import { GetPr } from "./queries";
 import { repoFromUrl } from "./repoFromUrl";
 
-/**
- * @typedef GetPrOptions
- * @prop {boolean=} includeStatus
- * @prop {boolean=} includeReviews
- */
+interface GetPrOptions {
+  includeStatus?: boolean;
+  includeReviews?: boolean;
+}
 
-/**
- * @param {import('./api').GithubApi} api
- * @param {string} owner
- * @param {string} name
- * @param {number} number
- * @param {GetPrOptions=} options
- * @returns {Promise<Github.Pr>}
- */
-export async function getPr(api, owner, name, number, options = {}) {
+export async function getPr(
+  api: typeof graphql,
+  owner: string,
+  name: string,
+  number: number,
+  options: GetPrOptions = {}
+) {
   const {
     repository: { pullRequest },
-  } = await api(GetPr, { owner, name, number, ...options });
+  } = await api<{ repository: { pullRequest: Github.Pr } }>(GetPr, {
+    owner,
+    name,
+    number,
+    ...options,
+  });
   return pullRequest;
 }
 
-/**
- * @param {string} url
- */
-const prNumberFromUrl = (url) => Number(new URL(url).pathname.split("/")[4]);
+const prNumberFromUrl = (url: string) =>
+  Number(new URL(url).pathname.split("/")[4]);
 
-/**
- * @param {import('./api').GithubApi} api
- * @param {string} url
- * @param {GetPrOptions=} options
- */
-export async function getPrByUrl(api, url, options = {}) {
+export async function getPrByUrl(
+  api: typeof graphql,
+  url: string,
+  options: GetPrOptions = {}
+) {
   const [owner, name] = repoFromUrl(url);
   const number = prNumberFromUrl(url);
 

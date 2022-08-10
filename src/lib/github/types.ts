@@ -16,11 +16,19 @@ declare namespace Github {
     description: string;
     targetUrl: string;
     state: StatusState;
+    avatarUrl?: string;
   }
 
   interface CommitStatus {
     statusCheckRollup: { state: StatusState } | null;
     status: { contexts: Context[] } | null;
+  }
+
+  interface PrLink {
+    id: number;
+    name: string;
+    url: string;
+    state: string;
   }
 
   interface PrForLink {

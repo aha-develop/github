@@ -1,11 +1,8 @@
-import { linkPullRequestToRecord } from "../lib/fields";
+import { updatePullRequestLinkOnRecord } from "../lib/fields";
 import { withGitHubApi } from "../lib/github/api";
 import { getPrByUrl } from "../lib/github/getPr";
 
-/**
- * @param {string} urlString
- */
-function validPrUrl(urlString) {
+function validPrUrl(urlString: string) {
   const url = new URL(urlString);
   return (
     url.origin === "https://github.com" &&
@@ -13,7 +10,9 @@ function validPrUrl(urlString) {
   );
 }
 
-aha.on("addLink", async ({ record, context }) => {
+const AddLink: Aha.CommandExtension<void> = async ({ record }) => {
+  if (!record) return;
+
   const prUrl = await aha.commandPrompt("Link URL", {
     placeholder: "Enter the URL to a pull request",
   });
@@ -24,6 +23,8 @@ aha.on("addLink", async ({ record, context }) => {
 
   await withGitHubApi(async (api) => {
     const pullRequest = await getPrByUrl(api, prUrl);
-    await linkPullRequestToRecord(pullRequest, record);
+    await updatePullRequestLinkOnRecord(pullRequest, record);
   });
-});
+};
+
+aha.on("addLink", AddLink);

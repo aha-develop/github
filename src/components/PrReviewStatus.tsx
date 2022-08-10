@@ -1,16 +1,11 @@
 import React from "react";
 import { usePopperAlerter } from "../lib/usePopperAlerter";
 
-/**
- * @typedef Props
- * @prop {Github.PrForReviewDecision} pr
- */
+interface Props {
+  pr: Github.PrForReviewDecision;
+}
 
-/**
- *
- * @param {Github.PullRequestReviewDecision} reviewStatus
- */
-function icon(reviewStatus) {
+function icon(reviewStatus: Github.PullRequestReviewDecision) {
   switch (reviewStatus) {
     case "REVIEW_REQUIRED":
       return "user";
@@ -21,10 +16,7 @@ function icon(reviewStatus) {
   }
 }
 
-/**
- * @type {React.FC<Props>}
- */
-export const PrReviewStatus = ({ pr }) => {
+export const PrReviewStatus: React.FC<Props> = ({ pr }) => {
   const {
     attributes,
     popperElement,

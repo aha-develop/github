@@ -1,18 +1,17 @@
 import React from "react";
 import { searchForPr } from "../../lib/github/searchForPr";
 import { useGithubApi } from "../../lib/useGithubApi";
-import { PrTable } from "./PrTable";
+import { PrTable, TableCols } from "./PrTable";
 
-/**
- * @typedef QueryTableProps
- * @prop {string} query
- * @prop {import('./PrTable').TableCols=} columns
- */
+interface QueryTableProps {
+  query: string;
+  columns?: TableCols;
+}
 
-/**
- * @type {React.FC<QueryTableProps>}
- */
-export const PrTableWithQuery = ({ query, columns }) => {
+export const PrTableWithQuery: React.FC<QueryTableProps> = ({
+  query,
+  columns,
+}) => {
   const { authed, error, loading, data } = useGithubApi(
     async (api) => {
       const { edges } = await searchForPr(api, {

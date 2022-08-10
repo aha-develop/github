@@ -1,4 +1,4 @@
-import { linkBranch, linkPullRequest } from "../lib/fields";
+import { linkBranch, getOrLinkPullRequestRecord } from "../lib/fields";
 import { withGitHubApi } from "../lib/github/api";
 import GithubSearchQuery from "../lib/github/GithubSearchQuery";
 import { searchForPr } from "../lib/github/searchForPr";
@@ -31,7 +31,7 @@ aha.on("sync", ({ record }, { settings }) => {
     for (let prNode of search.edges) {
       const pr = prNode.node;
 
-      await linkPullRequest(pr);
+      await getOrLinkPullRequestRecord(pr);
 
       if (pr.headRef) {
         await linkBranch(pr.headRef.name, pr.repository.url);

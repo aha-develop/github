@@ -2,12 +2,10 @@ const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
 
 /**
  * Given a list of PRs, load the corresponding features if they exist
- *
- * @param {import('./github/queries').PrForLink[]} prs
  */
-export async function loadRelatedFeatures(prs) {
-  const refNums = [];
-  const prsByRefNum = {};
+export async function loadRelatedFeatures(prs: Github.PrForLink[]) {
+  const refNums: string[] = [];
+  const prsByRefNum: Record<string, Github.PrForLink> = {};
 
   for (let pr of prs) {
     [pr.headRef?.name.toUpperCase(), pr.title]
@@ -37,8 +35,7 @@ export async function loadRelatedFeatures(prs) {
     })
     .all();
 
-  /** @type {{[index:string]: Aha.Feature}} */
-  const prRecords = {};
+  const prRecords: Record<string, Aha.Feature> = {};
 
   for (let feature of features) {
     const pr = prsByRefNum[feature.referenceNum];

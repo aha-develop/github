@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
-import { githubPrToPrLink, linkPullRequestToRecord } from "../../lib/fields";
+import {
+  githubPrToPrLink,
+  updatePullRequestLinkOnRecord,
+} from "../../lib/fields";
 import { getPrByUrl } from "../../lib/github/getPr";
 import { prStatusCommit } from "../../lib/github/prStatusCommit";
 import { useGithubApi } from "../../lib/useGithubApi";
@@ -39,7 +42,7 @@ export const PullRequest = ({ record, pr }) => {
     const prLink = githubPrToPrLink(fetchedPr);
     if (prLink.state === originalPr.state) return;
 
-    linkPullRequestToRecord(fetchedPr, record);
+    updatePullRequestLinkOnRecord(fetchedPr, record);
   }, [fetchedPr, loading]);
 
   // Once fetched replace the prop with the fetched version

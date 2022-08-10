@@ -1,13 +1,10 @@
-// @ts-ignore
-import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
+import { graphql } from "@octokit/graphql";
 
-/** @typedef {(query:string,options?:{})=>Promise<any>} GithubApi */
-
-/**
- * @returns {Promise<GithubApi>}
- */
 export async function githubApi(cachedOnly = false) {
-  const options = { useCachedRetry: true, parameters: { scope: "repo" } };
+  const options: Aha.AuthOptions = {
+    useCachedRetry: true,
+    parameters: { scope: "repo" },
+  };
   if (cachedOnly) {
     options["reAuth"] = false;
   }
@@ -21,12 +18,9 @@ export async function githubApi(cachedOnly = false) {
   });
 }
 
-/**
- *
- * @param {((api: GithubApi) => Promise<any>)} callback
- * @returns
- */
-export async function withGitHubApi(callback) {
+export async function withGitHubApi<T>(
+  callback: (api: typeof graphql) => Promise<T>
+) {
   const api = await githubApi(false);
   return await callback(api);
 }

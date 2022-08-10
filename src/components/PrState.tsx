@@ -2,10 +2,7 @@ import React from "react";
 // @ts-ignore
 import { titleize } from "https://cdn.skypack.dev/inflected";
 
-/**
- * @param {'open'|'merged'|'closed'} state
- */
-const icon = (state) => {
+const icon = (state: "open" | "merged" | "closed") => {
   switch (state) {
     case "open":
       return "code-branch";
@@ -16,7 +13,7 @@ const icon = (state) => {
   }
 };
 
-export const PrState = ({ pr }) => {
+export const PrState: React.FC<{ pr: Github.PrLink }> = ({ pr }) => {
   return (
     <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
       <aha-flex gap="4px">
