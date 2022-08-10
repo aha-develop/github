@@ -1,7 +1,7 @@
 {
   "name": "@aha-develop/github",
   "description": "GitHub",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "author": "Aha! (support@aha.io)",
   "repository": {
     "type": "git",
@@ -91,8 +91,31 @@
       "endpoints": {
         "webhook": {
           "title": "Webhook from Github",
-          "entryPoint": "src/webhooks/webhook.js",
+          "entryPoint": "src/webhooks/webhook.ts",
           "public": true
+        }
+      },
+      "automationTriggers": {
+        "draftPrOpened": {
+          "title": "Draft PR opened"
+        },
+        "prOpened": {
+          "title": "PR opened"
+        },
+        "prMerged": {
+          "title": "PR merged"
+        },
+        "prClosed": {
+          "title": "PR closed"
+        },
+        "prReopened": {
+          "title": "PR Re-opened"
+        },
+        "prApproved": {
+          "title": "PR approved"
+        },
+        "prChangesRequested": {
+          "title": "PR changes requested"
         }
       }
     }
