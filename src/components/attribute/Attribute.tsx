@@ -30,15 +30,24 @@ export const Attribute: React.FC<AttributeProps> = ({ fields, record }) => {
           gap="5px"
         >
           <Branches fields={fields} />
-          <aha-button-group>
-            <aha-button
-              size="mini"
-              onClick={(e) => onCopy(record.referenceNum)}
-            >
-              {copied ? "Copied!" : "Copy ID"}
-            </aha-button>
-            <Menu record={record} />
-          </aha-button-group>
+          <div
+            style={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <aha-button-group>
+              <aha-button
+                size="mini"
+                onClick={(e) => onCopy(record.referenceNum)}
+              >
+                {copied ? "Copied!" : "Copy ID"}
+              </aha-button>
+              <Menu record={record} />
+            </aha-button-group>
+          </div>
         </aha-flex>
         <aha-flex
           align-items="center"
