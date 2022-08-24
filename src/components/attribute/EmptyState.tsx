@@ -110,6 +110,7 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
             marginBottom: 0,
           }}
           onChange={(e) => pasteLink(e.target.value)}
+          autoFocus
         />
         {validation}
       </EmptyStateBox>
