@@ -1,7 +1,8 @@
 import React from "react";
-import { ExtensionRoot } from "../components/ExtensionRoot";
-import { PrPanel } from "../components/PrPanel";
-import { IDENTIFIER } from "../extension";
+import { ExtensionRoot } from "@components/ExtensionRoot";
+import { PrPanel } from "@components/PrPanel";
+import { TableCols } from "@components/PrTable/PrTable";
+import { IDENTIFIER } from "@lib/extension";
 
 const panel = aha.getPanel(IDENTIFIER, "prPanel", {
   name: "GitHub pull requests",
@@ -12,7 +13,7 @@ const isTrue = (panelSetting: unknown) => String(panelSetting) === "true";
 panel.on("render", ({ props: { panel } }, { settings }) => {
   const filter = panel?.settings?.github_filter as string;
   const repos = (settings.repos || []) as string[];
-  const columns: import("../components/PrTable/PrTable").TableCols = {
+  const columns: TableCols = {
     ahaLink: isTrue(panel.settings.show_record),
     repoName: isTrue(panel.settings.show_repo),
     checks: isTrue(panel.settings.show_checks),

@@ -1,7 +1,5 @@
 import { useAuth } from "@aha-app/aha-develop-react";
-// @ts-ignore
-import { graphql } from "https://cdn.skypack.dev/@octokit/graphql";
-import { GithubApi } from "./github/api";
+import { graphql } from "@octokit/graphql";
 
 interface UseGithubOptions<R> {
   /**
@@ -11,7 +9,7 @@ interface UseGithubOptions<R> {
 }
 
 interface GithubApiCallback<R> {
-  (api: GithubApi): Promise<R>;
+  (api: typeof graphql): Promise<R>;
 }
 
 export function useGithubApi<R>(

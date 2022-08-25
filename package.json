@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "@aha-app/aha-develop-react": "^1.0.0",
+    "@octokit/graphql": "^5.0.0",
+    "@octokit/webhooks-types": "^6.3.2",
     "gql-tag": "^1.0.1",
+    "inflected": "^2.1.0",
     "prettier": "^2.6.2"
   },
   "type": "module",
@@ -35,7 +38,7 @@
         "links": {
           "title": "GitHub",
           "host": "attribute",
-          "entryPoint": "src/views/attribute.js",
+          "entryPoint": "src/views/attribute.tsx",
           "recordTypes": [
             "Feature",
             "Epic",
@@ -45,7 +48,7 @@
         "prs": {
           "title": "My Pull Requests",
           "host": "page",
-          "entryPoint": "src/views/prsPage.js",
+          "entryPoint": "src/views/prsPage.tsx",
           "location": {
             "menu": "Work"
           }
@@ -59,7 +62,7 @@
       "commands": {
         "sync": {
           "title": "Sync pull requests",
-          "entryPoint": "src/commands/sync.js",
+          "entryPoint": "src/commands/sync.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",
@@ -69,7 +72,7 @@
         },
         "addLink": {
           "title": "Link pull request to record",
-          "entryPoint": "src/commands/addLink.js",
+          "entryPoint": "src/commands/addLink.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",
@@ -79,7 +82,7 @@
         },
         "removeLinks": {
           "title": "Remove linked pull requests from record",
-          "entryPoint": "src/commands/removeLinks.js",
+          "entryPoint": "src/commands/removeLinks.ts",
           "commandType": "recordAction",
           "recordTypes": [
             "Epic",
@@ -121,7 +124,12 @@
     }
   },
   "devDependencies": {
+    "@types/inflected": "^1.1.29",
+    "@types/jest": "^28.1.8",
     "@types/react": "^17.0.3",
-    "@types/react-dom": "^17.0.3"
+    "@types/react-dom": "^17.0.3",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.7.4"
   }
 }
