@@ -102,6 +102,9 @@
         "draftPrOpened": {
           "title": "Draft PR opened"
         },
+        "draftReadyForReview": {
+          "title": "Draft PR ready for review"
+        },
         "prOpened": {
           "title": "PR opened"
         },
