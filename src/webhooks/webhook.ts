@@ -58,7 +58,7 @@ const findAutomationTrigger = (
     case "converted_to_draft":
       return "draftPrOpened";
     case "ready_for_review":
-      return "draftReadyForReview";
+      return "prOpened";
     case "reopened":
       return "prOpened";
     case "submitted":
