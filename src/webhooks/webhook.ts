@@ -55,6 +55,8 @@ const findAutomationTrigger = (
       return payload.pull_request.merged ? "prMerged" : "prClosed";
     case "opened":
       return payload.pull_request.draft ? "draftPrOpened" : "prOpened";
+    case "converted_to_draft":
+      return "draftPrOpened";
     case "ready_for_review":
       return "draftReadyForReview";
     case "reopened":
