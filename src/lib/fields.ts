@@ -96,9 +96,13 @@ async function updatePullRequestLinkOnRecord(
 
 async function getOrLinkPullRequestRecord(pr: PullRequest) {
   // The PR might be a webhook or a GQL object. Handle both cases.
-  const head = (("headRef" in pr && pr.headRef) ||
-    ("head" in pr && pr.head)) as any;
-  const headRefName = head?.ref || head?.name || "";
+  let headRefName: string | undefined;
+
+  if ("headRef" in pr) {
+    headRefName = pr.headRef?.name;
+  } else {
+    headRefName = pr.head?.ref;
+  }
 
   let record =
     (await referenceFromPr(pr)) ||
