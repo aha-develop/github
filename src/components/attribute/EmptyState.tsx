@@ -1,4 +1,4 @@
-import { IDENTIFIER } from "@lib/extension";
+import { IDENTIFIER, LEARN_MORE_URL, ICON } from "@lib/extension";
 import React, { useEffect, useState } from "react";
 
 import { useClipboard } from "@lib/useClipboard";
@@ -8,9 +8,6 @@ import { withGitHubApi } from "@lib/github/api";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { validPrUrl } from "@lib/validPrUrl";
-
-const LEARN_MORE_URL = "https://github.com/aha-develop/github";
-const ICON = aha.iconForExtensionIdentifier(IDENTIFIER);
 
 type MenuProps = {
   record: LinkableRecord;

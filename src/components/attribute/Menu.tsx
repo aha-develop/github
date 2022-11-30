@@ -1,4 +1,5 @@
 import React from "react";
+import { LEARN_MORE_URL } from "@lib/extension";
 
 export function Menu({ record }) {
   async function sync() {
@@ -22,11 +23,7 @@ export function Menu({ record }) {
       <aha-menu-item onClick={sync}>Scan GitHub</aha-menu-item>
       <hr />
       <aha-menu-item>
-        <a
-          href="https://www.aha.io/support/develop/integrations/github/github-extension"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">
           <aha-icon icon="fa fa-external-link" />
           Read the docs
         </a>
