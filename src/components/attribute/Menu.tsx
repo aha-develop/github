@@ -23,7 +23,7 @@ export function Menu({ record }) {
       <hr />
       <aha-menu-item>
         <a
-          href="https://github.com/aha-develop/github"
+          href="https://www.aha.io/support/develop/integrations/github/github-extension"
           target="_blank"
           rel="noopener noreferrer"
         >
