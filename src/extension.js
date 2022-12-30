@@ -1,1 +1,0 @@
-export const IDENTIFIER = "aha-develop.github";

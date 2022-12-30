@@ -1,8 +1,8 @@
 import React from "react";
 import { PrTable } from "./PrTable";
-import { searchForPr } from "../lib/github/searchForPr";
-import GithubSearchQuery from "../lib/github/GithubSearchQuery";
-import { useGithubApi } from "../lib/useGithubApi";
+import { searchForPr } from "@lib/github/searchForPr";
+import GithubSearchQuery from "@lib/github/GithubSearchQuery";
+import { useGithubApi } from "@lib/useGithubApi";
 
 export const PrPanel: React.FC<{
   filter: string;

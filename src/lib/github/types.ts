@@ -1,4 +1,15 @@
 declare namespace Github {
+  interface BranchLink {
+    id: string;
+    name: string;
+    url: string;
+  }
+
+  interface IRecordExtensionFields {
+    branches?: BranchLink[];
+    pullRequests?: PrLink[];
+  }
+
   type PullRequestReviewDecision =
     | "CHANGES_REQUESTED"
     | "APPROVED"
@@ -16,11 +27,19 @@ declare namespace Github {
     description: string;
     targetUrl: string;
     state: StatusState;
+    avatarUrl?: string;
   }
 
   interface CommitStatus {
     statusCheckRollup: { state: StatusState } | null;
     status: { contexts: Context[] } | null;
+  }
+
+  interface PrLink {
+    id: number;
+    name: string;
+    url: string;
+    state: string;
   }
 
   interface PrForLink {

@@ -6,10 +6,18 @@
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
+    "strict": true,
     "downlevelIteration": true,
     "module": "ES6",
     "moduleResolution": "node",
-    "target": "ES6"
+    "target": "ES6",
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["./components/*"],
+      "@components": ["./components/"],
+      "@lib/*": ["./lib/*"],
+      "@lib": ["./lib/"]
+    }
   },
   "include": [".aha-cache/types", "src"]
 }

@@ -1,2 +1,5 @@
 /node_modules
 .aha-cache
+
+# Ignore build files in the repo root
+./*.gz
