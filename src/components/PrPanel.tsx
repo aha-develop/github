@@ -42,7 +42,7 @@ export const PrPanel: React.FC<{
           style={{ textAlign: "center", paddingTop: 50 }}
         >
           <p>Authenticate with GitHub to get started.</p>
-          <aha-button type="primary" onClick={() => fetchData()}>
+          <aha-button kind="primary" onClick={() => fetchData()}>
             Authenticate with GitHub
           </aha-button>
         </div>

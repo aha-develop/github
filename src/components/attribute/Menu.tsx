@@ -16,24 +16,34 @@ export function Menu({ record }) {
 
   return (
     <aha-menu>
-      <aha-button slot="button" type="attribute" size="mini">
+      <aha-button slot="control" kind="secondary" size="mini">
         <aha-icon icon="fa-solid fa-ellipsis"></aha-icon>
       </aha-button>
-      <aha-menu-item onClick={addLink}>Paste PR link</aha-menu-item>
-      <aha-menu-item onClick={sync}>Scan GitHub</aha-menu-item>
-      <hr />
-      <aha-menu-item>
-        <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">
-          <aha-icon icon="fa fa-external-link" />
-          Read the docs
-        </a>
-      </aha-menu-item>
-      <aha-menu-item type="danger" onClick={removeLinks}>
-        <a href>
-          <aha-icon icon="fa fa-trash" />
-          Unlink all PRs
-        </a>
-      </aha-menu-item>
+      <aha-menu-content>
+        <aha-menu-item>
+          <aha-button kind="plain" onClick={addLink}>
+            Paste PR link
+          </aha-button>
+        </aha-menu-item>
+        <aha-menu-item>
+          <aha-button kind="plain" onClick={sync}>
+            Scan GitHub
+          </aha-button>
+        </aha-menu-item>
+        <hr />
+        <aha-menu-item>
+          <aha-button kind="plain" href={LEARN_MORE_URL} target="_blank">
+            <aha-icon icon="fa fa-external-link" />
+            Read the docs
+          </aha-button>
+        </aha-menu-item>
+        <aha-menu-item type="danger">
+          <aha-button kind="plain" onClick={removeLinks}>
+            <aha-icon icon="fa fa-trash" />
+            Unlink all PRs
+          </aha-button>
+        </aha-menu-item>
+      </aha-menu-content>
     </aha-menu>
   );
 }

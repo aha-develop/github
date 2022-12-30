@@ -60,7 +60,7 @@ export const PrPage = ({ repos }) => {
           className="auth-prompt"
           style={{ justifyContent: "center", alignItems: "center" }}
         >
-          <aha-button onClick={() => fetchData()} type="primary">
+          <aha-button onClick={() => fetchData()} kind="primary">
             Authenticate with Github
           </aha-button>
         </section>
