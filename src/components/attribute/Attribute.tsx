@@ -40,6 +40,7 @@ export const Attribute: React.FC<AttributeProps> = ({ fields, record }) => {
           >
             <aha-button-group>
               <aha-button
+                kind="secondary"
                 size="mini"
                 onClick={(e) => onCopy(record.referenceNum)}
               >

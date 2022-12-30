@@ -16,7 +16,7 @@ export function Menu({ record }) {
 
   return (
     <aha-menu>
-      <aha-button slot="control" kind="secondary" size="small">
+      <aha-button slot="control" kind="secondary" size="mini">
         <aha-icon icon="fa-solid fa-ellipsis"></aha-icon>
       </aha-button>
       <aha-menu-content>

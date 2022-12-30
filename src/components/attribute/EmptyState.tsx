@@ -21,18 +21,28 @@ const Menu = ({ record, onPaste }: MenuProps) => {
 
   return (
     <aha-menu>
-      <aha-button slot="button" type="attribute" size="mini">
+      <aha-button slot="control" size="mini">
         <aha-icon icon="fa-solid fa-ellipsis"></aha-icon>
       </aha-button>
-      <aha-menu-item onClick={() => onPaste()}>Paste PR link</aha-menu-item>
-      <aha-menu-item onClick={handleSync}>Scan GitHub</aha-menu-item>
-      <hr />
-      <aha-menu-item>
-        <a href={LEARN_MORE_URL} target="_blank" rel="noopener noreferrer">
-          <aha-icon icon="fa fa-external-link" />
-          Read the docs
-        </a>
-      </aha-menu-item>
+      <aha-menu-content>
+        <aha-menu-item>
+          <aha-button kind="plain" onClick={() => onPaste()}>
+            Paste PR link
+          </aha-button>
+        </aha-menu-item>
+        <aha-menu-item>
+          <aha-button kind="plain" onClick={handleSync}>
+            Scan GitHub
+          </aha-button>
+        </aha-menu-item>
+        <hr />
+        <aha-menu-item>
+          <aha-button kind="plain" href={LEARN_MORE_URL} target="_blank">
+            <aha-icon icon="fa fa-external-link" />
+            Read the docs
+          </aha-button>
+        </aha-menu-item>
+      </aha-menu-content>
     </aha-menu>
   );
 };
@@ -123,12 +133,7 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
             Set up GitHub
           </div>
           <aha-button-group>
-            <aha-button
-              size="mini"
-              href={LEARN_MORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <aha-button size="mini" href={LEARN_MORE_URL} target="_blank">
               Learn more
             </aha-button>
             <Menu record={record} onPaste={viewPasteMode} />
