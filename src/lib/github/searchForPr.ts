@@ -1,5 +1,6 @@
 import { graphql } from "@octokit/graphql";
 import { SearchForPr } from "./queries";
+import { GithubExtension } from "./types";
 
 interface SearchForPrOptions {
   query: string;
@@ -17,7 +18,7 @@ export async function searchForPr(
   // @ts-ignore
   delete variables["query"];
   const { search } = await api<{
-    search: { edges: { node: Github.Pr }[] };
+    search: { edges: { node: GithubExtension.Pr }[] };
   }>(SearchForPr, variables);
   return search;
 }

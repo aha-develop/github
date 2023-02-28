@@ -1,22 +1,25 @@
-import React, { useEffect } from "react";
-import { githubPrToPrLink, updatePullRequestLinkOnRecord } from "@lib/fields";
+import {
+  githubPrToPrLink,
+  PrRecord,
+  updatePullRequestLinkOnRecord,
+} from "@lib/fields";
 import { getPrByUrl } from "@lib/github/getPr";
 import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { GithubExtension } from "@lib/github/types";
+import { LinkableRecord } from "@lib/linkableRecord";
 import { useGithubApi } from "@lib/useGithubApi";
+import React, { useEffect } from "react";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
 
-/**
- * @type {React.FC<{record:import("@lib/fields").LinkableRecord, pr:import("@lib/fields").PrLink}>}
- */
-export const PullRequest = ({ record, pr }) => {
+export const PullRequest: React.FC<{
+  record: LinkableRecord;
+  pr: PrRecord | GithubExtension.PrLink;
+}> = ({ record, pr }) => {
   const originalPr = pr;
-
-  if (pr.title) {
-    pr = { ...pr, ...githubPrToPrLink(pr) };
-  }
+  let mergedPr = "title" in pr ? { ...pr, ...githubPrToPrLink(pr) } : pr;
 
   const {
     authed,
@@ -25,10 +28,10 @@ export const PullRequest = ({ record, pr }) => {
     error,
     fetchData,
   } = useGithubApi(async (api) => {
-    return await getPrByUrl(api, pr.url, {
+    return (await getPrByUrl(api, mergedPr.url, {
       includeStatus: true,
       includeReviews: true,
-    });
+    })) as GithubExtension.PrWithStatus & GithubExtension.PrForReviewDecision;
   });
 
   // If the reloaded PR has changed state then update the extension fields
@@ -44,15 +47,15 @@ export const PullRequest = ({ record, pr }) => {
 
   // Once fetched replace the prop with the fetched version
   if (authed && fetchedPr) {
-    pr = githubPrToPrLink(fetchedPr);
+    mergedPr = { ...mergedPr, ...githubPrToPrLink(fetchedPr) };
   }
 
   return (
     <aha-flex align-items="center" justify-content="space-between" gap="5px">
       <span>
-        <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
+        <ExternalLink href={mergedPr.url}>{mergedPr.name}</ExternalLink>
       </span>
-      <PrState pr={pr} />
+      <PrState state={mergedPr.state} />
       {loading && (
         <span className="pr-status">
           <aha-spinner />

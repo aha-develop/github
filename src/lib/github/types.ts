@@ -1,28 +1,36 @@
-declare namespace Github {
-  interface BranchLink {
+import { GithubActions } from "@lib/actions/githubActions";
+
+export namespace GithubExtension {
+  export interface BranchLink {
     id: string;
     name: string;
     url: string;
   }
 
-  interface IRecordExtensionFields {
+  export interface IRecordExtensionFields {
     branches?: BranchLink[];
     pullRequests?: PrLink[];
+    actions?: GithubActions.IActionFields;
   }
 
-  type PullRequestReviewDecision =
+  export type PullRequestReviewDecision =
     | "CHANGES_REQUESTED"
     | "APPROVED"
     | "REVIEW_REQUIRED";
 
-  type StatusState = "EXPECTED" | "ERROR" | "FAILURE" | "SUCCESS" | "PENDING";
+  export type StatusState =
+    | "EXPECTED"
+    | "ERROR"
+    | "FAILURE"
+    | "SUCCESS"
+    | "PENDING";
 
-  interface PrLabel {
+  export interface PrLabel {
     color: string;
     name: string;
   }
 
-  interface Context {
+  export interface Context {
     context: string;
     description: string;
     targetUrl: string;
@@ -30,44 +38,57 @@ declare namespace Github {
     avatarUrl?: string;
   }
 
-  interface CommitStatus {
+  export interface CommitStatus {
     statusCheckRollup: { state: StatusState } | null;
     status: { contexts: Context[] } | null;
   }
 
-  interface PrLink {
+  export type PrState =
+    | "open"
+    | "merged"
+    | "closed"
+    | "OPEN"
+    | "MERGED"
+    | "CLOSED";
+
+  export interface PrLink {
     id: number;
     name: string;
     url: string;
-    state: string;
+    state: PrState;
   }
 
-  interface PrForLink {
+  export interface PrForLink {
     id: number;
     number: number;
     title: string;
     url: string;
-    status: string;
+    // status: string;
+    state: PrState;
     merged: boolean;
     repository: { url: string };
     headRef: { name: string } | null;
   }
 
-  interface PrWithStatus extends PrForLink {
+  export interface PrWithStatus extends PrForLink {
     commits: { nodes: { commit: CommitStatus }[] };
   }
 
-  interface PrForReviewDecision extends PrForLink {
+  export function isPrWithStatus(pr: PrForLink): pr is PrWithStatus {
+    return "commits" in pr && "nodes" in (pr.commits as any);
+  }
+
+  export interface PrForReviewDecision extends PrForLink {
     reviewDecision: PullRequestReviewDecision;
     latestReviews: { nodes: { state: PullRequestReviewDecision }[] };
   }
 
-  interface PrWithLabels extends PrForLink {
+  export interface PrWithLabels extends PrForLink {
     labels: { nodes: PrLabel[] };
   }
 
-  type PrForLinkWithStatus = PrForLink & PrWithStatus;
+  export type PrForLinkWithStatus = PrForLink & PrWithStatus;
 
-  type Pr = PrForLink &
+  export type Pr = PrForLink &
     Partial<PrWithStatus & PrForReviewDecision & PrWithLabels>;
 }

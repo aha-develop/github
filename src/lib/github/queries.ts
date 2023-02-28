@@ -1,4 +1,5 @@
 import gql from "gql-tag";
+import { GithubExtension } from "./types";
 
 export const PrForLinkFragment = gql`
   fragment PrForLink on PullRequest {
@@ -143,15 +144,19 @@ export const RepoFragment = gql`
 `;
 
 export function isPrForReviewDecision(
-  pr: Github.Pr
-): pr is Github.PrForReviewDecision {
+  pr: GithubExtension.Pr
+): pr is GithubExtension.PrForReviewDecision {
   return Boolean(pr.latestReviews?.nodes);
 }
 
-export function isPrWithStatus(pr: Github.Pr): pr is Github.PrWithStatus {
+export function isPrWithStatus(
+  pr: GithubExtension.Pr
+): pr is GithubExtension.PrWithStatus {
   return Object.keys(pr).includes("commits");
 }
 
-export function isPrWithLabels(pr: Github.Pr): pr is Github.PrWithLabels {
+export function isPrWithLabels(
+  pr: GithubExtension.Pr
+): pr is GithubExtension.PrWithLabels {
   return Boolean(pr.labels?.nodes);
 }

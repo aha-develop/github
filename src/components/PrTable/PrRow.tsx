@@ -12,9 +12,10 @@ import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
 import { TableCols } from "./PrTable";
+import { GithubExtension } from "@lib/github/types";
 
 interface RowProps {
-  pr: Github.Pr;
+  pr: GithubExtension.Pr;
   feature?: Aha.Feature;
   columns: TableCols;
 }
@@ -53,7 +54,7 @@ export const PrRow: React.FC<RowProps> = ({ pr, feature, columns }) => {
       </td>
       {columns.status && (
         <td>
-          <PrState pr={pr} />
+          <PrState state={pr.state} />
         </td>
       )}
       {columns.checks && (

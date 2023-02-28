@@ -1,6 +1,7 @@
 import { graphql } from "@octokit/graphql";
 import { GetPr } from "./queries";
 import { repoFromUrl } from "./repoFromUrl";
+import { GithubExtension } from "./types";
 
 interface GetPrOptions {
   includeStatus?: boolean;
@@ -16,7 +17,7 @@ export async function getPr(
 ) {
   const {
     repository: { pullRequest },
-  } = await api<{ repository: { pullRequest: Github.Pr } }>(GetPr, {
+  } = await api<{ repository: { pullRequest: GithubExtension.Pr } }>(GetPr, {
     owner,
     name,
     number,

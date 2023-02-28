@@ -1,4 +1,5 @@
 import { useAuth } from "@aha-app/aha-develop-react";
+import { GithubExtension } from "@lib/github/types";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { useClipboard } from "@lib/useClipboard";
 import React from "react";
@@ -9,7 +10,7 @@ import { PullRequests } from "./PullRequests";
 
 type AttributeProps = {
   record: LinkableRecord;
-  fields: Github.IRecordExtensionFields;
+  fields: GithubExtension.IRecordExtensionFields;
 };
 
 export const Attribute: React.FC<AttributeProps> = ({ fields, record }) => {
@@ -63,7 +64,7 @@ export const Attribute: React.FC<AttributeProps> = ({ fields, record }) => {
           >
             <PullRequests
               record={record}
-              prs={fields.pullRequests}
+              prs={fields.pullRequests || []}
             ></PullRequests>
           </aha-flex>
         </aha-flex>

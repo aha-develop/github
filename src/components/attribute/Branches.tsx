@@ -1,8 +1,9 @@
+import { GithubExtension } from "@lib/github/types";
 import { useClipboard } from "@lib/useClipboard";
 import React from "react";
 import { ExternalLink } from "../ExternalLink";
 
-const Branch: React.FC<{ branch: Github.BranchLink }> = ({ branch }) => {
+const Branch: React.FC<{ branch: GithubExtension.BranchLink }> = ({ branch }) => {
   const [onCopy, copied] = useClipboard();
 
   return (
@@ -26,7 +27,7 @@ const Branch: React.FC<{ branch: Github.BranchLink }> = ({ branch }) => {
   );
 };
 
-export const Branches: React.FC<{ fields: Github.IRecordExtensionFields }> = ({
+export const Branches: React.FC<{ fields: GithubExtension.IRecordExtensionFields }> = ({
   fields,
 }) => {
   if (!fields.branches || fields.branches.length === 0) return null;

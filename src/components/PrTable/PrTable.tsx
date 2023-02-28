@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { loadRelatedFeatures } from "@lib/loadRelatedFeatures";
 import { PrRow } from "./PrRow";
+import { GithubExtension } from "@lib/github/types";
 
 export interface TableCols {
   repoName: boolean;
@@ -12,7 +13,7 @@ export interface TableCols {
 }
 
 export interface TableProps {
-  prs: Github.PrForLink[];
+  prs: GithubExtension.PrForLink[];
   columns?: TableCols;
 }
 

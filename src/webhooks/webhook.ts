@@ -11,7 +11,9 @@ import {
   PullRequestReviewEvent,
   WebhookEvent,
   WebhookEvents,
+  WorkflowRunEvent,
 } from "@octokit/webhooks-types";
+import { handleWorkflowRun } from "./handleWorkflowRun";
 
 interface WebhookProps {
   headers: Record<string, string>;
@@ -43,6 +45,9 @@ aha.on("webhook", async ({ headers, payload }: WebhookProps) => {
       break;
     case "pull_request_review":
       await handlePullRequestReview(payload as PullRequestReviewEvent);
+      break;
+    case "workflow_run":
+      await handleWorkflowRun(payload as WorkflowRunEvent);
       break;
   }
 });

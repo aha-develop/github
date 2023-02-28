@@ -3,7 +3,16 @@ import { recentBranches } from "@lib/github/recentBranches";
 import { useGithubApi } from "@lib/useGithubApi";
 import { ExternalLink } from "@components/ExternalLink";
 
-const BranchRow = ({ branch }) => {
+type Branch = {
+  __typename: string;
+  name: string;
+  target: {
+    oid: string;
+    commitUrl: string;
+  };
+};
+
+const BranchRow: React.FC<{ branch: Branch }> = ({ branch }) => {
   return (
     <tr>
       <td>
@@ -15,10 +24,7 @@ const BranchRow = ({ branch }) => {
   );
 };
 
-/**
- * @param {{repos: string[]}} param0
- */
-const BranchTable = ({ repos }) => {
+const BranchTable: React.FC<{ repos: string[] }> = ({ repos }) => {
   const { data, authed, loading, error } = useGithubApi(
     async (api) => await recentBranches(api, repos),
     {},

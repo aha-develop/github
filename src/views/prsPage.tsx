@@ -3,7 +3,7 @@ import { ExtensionRoot } from "@components/ExtensionRoot";
 import { PrPage } from "@components/page/PrPage";
 
 const PrsComponent: Aha.RenderExtension = (_, { settings }) => {
-  const repos = settings.repos || [];
+  const repos = (settings.repos as string[]) || [];
   return (
     <ExtensionRoot>
       <PrPage repos={repos} />

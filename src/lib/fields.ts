@@ -1,17 +1,19 @@
 import {
   PullRequestEvent,
   PullRequestReviewEvent,
+  WorkflowRun,
 } from "@octokit/webhooks-types";
 import { IDENTIFIER } from "./extension";
+import { GithubExtension } from "./github/types";
 import { LinkableRecord } from "./linkableRecord";
 
 const PULL_REQUESTS_FIELD = "pullRequests";
 const BRANCHES_FIELD = "branches";
 
-type PullRequest =
+export type PrRecord =
   | PullRequestEvent["pull_request"]
   | PullRequestReviewEvent["pull_request"]
-  | Github.PrForLink;
+  | GithubExtension.PrForLink;
 
 /**
  * @typedef AccountPr
@@ -61,10 +63,16 @@ async function replaceField<T>(
  * Convert a PR from either a webhook or graphql to the basic state information
  * held in the extension field
  */
-function githubPrToPrLink(pr: PullRequest): Github.PrLink {
+function githubPrToPrLink(pr: PrRecord): GithubExtension.PrLink {
   const url = "html_url" in pr ? pr.html_url : pr.url;
   const merged = "merged" in pr ? pr.merged : false;
-  const state = merged ? "merged" : "state" in pr ? pr.state : pr.status;
+  const state = (
+    merged
+      ? "merged"
+      : "state" in pr
+      ? pr.state
+      : (pr as { status: string }).status || "open"
+  ).toLowerCase() as GithubExtension.PrState;
 
   return {
     id: pr.number,
@@ -75,7 +83,7 @@ function githubPrToPrLink(pr: PullRequest): Github.PrLink {
 }
 
 async function updatePullRequestLinkOnRecord(
-  pr: PullRequest,
+  pr: PrRecord,
   record: LinkableRecord
 ) {
   const prLink = githubPrToPrLink(pr);
@@ -94,20 +102,34 @@ async function updatePullRequestLinkOnRecord(
   }
 }
 
-async function getOrLinkPullRequestRecord(pr: PullRequest) {
+/**
+ * Find an Aha! record for a github pull request. The minimal amount of
+ * information is required from the PR record, starting with url, html_url,
+ * title, headRef: {name} and head: {ref}
+ */
+async function getPullRequestRecord(
+  pr:
+    | {
+        url: string;
+      }
+    | { html_url: string }
+    | { title: string }
+    | { headRef: { name: string } }
+    | { head: { ref: string } }
+) {
   // The PR might be a webhook or a GQL object. Handle both cases.
-  let headRefName: string | undefined;
+  let record: LinkableRecord | null | undefined;
+  if ("url" in pr || "html_url" in pr) record = await referenceFromPr(pr);
+  if (!record && "title" in pr) record = await referenceToRecord(pr.title);
+  if (!record && "headRef" in pr)
+    record = await referenceToRecord(pr.headRef.name);
+  if (!record && "head" in pr) record = await referenceToRecord(pr.head.ref);
 
-  if ("headRef" in pr) {
-    headRefName = pr.headRef?.name;
-  } else {
-    headRefName = pr.head?.ref;
-  }
+  return record;
+}
 
-  let record =
-    (await referenceFromPr(pr)) ||
-    (await referenceToRecord(pr.title)) ||
-    (headRefName && (await referenceToRecord(headRefName)));
+async function getOrLinkPullRequestRecord(pr: PrRecord) {
+  const record = await getPullRequestRecord(pr);
 
   if (record) {
     // Always update the PR info on the record
@@ -118,7 +140,7 @@ async function getOrLinkPullRequestRecord(pr: PullRequest) {
 }
 
 async function unlinkPullRequest(record: LinkableRecord, number: number) {
-  const prs = await record.getExtensionField<Github.PrForLink[]>(
+  const prs = await record.getExtensionField<GithubExtension.PrForLink[]>(
     IDENTIFIER,
     PULL_REQUESTS_FIELD
   );
@@ -135,7 +157,7 @@ async function unlinkPullRequest(record: LinkableRecord, number: number) {
 }
 
 async function unlinkPullRequests(record: LinkableRecord) {
-  const prs = await record.getExtensionField<Github.PrForLink[]>(
+  const prs = await record.getExtensionField<GithubExtension.PrForLink[]>(
     IDENTIFIER,
     PULL_REQUESTS_FIELD
   );
@@ -195,12 +217,12 @@ export async function referenceToRecord(
   );
 }
 
-export async function referenceFromPr(pr: PullRequest) {
-  const prLink = githubPrToPrLink(pr);
-  const ref = await aha.account.getExtensionField<string>(
-    IDENTIFIER,
-    prLink.url
-  );
+export async function referenceFromPr(
+  pr: { url: string } | { html_url: string }
+) {
+  const linkUrl = "url" in pr ? pr.url : pr.html_url;
+
+  const ref = await aha.account.getExtensionField<string>(IDENTIFIER, linkUrl);
   if (!ref) return null;
 
   return referenceToRecord(ref);
@@ -239,6 +261,7 @@ function extractReferenceFromName(
 export {
   appendField,
   getOrLinkPullRequestRecord,
+  getPullRequestRecord,
   updatePullRequestLinkOnRecord,
   unlinkPullRequest,
   unlinkPullRequests,

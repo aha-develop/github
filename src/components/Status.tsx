@@ -5,8 +5,9 @@ import { isPrWithStatus } from "@lib/github/queries";
 import { useGithubApi } from "@lib/useGithubApi";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
+import { GithubExtension } from "@lib/github/types";
 
-const statusIcon = (status: Github.StatusState) => {
+const statusIcon = (status: GithubExtension.StatusState) => {
   switch (status) {
     case "ERROR":
       return "fa-regular fa-exclamation-triangle";
@@ -21,7 +22,9 @@ const statusIcon = (status: Github.StatusState) => {
   }
 };
 
-const StatusIcon: React.FC<{ status: Github.StatusState }> = ({ status }) => {
+const StatusIcon: React.FC<{ status: GithubExtension.StatusState }> = ({
+  status,
+}) => {
   return (
     <span className={`pr-check pr-check-${status.toLowerCase()}`}>
       <aha-icon icon={statusIcon(status)} />
@@ -29,7 +32,9 @@ const StatusIcon: React.FC<{ status: Github.StatusState }> = ({ status }) => {
   );
 };
 
-const StatusCheck: React.FC<{ context: Github.Context }> = ({ context }) => {
+const StatusCheck: React.FC<{ context: GithubExtension.Context }> = ({
+  context,
+}) => {
   return (
     <aha-flex className="pr-check-detail" gap="5px">
       <span className="pr-check-icon">
@@ -53,7 +58,9 @@ const StatusCheck: React.FC<{ context: Github.Context }> = ({ context }) => {
   );
 };
 
-const Status: React.FC<{ prStatus: Github.CommitStatus }> = ({ prStatus }) => {
+const Status: React.FC<{ prStatus: GithubExtension.CommitStatus }> = ({
+  prStatus,
+}) => {
   const {
     attributes,
     popperElement,
@@ -110,7 +117,7 @@ const Status: React.FC<{ prStatus: Github.CommitStatus }> = ({ prStatus }) => {
   );
 };
 
-const FetchStatus: React.FC<{ pr: Github.Pr }> = ({ pr }) => {
+const FetchStatus: React.FC<{ pr: GithubExtension.Pr }> = ({ pr }) => {
   const {
     data: fetchedPr,
     error,
@@ -119,7 +126,9 @@ const FetchStatus: React.FC<{ pr: Github.Pr }> = ({ pr }) => {
     fetchData,
   } = useGithubApi(async (api) => {
     if (isPrWithStatus(pr)) return pr;
-    return await getPrByUrl(api, pr.url, { includeStatus: true });
+    return (await getPrByUrl(api, pr.url, {
+      includeStatus: true,
+    })) as GithubExtension.PrWithStatus;
   });
 
   if (error) {

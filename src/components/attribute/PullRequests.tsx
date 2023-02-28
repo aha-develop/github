@@ -1,10 +1,12 @@
+import { GithubExtension } from "@lib/github/types";
+import { LinkableRecord } from "@lib/linkableRecord";
 import React from "react";
 import { PullRequest } from "./PullRequest";
 
-/**
- * @type {React.FC<{record: import("@lib/fields").LinkableRecord, prs:import("@lib/fields").PrLink[]}>}
- */
-export const PullRequests = ({ record, prs }) => {
+export const PullRequests: React.FC<{
+  record: LinkableRecord;
+  prs: GithubExtension.PrLink[];
+}> = ({ record, prs }) => {
   const pullRequests = (prs || []).map((pr, idx) => (
     <PullRequest key={idx} record={record} pr={pr} />
   ));

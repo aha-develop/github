@@ -1,11 +1,12 @@
 import React from "react";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
+import { GithubExtension } from "@lib/github/types";
 
 interface Props {
-  pr: Github.PrForReviewDecision;
+  pr: GithubExtension.PrForReviewDecision;
 }
 
-function icon(reviewStatus: Github.PullRequestReviewDecision) {
+function icon(reviewStatus: GithubExtension.PullRequestReviewDecision) {
   switch (reviewStatus) {
     case "REVIEW_REQUIRED":
       return "user";

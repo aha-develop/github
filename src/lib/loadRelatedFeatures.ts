@@ -1,11 +1,13 @@
+import { GithubExtension } from "./github/types";
+
 const refNumMatcher = /([A-Z][A-Z0-9]*-(([E]|[0-9]+)-)?[0-9]+)/;
 
 /**
  * Given a list of PRs, load the corresponding features if they exist
  */
-export async function loadRelatedFeatures(prs: Github.PrForLink[]) {
+export async function loadRelatedFeatures(prs: GithubExtension.PrForLink[]) {
   const refNums: string[] = [];
-  const prsByRefNum: Record<string, Github.PrForLink> = {};
+  const prsByRefNum: Record<string, GithubExtension.PrForLink> = {};
 
   for (let pr of prs) {
     [pr.headRef?.name.toUpperCase(), pr.title]

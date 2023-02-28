@@ -6,6 +6,8 @@ import { validPrUrl } from "@lib/validPrUrl";
 
 const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
   record,
+}: {
+  record: LinkableRecord;
 }) => {
   if (!record) return;
 

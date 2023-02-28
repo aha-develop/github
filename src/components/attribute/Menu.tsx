@@ -1,18 +1,19 @@
 import React from "react";
 import { LEARN_MORE_URL } from "@lib/extension";
+import { LinkableRecord } from "@lib/linkableRecord";
 
-export function Menu({ record }) {
-  async function sync() {
+export const Menu: React.FC<{ record: LinkableRecord }> = ({ record }) => {
+  const sync = async () => {
     await aha.command("aha-develop.github.sync", { record });
-  }
+  };
 
-  async function addLink() {
+  const addLink = async () => {
     await aha.command("aha-develop.github.addLink", { record });
-  }
+  };
 
-  async function removeLinks() {
+  const removeLinks = async () => {
     await aha.command("aha-develop.github.removeLinks", { record });
-  }
+  };
 
   return (
     <aha-menu>
@@ -46,4 +47,4 @@ export function Menu({ record }) {
       </aha-menu-content>
     </aha-menu>
   );
-}
+};

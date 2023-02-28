@@ -89,7 +89,7 @@ class GithubQuery {
   }
 }
 
-type KnownKeys = "in" | "type" | "repo";
+type KnownKeys = "in" | "type" | "repo" | "is" | "author" | "state";
 
 type DynamicGithubQuery = {
   [K in KnownKeys]: (
