@@ -13,8 +13,8 @@
     "@octokit/webhooks-types": "^6.3.2",
     "gql-tag": "^1.0.1",
     "inflected": "^2.1.0",
-    "prettier": "^2.6.2",
-    "moment": "^2.29.3"
+    "moment": "^2.29.3",
+    "prettier": "^2.6.2"
   },
   "type": "module",
   "license": "MIT",
