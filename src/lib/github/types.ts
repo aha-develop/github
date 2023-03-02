@@ -1,18 +1,6 @@
 import { GithubActions } from "@lib/actions/githubActions";
 
 export namespace GithubExtension {
-  export interface BranchLink {
-    id: string;
-    name: string;
-    url: string;
-  }
-
-  export interface IRecordExtensionFields {
-    branches?: BranchLink[];
-    pullRequests?: PrLink[];
-    actions?: GithubActions.IActionFields;
-  }
-
   export type PullRequestReviewDecision =
     | "CHANGES_REQUESTED"
     | "APPROVED"

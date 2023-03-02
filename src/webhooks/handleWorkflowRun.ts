@@ -1,5 +1,5 @@
 import { GithubActions } from "@lib/actions/githubActions";
-import { ACTIONS_IDENTIFIER } from "@lib/extension";
+import { ACTIONS_IDENTIFIER } from "extension";
 import { getPullRequestRecord, referenceToRecord } from "@lib/fields";
 import { LinkableRecord } from "@lib/linkableRecord";
 import {

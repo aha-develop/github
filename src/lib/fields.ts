@@ -3,7 +3,7 @@ import {
   PullRequestReviewEvent,
   WorkflowRun,
 } from "@octokit/webhooks-types";
-import { IDENTIFIER } from "./extension";
+import { IDENTIFIER } from "../extension";
 import { GithubExtension } from "./github/types";
 import { LinkableRecord } from "./linkableRecord";
 

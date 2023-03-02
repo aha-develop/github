@@ -1,5 +1,5 @@
 import React from "react";
-import { LEARN_MORE_URL } from "@lib/extension";
+import { LEARN_MORE_URL } from "extension";
 import { LinkableRecord } from "@lib/linkableRecord";
 
 export const Menu: React.FC<{ record: LinkableRecord }> = ({ record }) => {

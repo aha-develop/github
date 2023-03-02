@@ -1,4 +1,4 @@
-import { IDENTIFIER, LEARN_MORE_URL, ICON } from "@lib/extension";
+import { IDENTIFIER, LEARN_MORE_URL, ICON } from "extension";
 import React, { useEffect, useState } from "react";
 
 import { useClipboard } from "@lib/useClipboard";

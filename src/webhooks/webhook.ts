@@ -1,4 +1,4 @@
-import { IDENTIFIER } from "@lib/extension.js";
+import { IDENTIFIER } from "extension.js";
 import {
   getOrLinkPullRequestRecord,
   linkBranch,
