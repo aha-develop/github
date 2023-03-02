@@ -5,9 +5,12 @@ import { isPrWithStatus } from "@lib/github/queries";
 import { useGithubApi } from "@lib/useGithubApi";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
 import { ExternalLink } from "./ExternalLink";
-import { GithubExtension } from "@lib/github/types";
+import {
+  PrStatusContextFragment,
+  PrCommitStatusFragment,
+} from "generated/graphql";
 
-const statusIcon = (status: GithubExtension.StatusState) => {
+const statusIcon = (status: PrStatusContextFragment["state"]) => {
   switch (status) {
     case "ERROR":
       return "fa-regular fa-exclamation-triangle";
@@ -22,7 +25,7 @@ const statusIcon = (status: GithubExtension.StatusState) => {
   }
 };
 
-const StatusIcon: React.FC<{ status: GithubExtension.StatusState }> = ({
+const StatusIcon: React.FC<{ status: PrStatusContextFragment["state"] }> = ({
   status,
 }) => {
   return (
@@ -32,7 +35,7 @@ const StatusIcon: React.FC<{ status: GithubExtension.StatusState }> = ({
   );
 };
 
-const StatusCheck: React.FC<{ context: GithubExtension.Context }> = ({
+const StatusCheck: React.FC<{ context: PrStatusContextFragment }> = ({
   context,
 }) => {
   return (
@@ -58,7 +61,7 @@ const StatusCheck: React.FC<{ context: GithubExtension.Context }> = ({
   );
 };
 
-const Status: React.FC<{ prStatus: GithubExtension.CommitStatus }> = ({
+const Status: React.FC<{ prStatus: PrCommitStatusFragment }> = ({
   prStatus,
 }) => {
   const {
@@ -117,48 +120,4 @@ const Status: React.FC<{ prStatus: GithubExtension.CommitStatus }> = ({
   );
 };
 
-const FetchStatus: React.FC<{ pr: GithubExtension.Pr }> = ({ pr }) => {
-  const {
-    data: fetchedPr,
-    error,
-    authed,
-    loading,
-    fetchData,
-  } = useGithubApi(async (api) => {
-    if (isPrWithStatus(pr)) return pr;
-    return (await getPrByUrl(api, pr.url, {
-      includeStatus: true,
-    })) as GithubExtension.PrWithStatus;
-  });
-
-  if (error) {
-    return (
-      <span className="pr-status">
-        <aha-icon icon="fa-regular fa-warn"></aha-icon>
-      </span>
-    );
-  }
-
-  if (loading) {
-    return (
-      <span className="pr-status">
-        <aha-spinner />
-      </span>
-    );
-  }
-
-  if (!authed || !fetchedPr) {
-    return (
-      <span className="pr-status">
-        <aha-button onClick={fetchData}>
-          <aha-icon icon="fa-regular fa-refresh"></aha-icon>
-        </aha-button>
-      </span>
-    );
-  }
-
-  const prStatus = prStatusCommit(fetchedPr);
-  return <Status prStatus={prStatus} />;
-};
-
-export { FetchStatus, Status };
+export { Status };

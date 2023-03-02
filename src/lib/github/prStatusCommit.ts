@@ -1,5 +1,5 @@
-import { GithubExtension } from "./types";
+import { PrStatusesFragment } from "generated/graphql";
 
-export function prStatusCommit(pr: GithubExtension.PrWithStatus) {
-  return pr.commits.nodes[0].commit;
+export function prStatusCommit(pr: PrStatusesFragment) {
+  return pr.commits.nodes?.[0]?.commit;
 }

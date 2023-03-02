@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 
 import { useClipboard } from "@lib/useClipboard";
 
-import { updatePullRequestLinkOnRecord } from "@lib/fields";
 import { withGitHubApi } from "@lib/github/api";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { validPrUrl } from "@lib/validPrUrl";
+import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
+import { githubPullRequestToPrLink } from "@lib/github/converters";
 
 type MenuProps = {
   record: LinkableRecord;
@@ -76,7 +77,15 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
 
     await withGitHubApi(async (api) => {
       const pullRequest = await getPrByUrl(api, url);
-      await updatePullRequestLinkOnRecord(pullRequest, record);
+
+      if (!pullRequest) {
+        setValidation("Could not find pull request");
+        setPasteMode(false);
+        return;
+      }
+
+      const prLink = githubPullRequestToPrLink(pullRequest);
+      await updatePullRequestLinkOnRecord(prLink, record);
       setPasteMode(false);
     });
   };

@@ -1,7 +1,11 @@
 import { classify } from "inflected";
 import gql from "gql-tag";
-import { RepoFragment } from "./queries";
 import { graphql } from "@octokit/graphql";
+import { print } from "graphql";
+import {
+  RepoFragmentFragment,
+  RepoFragmentFragmentDoc,
+} from "generated/graphql";
 
 const repoAlias = (repo: string) => classify(repo).replace(/[^a-zA-Z]/g, "");
 
@@ -14,22 +18,6 @@ const RepoBranches = (repo: string) => {
     }
   `;
 };
-
-interface RecentBranch {
-  nameWithOwner: string;
-  refs: {
-    edges: {
-      node: {
-        __typename: string;
-        name: string;
-        target: {
-          oid: string;
-          commitUrl: string;
-        };
-      };
-    }[];
-  };
-}
 
 export async function recentBranches(api: typeof graphql, repos: string[]) {
   const repoAliases = repos.map(repoAlias);
@@ -51,9 +39,12 @@ export async function recentBranches(api: typeof graphql, repos: string[]) {
       ${repos.map(RepoBranches).join("\n")}
     }
 
-    ${RepoFragment}
+    ${print(RepoFragmentFragmentDoc)}
   `;
 
-  const data = await api<Record<string, RecentBranch>>(query, queryVars);
+  const data = await api<Record<string, RepoFragmentFragment>>(
+    query,
+    queryVars
+  );
   return repoAliases.map((alias) => data[alias]);
 }

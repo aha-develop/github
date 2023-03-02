@@ -1,14 +1,11 @@
-import {
-  githubPrToPrLink,
-  PrRecord,
-  updatePullRequestLinkOnRecord,
-} from "@lib/fields";
+import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { prStatusCommit } from "@lib/github/prStatusCommit";
-import { GithubExtension } from "@lib/github/types";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";
-import React, { useEffect } from "react";
+import { IPullRequestLink } from "extension";
+import React, { useEffect, useState } from "react";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
@@ -16,10 +13,9 @@ import { Status } from "../Status";
 
 export const PullRequest: React.FC<{
   record: LinkableRecord;
-  pr: PrRecord | GithubExtension.PrLink;
+  pr: IPullRequestLink;
 }> = ({ record, pr }) => {
-  const originalPr = pr;
-  let mergedPr = "title" in pr ? { ...pr, ...githubPrToPrLink(pr) } : pr;
+  const [prLink, setPrLink] = useState(pr);
 
   const {
     authed,
@@ -28,10 +24,10 @@ export const PullRequest: React.FC<{
     error,
     fetchData,
   } = useGithubApi(async (api) => {
-    return (await getPrByUrl(api, mergedPr.url, {
+    return await getPrByUrl(api, pr.url, {
       includeStatus: true,
       includeReviews: true,
-    })) as GithubExtension.PrWithStatus & GithubExtension.PrForReviewDecision;
+    });
   });
 
   // If the reloaded PR has changed state then update the extension fields
@@ -39,23 +35,19 @@ export const PullRequest: React.FC<{
     if (loading) return;
     if (!fetchedPr) return;
 
-    const prLink = githubPrToPrLink(fetchedPr);
-    if (prLink.state === originalPr.state) return;
+    const prLink = githubPullRequestToPrLink(fetchedPr);
+    if (prLink.state === prLink.state) return;
 
-    updatePullRequestLinkOnRecord(fetchedPr, record);
+    updatePullRequestLinkOnRecord(prLink, record);
+    setPrLink(prLink);
   }, [fetchedPr, loading]);
-
-  // Once fetched replace the prop with the fetched version
-  if (authed && fetchedPr) {
-    mergedPr = { ...mergedPr, ...githubPrToPrLink(fetchedPr) };
-  }
 
   return (
     <aha-flex align-items="center" justify-content="space-between" gap="5px">
       <span>
-        <ExternalLink href={mergedPr.url}>{mergedPr.name}</ExternalLink>
+        <ExternalLink href={prLink.url}>{prLink.name}</ExternalLink>
       </span>
-      <PrState state={mergedPr.state} />
+      <PrState state={prLink.state} />
       {loading && (
         <span className="pr-status">
           <aha-spinner />

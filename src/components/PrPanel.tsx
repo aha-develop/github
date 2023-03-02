@@ -28,7 +28,9 @@ export const PrPanel: React.FC<{
         includeLabels: columns.labels,
         count: 10,
       });
-      return edges.map((e) => e.node);
+
+      if (!edges) return [];
+      return edges.map((e) => e?.node);
     },
     {},
     [query, columns]

@@ -1,11 +1,10 @@
-import { GithubActions } from "@lib/actions/githubActions";
-import { ACTIONS_IDENTIFIER } from "extension";
-import { getPullRequestRecord, referenceToRecord } from "@lib/fields";
+import { ACTIONS_IDENTIFIER, IActionLink } from "extension";
 import { LinkableRecord } from "@lib/linkableRecord";
 import {
   WorkflowRunCompletedEvent,
   WorkflowRunEvent,
 } from "@octokit/webhooks-types";
+import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
 
 export async function handleWorkflowRun(event: WorkflowRunEvent) {
   if (event.action !== "completed") return;
@@ -39,7 +38,7 @@ export async function handleWorkflowRun(event: WorkflowRunEvent) {
  */
 const parsePayloadToAction = (
   payload: WorkflowRunCompletedEvent
-): GithubActions.IActionField => {
+): IActionLink => {
   const { repository, workflow, workflow_run } = payload;
 
   return {
@@ -72,7 +71,7 @@ const parsePayloadToAction = (
  */
 export const saveActionInRecord = async (
   record: LinkableRecord,
-  githubAction: GithubActions.IActionField
+  githubAction: IActionLink
 ): Promise<void> => {
   const projectId = githubAction.project?.id;
   if (!projectId) {
@@ -80,7 +79,7 @@ export const saveActionInRecord = async (
   }
 
   // If Old Github actions exist, add or replace workflows
-  const oldAction = await record.getExtensionField<GithubActions.IActionField>(
+  const oldAction = await record.getExtensionField<IActionLink>(
     ACTIONS_IDENTIFIER,
     projectId
   );
