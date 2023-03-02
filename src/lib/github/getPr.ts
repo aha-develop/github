@@ -1,4 +1,5 @@
 import { graphql } from "@octokit/graphql";
+import type { GraphQlQueryResponseData } from "@octokit/graphql";
 import { GetPr } from "./queries";
 import { repoFromUrl } from "./repoFromUrl";
 import { GithubExtension } from "./types";

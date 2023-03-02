@@ -10,6 +10,7 @@
   "dependencies": {
     "@aha-app/aha-develop-react": "^1.0.0",
     "@octokit/graphql": "^5.0.0",
+    "@octokit/graphql-schema": "^13.6.0",
     "@octokit/webhooks-types": "^6.3.2",
     "gql-tag": "^1.0.1",
     "inflected": "^2.1.0",
