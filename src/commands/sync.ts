@@ -1,8 +1,10 @@
-import { linkBranch, getOrLinkPullRequestRecord } from "@lib/fields";
 import { withGitHubApi } from "@lib/github/api";
+import { githubPullRequestToPrLink } from "@lib/github/converters";
 import GithubSearchQuery from "@lib/github/GithubSearchQuery";
 import { searchForPr } from "@lib/github/searchForPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { linkBranch } from "@lib/linkBranch";
+import { getOrLinkPullRequestRecord } from "@lib/linkPullRequest";
 
 const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   { record },
@@ -32,7 +34,7 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   withGitHubApi(async (api) => {
     const search = await searchForPr(api, { query });
 
-    if (search.edges.length === 0) {
+    if (!search.edges || search.edges.length === 0) {
       aha.commandOutput(
         `No pull requests found with ${record.referenceNum} in the title`
       );
@@ -40,9 +42,11 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
     }
 
     for (let prNode of search.edges) {
-      const pr = prNode.node;
+      const pr = prNode?.node;
+      if (pr?.__typename !== "PullRequest") return;
 
-      await getOrLinkPullRequestRecord(pr);
+      const prLink = githubPullRequestToPrLink(pr);
+      await getOrLinkPullRequestRecord(prLink);
 
       if (pr.headRef) {
         await linkBranch(pr.headRef.name, pr.repository.url);

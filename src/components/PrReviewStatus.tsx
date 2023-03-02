@@ -1,12 +1,12 @@
 import React from "react";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
-import { GithubExtension } from "@lib/github/types";
+import { PrForReviewDecisionFragment } from "generated/graphql";
 
 interface Props {
-  pr: GithubExtension.PrForReviewDecision;
+  pr: PrForReviewDecisionFragment;
 }
 
-function icon(reviewStatus: GithubExtension.PullRequestReviewDecision) {
+function icon(reviewStatus: PrForReviewDecisionFragment["reviewDecision"]) {
   switch (reviewStatus) {
     case "REVIEW_REQUIRED":
       return "user";
@@ -30,7 +30,7 @@ export const PrReviewStatus: React.FC<Props> = ({ pr }) => {
     modifiers: [],
   });
 
-  const count = pr.latestReviews.nodes.length;
+  const count = pr.latestReviews?.nodes?.length || 0;
 
   return (
     <span className={`pr-reviews ${pr.reviewDecision?.toLowerCase()}`}>

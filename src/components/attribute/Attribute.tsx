@@ -1,7 +1,7 @@
 import { useAuth } from "@aha-app/aha-develop-react";
-import { GithubExtension } from "@lib/github/types";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { useClipboard } from "@lib/useClipboard";
+import { IRecordExtensionFields } from "extension";
 import React from "react";
 import { Branches } from "./Branches";
 import { EmptyState } from "./EmptyState";
@@ -10,7 +10,7 @@ import { PullRequests } from "./PullRequests";
 
 type AttributeProps = {
   record: LinkableRecord;
-  fields: GithubExtension.IRecordExtensionFields;
+  fields: IRecordExtensionFields;
 };
 
 export const Attribute: React.FC<AttributeProps> = ({ fields, record }) => {

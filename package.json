@@ -1,7 +1,7 @@
 {
   "name": "@aha-develop/github",
   "description": "GitHub",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "author": "Aha! (support@aha.io)",
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
     "moment": "^2.29.3",
     "prettier": "^2.6.2"
   },
-  "type": "module",
   "license": "MIT",
   "ahaExtension": {
     "cspSources": [
@@ -136,6 +135,12 @@
     }
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "3.2.1",
+    "@graphql-codegen/typed-document-node": "^3.0.1",
+    "@graphql-codegen/typescript": "3.0.1",
+    "@graphql-codegen/typescript-document-nodes": "3.0.1",
+    "@graphql-codegen/typescript-operations": "^3.0.1",
+    "@graphql-codegen/typescript-react-query": "^4.1.0",
     "@types/inflected": "^1.1.29",
     "@types/jest": "^28.1.8",
     "@types/react": "^17.0.3",
@@ -143,5 +148,8 @@
     "jest": "^28.1.3",
     "ts-jest": "^28.0.8",
     "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "codegen": "graphql-codegen --config codegen.ts"
   }
 }
