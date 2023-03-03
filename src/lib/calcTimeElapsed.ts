@@ -1,10 +1,7 @@
-import moment from 'moment';
+import moment from "moment";
 
 /**
  * Calculate Elapsed Time
- *
- * @param date
- * @returns
  */
 export const calcTimeElapsed = (date: Date | string | number): string => {
   if (date instanceof Date) {

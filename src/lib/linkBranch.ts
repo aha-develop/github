@@ -6,6 +6,9 @@ import { referenceToRecord } from "./linkPullRequest";
 
 const BRANCHES_FIELD = "branches";
 
+/**
+ * Link a branch to a given record
+ */
 export async function linkBranchToRecord(
   branchName: string,
   repoUrl: string,
@@ -18,6 +21,9 @@ export async function linkBranchToRecord(
   });
 }
 
+/**
+ * Given some branch information, try to find and link a record
+ */
 export async function linkBranch(branchName: string, repoUrl: string) {
   const record = await referenceToRecord(branchName);
   if (record) {
@@ -26,10 +32,17 @@ export async function linkBranch(branchName: string, repoUrl: string) {
   }
 }
 
+/**
+ * Remove all linked branches on a record
+ */
 export async function unlinkBranches(record: Aha.HasExtensionFields) {
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
 }
 
+/**
+ * Given a pull request from the graphql API, if it has a branch then link that
+ * branch to the given record.
+ */
 export async function updateBranchLinkFromPullRequest(
   pr: PrForLinkFragment,
   record: LinkableRecord

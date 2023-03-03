@@ -1,3 +1,6 @@
+/**
+ * Check link is https
+ */
 export const isValidExternalLink = (urlString: string | undefined) => {
   if (!urlString) return false;
 

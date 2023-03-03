@@ -6,8 +6,12 @@ import { IPullRequestLink } from "extension";
 import { PrForLinkFragment } from "generated/graphql";
 
 /**
- * Convert a PR from either a webhook or graphql to the basic state information
- * held in the extension field
+ * This file has functions to convert a PR from either a webhook or graphql to
+ * the basic state information held in the extension field
+ */
+
+/**
+ * Convert from data fetched from GitHub graphql API
  */
 export function githubPullRequestToPrLink(
   pr: PrForLinkFragment
@@ -22,6 +26,9 @@ export function githubPullRequestToPrLink(
   };
 }
 
+/**
+ * Convert from a pull request event
+ */
 export function githubPullRequestEventToPrLink(
   pr: PullRequestEvent["pull_request"]
 ): IPullRequestLink {
@@ -33,6 +40,9 @@ export function githubPullRequestEventToPrLink(
   };
 }
 
+/**
+ * Convert from a pull request review event
+ */
 export function githubPullRequestReviewEventToPrLink(
   pr: PullRequestReviewEvent["pull_request"]
 ): IPullRequestLink {

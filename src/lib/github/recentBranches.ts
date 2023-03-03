@@ -19,6 +19,9 @@ const RepoBranches = (repo: string) => {
   `;
 };
 
+/**
+ * Fetch a list of recent branches for the given list of repos
+ */
 export async function recentBranches(api: GqlFetch, repos: string[]) {
   const repoAliases = repos.map(repoAlias);
   const [queryArgs, queryVars] = repos.reduce(

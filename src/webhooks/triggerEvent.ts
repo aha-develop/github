@@ -2,6 +2,9 @@ import { LinkableRecord } from "@lib/linkableRecord";
 import { referenceToRecord } from "@lib/linkPullRequest";
 import { WebhookEvent } from "@octokit/webhooks-types";
 
+/**
+ * Trigger an event from a webhook that other extensions can use
+ */
 export async function triggerEvent(
   event: string,
   payload: WebhookEvent,
