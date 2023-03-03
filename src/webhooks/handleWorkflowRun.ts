@@ -1,15 +1,17 @@
-import { ACTIONS_IDENTIFIER, IActionLink } from "extension";
+import { githubWorkflowRunCompletedEventToActionLink } from "@lib/github/converters";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { saveActionInRecord } from "@lib/linkAction";
+import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
 import {
   WorkflowRunCompletedEvent,
   WorkflowRunEvent,
 } from "@octokit/webhooks-types";
-import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
+import { IActionLink } from "extension";
 
 export async function handleWorkflowRun(event: WorkflowRunEvent) {
   if (event.action !== "completed") return;
 
-  const recordField = parsePayloadToAction(event);
+  const recordField = githubWorkflowRunCompletedEventToActionLink(event);
   if (!recordField) {
     return;
   }
@@ -29,74 +31,3 @@ export async function handleWorkflowRun(event: WorkflowRunEvent) {
     await saveActionInRecord(record, recordField);
   }
 }
-
-/**
- * Parse webhook payload to extension field by Resource Version
- *
- * @param payload
- * @returns
- */
-const parsePayloadToAction = (
-  payload: WorkflowRunCompletedEvent
-): IActionLink => {
-  const { repository, workflow, workflow_run } = payload;
-
-  return {
-    project: {
-      id: `${repository?.id}`,
-      name: repository?.name,
-      url: repository?.html_url,
-    },
-    workflows: {
-      [workflow_run.head_branch]: {
-        id: workflow?.id,
-        url: workflow_run?.html_url,
-        buildNumber: `${workflow_run.run_number}`,
-        buildStatus: workflow_run.conclusion,
-        startTime: workflow_run.run_started_at,
-        finishTime: workflow_run.updated_at,
-        name: workflow.name,
-        commitHash: workflow_run?.head_sha,
-        commitMsg: workflow_run?.head_commit?.message,
-        branch: workflow_run?.head_branch,
-        authorName: workflow_run?.actor?.login,
-        authorURL: workflow_run?.actor?.avatar_url,
-      },
-    },
-  };
-};
-
-/**
- * Save Github Actions in Record Field
- */
-export const saveActionInRecord = async (
-  record: LinkableRecord,
-  githubAction: IActionLink
-): Promise<void> => {
-  const projectId = githubAction.project?.id;
-  if (!projectId) {
-    throw new Error("Undefined Project Id");
-  }
-
-  // If Old Github actions exist, add or replace workflows
-  const oldAction = await record.getExtensionField<IActionLink>(
-    ACTIONS_IDENTIFIER,
-    projectId
-  );
-
-  if (oldAction) {
-    githubAction = {
-      ...oldAction,
-      project: {
-        ...(oldAction?.project ?? {}),
-        ...(githubAction?.project ?? {}),
-      },
-      workflows: {
-        ...(oldAction?.workflows ?? {}),
-        ...(githubAction?.workflows ?? {}),
-      },
-    };
-  }
-
-  await record.setExtensionField(ACTIONS_IDENTIFIER, projectId, githubAction);
-};

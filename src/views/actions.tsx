@@ -1,6 +1,7 @@
 import Attribute from "@components/Actions/Attribute";
 import { isLinkableRecord, LinkableRecord } from "@lib/linkableRecord";
 import { IRecordExtensionFields } from "extension";
+import React from "react";
 
 aha.on(
   "githubActionsAttribute",

@@ -2,6 +2,7 @@ import { Attribute } from "@components/attribute/Attribute";
 import { ExtensionRoot } from "@components/ExtensionRoot";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { IRecordExtensionFields } from "extension";
+import React from "react";
 
 const links: Aha.RenderExtension = ({ record, fields }) => {
   return (
