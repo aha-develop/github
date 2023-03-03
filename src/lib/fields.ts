@@ -2,12 +2,12 @@ import { IDENTIFIER, IPullRequestLink } from "../extension";
 import { LinkableRecord } from "./linkableRecord";
 
 /**
- * Append a field/value pair to the given record.
+ * Append a field/value pair to the given record. The new value must have an id field.
  */
-export async function appendField(
+export async function appendField<V extends { id: string | number }>(
   record: LinkableRecord,
   fieldName: string,
-  newValue: any
+  newValue: V
 ) {
   // Link to Aha! record.
   console.log(
@@ -28,6 +28,10 @@ export async function appendField(
   });
 }
 
+/**
+ * Replace the contents of an extension field. The callback receives the old
+ * value and must return the new value.
+ */
 export async function replaceField<T>(
   record: Aha.HasExtensionFields,
   fieldName: string,

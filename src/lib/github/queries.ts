@@ -4,6 +4,10 @@ import {
   PrStatusesFragment,
 } from "generated/graphql";
 
+/**
+ * Functions for narrowing the type of data fetched from GitHub based on the keys in data.
+ */
+
 export function isPrForReviewDecision(
   pr: any
 ): pr is PrForReviewDecisionFragment {

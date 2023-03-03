@@ -1,10 +1,14 @@
 import { IDENTIFIER, IPullRequestLink } from "extension";
+import { extractReferenceFromName } from "./extractReferenceFromName";
 import { appendField } from "./fields";
 import { LinkableRecord } from "./linkableRecord";
 import { updateBranchLinkFromPullRequest } from "./linkBranch";
 
 const PULL_REQUESTS_FIELD = "pullRequests";
 
+/**
+ * Store pull request link against a record
+ */
 export async function updatePullRequestLinkOnRecord(
   prLink: IPullRequestLink,
   record: LinkableRecord
@@ -126,32 +130,4 @@ export async function referenceFromPr(
   return referenceToRecord(ref);
 }
 
-export function extractReferenceFromName(
-  name: string
-): null | { type: "Requirement" | "Epic" | "Feature"; referenceNum: string } {
-  let matches;
 
-  // Requirement
-  if ((matches = name.match(/[a-z][a-z0-9]{0,9}-[0-9]+-[0-9]+/i))) {
-    return {
-      type: "Requirement",
-      referenceNum: matches[0],
-    };
-  }
-  // Epic
-  if ((matches = name.match(/[a-z][a-z0-9]{0,9}-E-[0-9]+/i))) {
-    return {
-      type: "Epic",
-      referenceNum: matches[0],
-    };
-  }
-  // Feature
-  if ((matches = name.match(/[a-z][a-z0-9]{0,9}-[0-9]+/i))) {
-    return {
-      type: "Feature",
-      referenceNum: matches[0],
-    };
-  }
-
-  return null;
-}

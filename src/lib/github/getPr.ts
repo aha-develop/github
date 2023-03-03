@@ -5,6 +5,9 @@ import {
 import { GqlFetch } from "./api";
 import { repoFromUrl } from "./repoFromUrl";
 
+/**
+ * Fetch a PR from github. Requires the owner, repo name and PR number
+ */
 export async function getPr(
   api: GqlFetch,
   variables: GetPullRequestQueryVariables
@@ -16,6 +19,9 @@ export async function getPr(
 const prNumberFromUrl = (url: string) =>
   Number(new URL(url).pathname.split("/")[4]);
 
+/**
+ * Fetch a PR from github by URL. For example, https://github.com/owner/repo/pull/38
+ */
 export async function getPrByUrl(
   api: GqlFetch,
   url: string,

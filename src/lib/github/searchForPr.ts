@@ -10,6 +10,10 @@ interface SearchForPrOptions {
   count?: number;
 }
 
+/**
+ * Search for pull requests. Returns the same as GetPr but as a list and
+ * requires a search query
+ */
 export async function searchForPr(
   api: GqlFetch,
   options: SearchForPrOptions &
