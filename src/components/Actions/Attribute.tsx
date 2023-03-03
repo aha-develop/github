@@ -1,6 +1,6 @@
 import { LinkableRecord } from "@lib/linkableRecord";
 import { IRecordExtensionFields } from "extension";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import AttributeProject from "./AttributeProject";
 import AttributeWorkflows from "./AttributeWorkflows";
 import EmptyState from "./EmptyState";
