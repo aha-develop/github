@@ -1,9 +1,9 @@
-import { GithubActions } from "@lib/actions/githubActions";
+import { ActionWorkflowConclusion } from "extension";
 import React, { useMemo, memo } from "react";
 import IconText from "./IconText";
 
 export type StatusIconProps = {
-  status?: GithubActions.IWorkflowConclusion;
+  status?: ActionWorkflowConclusion;
   style?: any;
 };
 

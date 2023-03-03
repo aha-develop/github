@@ -32,19 +32,16 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
     .toQuery();
 
   withGitHubApi(async (api) => {
-    const search = await searchForPr(api, { query });
+    const prs = await searchForPr(api, { query });
 
-    if (!search.edges || search.edges.length === 0) {
+    if (prs.length === 0) {
       aha.commandOutput(
         `No pull requests found with ${record.referenceNum} in the title`
       );
       return;
     }
 
-    for (let prNode of search.edges) {
-      const pr = prNode?.node;
-      if (pr?.__typename !== "PullRequest") return;
-
+    for (let pr of prs) {
       const prLink = githubPullRequestToPrLink(pr);
       await getOrLinkPullRequestRecord(prLink);
 

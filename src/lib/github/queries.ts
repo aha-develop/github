@@ -1,7 +1,7 @@
 import {
   PrForReviewDecisionFragment,
   PrLabelsFragment,
-  PrStatusFragment,
+  PrStatusesFragment,
 } from "generated/graphql";
 
 export function isPrForReviewDecision(
@@ -10,7 +10,7 @@ export function isPrForReviewDecision(
   return Boolean(pr.latestReviews?.nodes);
 }
 
-export function isPrWithStatus(pr: any): pr is PrStatusFragment {
+export function isPrWithStatus(pr: any): pr is PrStatusesFragment {
   return Object.keys(pr).includes("commits");
 }
 

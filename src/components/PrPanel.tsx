@@ -21,16 +21,13 @@ export const PrPanel: React.FC<{
 
   const { authed, error, loading, data, fetchData } = useGithubApi(
     async (api) => {
-      const { edges } = await searchForPr(api, {
+      return await searchForPr(api, {
         query,
         includeStatus: columns.checks,
         includeReviews: columns.reviews,
         includeLabels: columns.labels,
         count: 10,
       });
-
-      if (!edges) return [];
-      return edges.map((e) => e?.node);
     },
     {},
     [query, columns]

@@ -2,13 +2,13 @@ import React, { useMemo, useCallback } from "react";
 import IconText from "./IconText";
 import StatusIcon from "./StatusIcon";
 import CardLabel from "./CardLabel";
-import { GithubActions } from "@lib/actions/githubActions";
 import { calcTimeElapsed } from "@lib/calcTimeElapsed";
 import { isValidExternalLink } from "@lib/isValidExternalLink";
+import { IActionProject, IActionWorkflow } from "extension";
 
 export type AttributeWorkflowsProps = {
-  project?: GithubActions.IProject;
-  workflows?: GithubActions.IActionWorkflow[];
+  project?: IActionProject;
+  workflows?: IActionWorkflow[];
 };
 
 const AttributeWorkflows = ({
@@ -26,7 +26,7 @@ const AttributeWorkflows = ({
   );
 
   const handleBranchClick = useCallback(
-    (workflow: GithubActions.IWorkflow) => {
+    (workflow: IActionWorkflow) => {
       if (!isValidExternalLink(workflow?.url)) {
         return;
       }
@@ -36,10 +36,7 @@ const AttributeWorkflows = ({
     [project]
   );
 
-  const renderWorkflow = (
-    workflow: GithubActions.IActionWorkflow,
-    index: number
-  ) => {
+  const renderWorkflow = (workflow: IActionWorkflow, index: number) => {
     const {
       buildNumber,
       buildStatus,

@@ -9,6 +9,7 @@ import { LinkableRecord } from "@lib/linkableRecord";
 import { validPrUrl } from "@lib/validPrUrl";
 import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
 import { githubPullRequestToPrLink } from "@lib/github/converters";
+import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 
 type MenuProps = {
   record: LinkableRecord;
@@ -85,7 +86,12 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
       }
 
       const prLink = githubPullRequestToPrLink(pullRequest);
-      await updatePullRequestLinkOnRecord(prLink, record);
+
+      await Promise.all([
+        updatePullRequestLinkOnRecord(prLink, record),
+        updateBranchLinkFromPullRequest(pullRequest, record),
+      ]);
+
       setPasteMode(false);
     });
   };

@@ -1,11 +1,11 @@
-import { classify } from "inflected";
-import gql from "gql-tag";
-import { graphql } from "@octokit/graphql";
-import { print } from "graphql";
 import {
   RepoFragmentFragment,
   RepoFragmentFragmentDoc,
 } from "generated/graphql";
+import gql from "gql-tag";
+import { print, parse } from "graphql";
+import { classify } from "inflected";
+import { GqlFetch } from "./api";
 
 const repoAlias = (repo: string) => classify(repo).replace(/[^a-zA-Z]/g, "");
 
@@ -19,7 +19,7 @@ const RepoBranches = (repo: string) => {
   `;
 };
 
-export async function recentBranches(api: typeof graphql, repos: string[]) {
+export async function recentBranches(api: GqlFetch, repos: string[]) {
   const repoAliases = repos.map(repoAlias);
   const [queryArgs, queryVars] = repos.reduce(
     (acc, repo) => {
@@ -43,7 +43,7 @@ export async function recentBranches(api: typeof graphql, repos: string[]) {
   `;
 
   const data = await api<Record<string, RepoFragmentFragment>>(
-    query,
+    parse(query),
     queryVars
   );
   return repoAliases.map((alias) => data[alias]);

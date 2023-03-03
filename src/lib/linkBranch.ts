@@ -1,4 +1,5 @@
 import { IDENTIFIER } from "extension";
+import { PrForLinkFragment } from "generated/graphql";
 import { appendField } from "./fields";
 import { LinkableRecord } from "./linkableRecord";
 import { referenceToRecord } from "./linkPullRequest";
@@ -27,4 +28,15 @@ export async function linkBranch(branchName: string, repoUrl: string) {
 
 export async function unlinkBranches(record: Aha.HasExtensionFields) {
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
+}
+
+export async function updateBranchLinkFromPullRequest(
+  pr: PrForLinkFragment,
+  record: LinkableRecord
+) {
+  const branchName = pr.headRef?.name;
+
+  if (branchName) {
+    await linkBranchToRecord(branchName, pr.repository.url, record);
+  }
 }

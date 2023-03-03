@@ -1,6 +1,6 @@
 import React from "react";
 import { getPrByUrl } from "@lib/github/getPr";
-import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { getStatusCommit } from "@lib/github/getStatusCommit";
 import { isPrWithStatus } from "@lib/github/queries";
 import { useGithubApi } from "@lib/useGithubApi";
 import { usePopperAlerter } from "@lib/usePopperAlerter";

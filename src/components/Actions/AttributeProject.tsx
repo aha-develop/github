@@ -1,9 +1,9 @@
 import { ExternalLink } from "@components/ExternalLink";
-import { GithubActions } from "@lib/actions/githubActions";
+import { IActionProject } from "extension";
 import React, { memo } from "react";
 
 export type AttributeProjectProps = {
-  project: GithubActions.IActionProject;
+  project: IActionProject;
 };
 
 const AttributeProject: React.FC<AttributeProjectProps> = ({ project }) => {
