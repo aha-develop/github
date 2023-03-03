@@ -58,6 +58,12 @@ Install required modules:
 yarn install
 ```
 
+The extension makes requests to GitHub's graphql API. Changes to the graphql queries in lib/github/queries need to be compiled by running:
+
+```
+yarn codegen
+```
+
 **Note: In order to install an extension into your Aha! Develop account, you must be an account administrator.**
 
 Install the extension into Aha! and set up a watcher:
