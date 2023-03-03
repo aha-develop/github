@@ -2,6 +2,7 @@ import { withGitHubApi } from "@lib/github/api";
 import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
 
@@ -27,7 +28,11 @@ const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
     }
 
     const prLink = githubPullRequestToPrLink(pullRequest);
-    await updatePullRequestLinkOnRecord(prLink, record);
+
+    await Promise.all([
+      updatePullRequestLinkOnRecord(prLink, record),
+      updateBranchLinkFromPullRequest(pullRequest, record),
+    ]);
   });
 };
 

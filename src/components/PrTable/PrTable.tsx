@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { loadRelatedFeatures } from "@lib/loadRelatedFeatures";
 import { PrRow } from "./PrRow";
-import { GithubExtension } from "@lib/github/types";
+import { PrForLinkFragment } from "generated/graphql";
 
 export interface TableCols {
   repoName: boolean;
@@ -13,7 +13,7 @@ export interface TableCols {
 }
 
 export interface TableProps {
-  prs: GithubExtension.PrForLink[];
+  prs: PrForLinkFragment[];
   columns?: TableCols;
 }
 

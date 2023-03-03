@@ -1,7 +1,8 @@
 import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
-import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { getStatusCommit } from "@lib/github/getStatusCommit";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";
 import { IPullRequestLink } from "extension";
@@ -39,8 +40,11 @@ export const PullRequest: React.FC<{
     if (prLink.state === prLink.state) return;
 
     updatePullRequestLinkOnRecord(prLink, record);
+
     setPrLink(prLink);
   }, [fetchedPr, loading]);
+
+  const prStatusCommit = fetchedPr && getStatusCommit(fetchedPr);
 
   return (
     <aha-flex align-items="center" justify-content="space-between" gap="5px">
@@ -62,7 +66,7 @@ export const PullRequest: React.FC<{
       )}
       {authed && fetchedPr && (
         <>
-          <Status prStatus={prStatusCommit(fetchedPr)} />
+          {prStatusCommit && <Status prStatus={prStatusCommit} />}
           <PrReviewStatus pr={fetchedPr} />
         </>
       )}

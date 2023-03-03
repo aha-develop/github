@@ -2,6 +2,7 @@ import React from "react";
 import { searchForPr } from "@lib/github/searchForPr";
 import { useGithubApi } from "@lib/useGithubApi";
 import { PrTable, TableCols } from "./PrTable";
+import { PrForLinkFragment } from "generated/graphql";
 
 interface QueryTableProps {
   query: string;
@@ -14,13 +15,12 @@ export const PrTableWithQuery: React.FC<QueryTableProps> = ({
 }) => {
   const { authed, error, loading, data } = useGithubApi(
     async (api) => {
-      const { edges } = await searchForPr(api, {
+      return await searchForPr(api, {
         query,
         includeStatus: true,
         includeReviews: true,
         count: 10,
       });
-      return edges.map((e) => e.node);
     },
     {},
     [query]

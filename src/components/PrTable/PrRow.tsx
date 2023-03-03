@@ -1,5 +1,5 @@
 import React from "react";
-import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { getStatusCommit } from "@lib/github/getStatusCommit";
 import {
   isPrForReviewDecision,
   isPrWithLabels,
@@ -12,10 +12,11 @@ import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
 import { TableCols } from "./PrTable";
-import { GithubExtension } from "@lib/github/types";
+import { PrForLinkFragment } from "generated/graphql";
+import { githubPullRequestToPrLink } from "@lib/github/converters";
 
 interface RowProps {
-  pr: GithubExtension.Pr;
+  pr: PrForLinkFragment;
   feature?: Aha.Feature;
   columns: TableCols;
 }
@@ -27,6 +28,9 @@ export const PrRow: React.FC<RowProps> = ({ pr, feature, columns }) => {
       aha.drawer.showRecord(feature);
     }
   };
+
+  const prLink = githubPullRequestToPrLink(pr);
+  const prStatus = isPrWithStatus(pr) && getStatusCommit(pr);
 
   return (
     <tr>
@@ -54,14 +58,10 @@ export const PrRow: React.FC<RowProps> = ({ pr, feature, columns }) => {
       </td>
       {columns.status && (
         <td>
-          <PrState state={pr.state} />
+          <PrState state={prLink.state} />
         </td>
       )}
-      {columns.checks && (
-        <td>
-          {isPrWithStatus(pr) && <Status prStatus={prStatusCommit(pr)} />}
-        </td>
-      )}
+      {columns.checks && <td>{prStatus && <Status prStatus={prStatus} />}</td>}
       {columns.reviews && (
         <td>{isPrForReviewDecision(pr) && <PrReviewStatus pr={pr} />}</td>
       )}

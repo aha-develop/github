@@ -1,4 +1,5 @@
 import {
+  PrForLinkFragment,
   SearchPullRequestDocument,
   SearchPullRequestQueryVariables,
 } from "generated/graphql";
@@ -23,5 +24,12 @@ export async function searchForPr(
   delete variables["query"];
 
   const data = await api(SearchPullRequestDocument, variables);
-  return data.search;
+  const edges = data.search.edges;
+  if (!edges) return [];
+
+  const nodes = edges
+    .map((edge) => edge?.node)
+    .filter((node) => node?.__typename === "PullRequest");
+
+  return nodes as PrForLinkFragment[];
 }

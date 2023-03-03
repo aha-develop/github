@@ -2,6 +2,10 @@ import {
   githubPullRequestEventToPrLink,
   githubPullRequestReviewEventToPrLink,
 } from "@lib/github/converters";
+import {
+  linkBranchToRecord,
+  updateBranchLinkFromPullRequest,
+} from "@lib/linkBranch";
 import { getOrLinkPullRequestRecord } from "@lib/linkPullRequest";
 import {
   PullRequestEvent,
@@ -15,8 +19,21 @@ export async function handlePullRequest(payload: PullRequestEvent) {
   const prLink = githubPullRequestEventToPrLink(payload.pull_request);
   const record = await getOrLinkPullRequestRecord(prLink);
 
-  // Generate events.
   if (record) {
+    // Link the branch to the record too
+    try {
+      const head = payload.pull_request.head;
+      if (head) {
+        await linkBranchToRecord(head.ref, head.repo.url, record);
+      }
+    } catch (error) {
+      // Log but continue if the branch could not be linked
+      console.error(
+        `There was an error linking PR branch to record ${record.referenceNum}`
+      );
+    }
+
+    // Trigger events
     await triggerEvent("pr", payload, record);
     await triggerAutomation(payload, record);
   } else {

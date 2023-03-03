@@ -3,9 +3,9 @@
 
 
 "@aha-app/aha-develop-react@^1.0.0":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@aha-app/aha-develop-react/-/aha-develop-react-1.3.1.tgz#4abdf2acdc742e8eb539572dd1399816bd00e610"
-  integrity sha512-yolHwsuztTUDaGFeMo7rog70YkAjLDwrjYrOuRISlHYhlLbO3hQFhgIhP4aFg2gI/cbbnUOieboxkRL+oONvww==
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@aha-app/aha-develop-react/-/aha-develop-react-1.4.3.tgz#5f798cf0df0825f733f63510aa6f826d6d518701"
+  integrity sha512-omWYsVn5u0BQYq07ghaHkchqLDOJWbqoBZn7M9cxGTTq391oTWqysTxN0hm3O2YsTu1QllnT19FbaLtWaqhutA==
 
 "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.0"

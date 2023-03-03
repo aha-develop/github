@@ -7,13 +7,17 @@ fragment RepoFragment on Repository {
   ) {
     edges {
       node {
-        __typename
-        name
-        target {
-          oid
-          commitUrl
-        }
+        ...BranchFragment
       }
     }
+  }
+}
+
+fragment BranchFragment on Ref {
+  __typename
+  name
+  target {
+    oid
+    commitUrl
   }
 }

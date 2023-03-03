@@ -1,6 +1,7 @@
 import { IDENTIFIER, IPullRequestLink } from "extension";
 import { appendField } from "./fields";
 import { LinkableRecord } from "./linkableRecord";
+import { updateBranchLinkFromPullRequest } from "./linkBranch";
 
 const PULL_REQUESTS_FIELD = "pullRequests";
 
@@ -18,12 +19,6 @@ export async function updatePullRequestLinkOnRecord(
     prLink.url,
     record.referenceNum
   );
-
-  if ("headRef" in pr && pr.headRef) {
-    await linkBranchToRecord(pr.headRef.name, pr.repository.url, record);
-  } else if ("head" in pr && pr.head) {
-    await linkBranchToRecord(pr.head.ref, pr.head.repo.url, record);
-  }
 }
 
 /**

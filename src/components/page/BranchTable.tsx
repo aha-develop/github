@@ -2,21 +2,15 @@ import React from "react";
 import { recentBranches } from "@lib/github/recentBranches";
 import { useGithubApi } from "@lib/useGithubApi";
 import { ExternalLink } from "@components/ExternalLink";
+import { BranchFragmentFragment } from "generated/graphql";
 
-type Branch = {
-  __typename: string;
-  name: string;
-  target: {
-    oid: string;
-    commitUrl: string;
-  };
-};
-
-const BranchRow: React.FC<{ branch: Branch }> = ({ branch }) => {
+const BranchRow: React.FC<{ branch: BranchFragmentFragment }> = ({
+  branch,
+}) => {
   return (
     <tr>
       <td>
-        <ExternalLink href={branch.target.commitUrl}>
+        <ExternalLink href={branch.target?.commitUrl}>
           {branch.name}
         </ExternalLink>
       </td>
@@ -35,9 +29,15 @@ const BranchTable: React.FC<{ repos: string[] }> = ({ repos }) => {
   if (loading || !data) return <aha-spinner></aha-spinner>;
 
   const tables = data.map((repo, idx) => {
-    const rows = repo.refs.edges.map(({ node }, idx) => (
-      <BranchRow key={idx} branch={node} />
-    ));
+    const rows = [];
+    const edges = repo.refs?.edges || [];
+
+    for (let edge of edges) {
+      const node = edge?.node;
+      if (node) {
+        rows.push(<BranchRow key={idx} branch={node} />);
+      }
+    }
 
     return (
       <div className="subsection" key={idx}>
