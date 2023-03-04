@@ -9,11 +9,6 @@ export async function appendField<V extends { id: string | number }>(
   fieldName: string,
   newValue: V
 ) {
-  // Link to Aha! record.
-  console.log(
-    `Link to ${record.typename}:${record["referenceNum"] || record.uniqueId}`
-  );
-
   await replaceField<any[]>(record, fieldName, (value) => {
     const list: { id: any }[] = [...(value || [])];
     const existing = list.findIndex((item) => item.id == newValue.id);

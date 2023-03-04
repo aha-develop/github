@@ -1,5 +1,5 @@
 import React from "react";
-import { getStatusCommit } from "@lib/github/getStatusCommit";
+import { getLastCommit } from "@lib/github/getStatusCommit";
 import {
   isPrForReviewDecision,
   isPrWithLabels,
@@ -30,7 +30,7 @@ export const PrRow: React.FC<RowProps> = ({ pr, feature, columns }) => {
   };
 
   const prLink = githubPullRequestToPrLink(pr);
-  const prStatus = isPrWithStatus(pr) && getStatusCommit(pr);
+  const prStatus = isPrWithStatus(pr) && getLastCommit(pr);
 
   return (
     <tr>

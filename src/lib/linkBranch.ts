@@ -14,6 +14,11 @@ export async function linkBranchToRecord(
   repoUrl: string,
   record: LinkableRecord
 ) {
+  // Link to Aha! record.
+  console.debug(
+    `Link to ${record.typename}:${record["referenceNum"] || record.uniqueId}`
+  );
+
   await appendField(record, BRANCHES_FIELD, {
     id: branchName,
     name: branchName,

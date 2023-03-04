@@ -1,10 +1,42 @@
 import { IDENTIFIER, IPullRequestLink } from "extension";
 import { extractReferenceFromName } from "./extractReferenceFromName";
 import { appendField } from "./fields";
+import { withGitHubApi } from "./github/api";
+import {
+  githubPullRequestToActionLink,
+  githubPullRequestToPrLink,
+} from "./github/converters";
+import { getPrByUrl } from "./github/getPr";
 import { LinkableRecord } from "./linkableRecord";
+import { saveActionInRecord } from "./linkAction";
 import { updateBranchLinkFromPullRequest } from "./linkBranch";
 
 const PULL_REQUESTS_FIELD = "pullRequests";
+
+export async function linkPullRequest(url: string, record: LinkableRecord) {
+  await withGitHubApi(async (api) => {
+    const pullRequest = await getPrByUrl(api, url, {
+      includeStatus: true,
+    });
+    if (!pullRequest) {
+      throw new Error("Could not find this pull request");
+    }
+
+    const prLink = githubPullRequestToPrLink(pullRequest);
+    const actionLink = githubPullRequestToActionLink(pullRequest);
+
+    const promises = [
+      updatePullRequestLinkOnRecord(prLink, record),
+      updateBranchLinkFromPullRequest(pullRequest, record),
+    ];
+
+    if (actionLink) {
+      promises.push(saveActionInRecord(record, actionLink));
+    }
+
+    await Promise.all(promises);
+  });
+}
 
 /**
  * Store pull request link against a record
@@ -129,5 +161,3 @@ export async function referenceFromPr(
 
   return referenceToRecord(ref);
 }
-
-

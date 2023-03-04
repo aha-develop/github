@@ -1,6 +1,6 @@
 import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
-import { getStatusCommit } from "@lib/github/getStatusCommit";
+import { getLastCommit } from "@lib/github/getStatusCommit";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
@@ -44,7 +44,7 @@ export const PullRequest: React.FC<{
     setPrLink(prLink);
   }, [fetchedPr, loading]);
 
-  const prStatusCommit = fetchedPr && getStatusCommit(fetchedPr);
+  const prStatusCommit = fetchedPr && getLastCommit(fetchedPr);
 
   return (
     <aha-flex align-items="center" justify-content="space-between" gap="5px">

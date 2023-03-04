@@ -1,9 +1,16 @@
 import { withGitHubApi } from "@lib/github/api";
-import { githubPullRequestToPrLink } from "@lib/github/converters";
+import {
+  githubPullRequestToActionLink,
+  githubPullRequestToPrLink,
+} from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { saveActionInRecord } from "@lib/linkAction";
 import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
-import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
+import {
+  linkPullRequest,
+  updatePullRequestLinkOnRecord,
+} from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
 
 const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
@@ -21,19 +28,7 @@ const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
     throw new Error("Please enter a valid pull request URL");
   }
 
-  await withGitHubApi(async (api) => {
-    const pullRequest = await getPrByUrl(api, prUrl);
-    if (!pullRequest) {
-      throw new Error("Could not find this pull request");
-    }
-
-    const prLink = githubPullRequestToPrLink(pullRequest);
-
-    await Promise.all([
-      updatePullRequestLinkOnRecord(prLink, record),
-      updateBranchLinkFromPullRequest(pullRequest, record),
-    ]);
-  });
+  await linkPullRequest(prUrl, record);
 };
 
 aha.on("addLink", AddLink);

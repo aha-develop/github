@@ -11,42 +11,11 @@ query SearchPullRequest(
         __typename
         ... on PullRequest {
           ...PrForLink
-          ...PrStatuses @include(if: $includeStatus)
+          ...PrCommit @include(if: $includeStatus)
           ...PrForReviewDecision @include(if: $includeReviews)
           ...PrLabels @include(if: $includeLabels)
         }
       }
-    }
-  }
-}
-
-fragment PrForLink on PullRequest {
-  id
-  number
-  title
-  url
-  state
-  merged
-  repository {
-    url
-  }
-  headRef {
-    name
-  }
-}
-fragment PrForReviewDecision on PullRequest {
-  reviewDecision
-  latestReviews(first: 5) {
-    nodes {
-      state
-    }
-  }
-}
-fragment PrLabels on PullRequest {
-  labels(first: 5) {
-    nodes {
-      color
-      name
     }
   }
 }
