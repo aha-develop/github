@@ -37,6 +37,7 @@ export async function handlePullRequest(payload: PullRequestEvent) {
     await triggerEvent("pr", payload, record);
     await triggerAutomation(payload, record);
   } else {
+    console.log("No record found for this PR");
     await triggerEvent("pr", payload);
   }
 }
@@ -47,6 +48,8 @@ export async function handlePullRequestReview(payload: PullRequestReviewEvent) {
   const record = await getOrLinkPullRequestRecord(prLink);
   if (record) {
     await triggerAutomation(payload, record);
+  } else {
+    console.log("No record found for this PR");
   }
 
   await triggerEvent(

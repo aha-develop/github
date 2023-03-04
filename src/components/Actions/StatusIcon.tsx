@@ -14,6 +14,7 @@ const DEFAULT_STYLE = {
   borderRadius: "4px",
   verticalAlign: "middle",
   textTransform: "capitalize",
+  display: "flex",
 };
 
 const StatusIcon: React.FC<StatusIconProps> = ({ status, style = {} }) => {

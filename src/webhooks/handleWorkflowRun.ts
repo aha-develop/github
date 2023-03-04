@@ -2,11 +2,7 @@ import { githubWorkflowRunCompletedEventToActionLink } from "@lib/github/convert
 import { LinkableRecord } from "@lib/linkableRecord";
 import { saveActionInRecord } from "@lib/linkAction";
 import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
-import {
-  WorkflowRunCompletedEvent,
-  WorkflowRunEvent,
-} from "@octokit/webhooks-types";
-import { IActionLink } from "extension";
+import { WorkflowRunEvent } from "@octokit/webhooks-types";
 
 export async function handleWorkflowRun(event: WorkflowRunEvent) {
   if (event.action !== "completed") return;

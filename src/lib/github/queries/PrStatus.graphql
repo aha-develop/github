@@ -1,13 +1,3 @@
-fragment PrStatuses on PullRequest {
-  commits(last: 1) {
-    nodes {
-      commit {
-        ...PrCommitStatus
-      }
-    }
-  }
-}
-
 fragment PrCommitStatus on Commit {
   statusCheckRollup {
     state

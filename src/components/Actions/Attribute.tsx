@@ -1,5 +1,5 @@
 import { LinkableRecord } from "@lib/linkableRecord";
-import { IRecordExtensionFields } from "extension";
+import { IActionLink, IRecordExtensionFields } from "extension";
 import React, { useMemo } from "react";
 import AttributeProject from "./AttributeProject";
 import AttributeWorkflows from "./AttributeWorkflows";
@@ -11,14 +11,24 @@ export type AttributeProps = {
 };
 
 const Attribute = ({ fields, record }: AttributeProps) => {
-  const actions = fields.actions || {};
-
-  const hasWorkflows = useMemo(
-    () => Object.keys(actions ?? {}).length > 0,
-    [actions]
+  const actionFields = useMemo(
+    () =>
+      Object.entries(fields).reduce((acc, [key, value]) => {
+        if (key.startsWith("action_")) {
+          return { ...acc, [key]: value };
+        } else {
+          return acc;
+        }
+      }, {} as Record<string, IActionLink>),
+    [fields]
   );
 
-  const useableFields = Object.values(actions);
+  const hasWorkflows = useMemo(
+    () => Object.keys(actionFields ?? {}).length > 0,
+    [actionFields]
+  );
+
+  const useableFields = Object.values(actionFields);
   const workflows =
     hasWorkflows &&
     useableFields
@@ -30,7 +40,7 @@ const Attribute = ({ fields, record }: AttributeProps) => {
           <div key={index}>
             <AttributeProject project={field.project} />
             <AttributeWorkflows
-              workflows={Object.values(field?.workflows ?? [])}
+              workflows={Object.values(field.workflows ?? {})}
               project={field.project}
             />
           </div>

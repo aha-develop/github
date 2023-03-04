@@ -7,7 +7,10 @@ import { withGitHubApi } from "@lib/github/api";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { validPrUrl } from "@lib/validPrUrl";
-import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
+import {
+  linkPullRequest,
+  updatePullRequestLinkOnRecord,
+} from "@lib/linkPullRequest";
 import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 
@@ -76,24 +79,13 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
       return;
     }
 
-    await withGitHubApi(async (api) => {
-      const pullRequest = await getPrByUrl(api, url);
-
-      if (!pullRequest) {
-        setValidation("Could not find pull request");
-        setPasteMode(false);
-        return;
-      }
-
-      const prLink = githubPullRequestToPrLink(pullRequest);
-
-      await Promise.all([
-        updatePullRequestLinkOnRecord(prLink, record),
-        updateBranchLinkFromPullRequest(pullRequest, record),
-      ]);
-
+    try {
+      await linkPullRequest(url, record);
       setPasteMode(false);
-    });
+    } catch (err) {
+      setValidation("Could not find pull request");
+      setPasteMode(false);
+    }
   };
 
   // Song and dance to fetch installation status for webhook when component first loads

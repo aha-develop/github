@@ -1,4 +1,4 @@
-import { ACTIONS_IDENTIFIER, IActionLink, IDENTIFIER } from "extension";
+import { IActionLink, IDENTIFIER } from "extension";
 import { LinkableRecord } from "./linkableRecord";
 
 /**
@@ -33,5 +33,9 @@ export const saveActionInRecord = async (
     };
   }
 
-  await record.setExtensionField(IDENTIFIER, projectId, githubAction);
+  await record.setExtensionField(
+    IDENTIFIER,
+    `action_${projectId}`,
+    githubAction
+  );
 };

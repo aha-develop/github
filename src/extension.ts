@@ -8,7 +8,7 @@ export const ICON = aha.iconForExtensionIdentifier(IDENTIFIER);
 export interface IRecordExtensionFields {
   branches?: IBranchLink[];
   pullRequests?: IPullRequestLink[];
-  actions?: Record<string, IActionLink>;
+  [index: `action_${string}`]: IActionLink;
 }
 
 export interface IPullRequestLink {
