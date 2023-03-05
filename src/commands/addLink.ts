@@ -5,7 +5,7 @@ import {
 } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
-import { saveActionInRecord } from "@lib/linkAction";
+import { linkActionToRecord } from "@lib/linkAction";
 import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 import {
   linkPullRequest,
