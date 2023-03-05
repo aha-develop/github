@@ -2,10 +2,7 @@ import {
   githubPullRequestEventToPrLink,
   githubPullRequestReviewEventToPrLink,
 } from "@lib/github/converters";
-import {
-  linkBranchToRecord,
-  updateBranchLinkFromPullRequest,
-} from "@lib/linkBranch";
+import { linkBranchToRecord } from "@lib/linkBranch";
 import { getOrLinkPullRequestRecord } from "@lib/linkPullRequest";
 import {
   PullRequestEvent,

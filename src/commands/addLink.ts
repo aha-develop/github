@@ -1,16 +1,5 @@
-import { withGitHubApi } from "@lib/github/api";
-import {
-  githubPullRequestToActionLink,
-  githubPullRequestToPrLink,
-} from "@lib/github/converters";
-import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
-import { linkActionToRecord } from "@lib/linkAction";
-import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
-import {
-  linkPullRequest,
-  updatePullRequestLinkOnRecord,
-} from "@lib/linkPullRequest";
+import { linkPullRequest } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
 
 const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({

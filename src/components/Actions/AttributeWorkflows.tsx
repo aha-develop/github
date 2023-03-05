@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from "react";
 import { IActionProject, IActionWorkflow } from "extension";
+import React, { useMemo } from "react";
 import { AttributeWorkflow } from "./AttributeWorkflow";
 
 export type AttributeWorkflowsProps = {

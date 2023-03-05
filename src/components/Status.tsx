@@ -1,14 +1,10 @@
-import React from "react";
-import { getPrByUrl } from "@lib/github/getPr";
-import { getLastCommit } from "@lib/github/getStatusCommit";
-import { isPrWithStatus } from "@lib/github/queries";
-import { useGithubApi } from "@lib/useGithubApi";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
-import { ExternalLink } from "./ExternalLink";
 import {
-  PrStatusContextFragment,
   PrCommitStatusFragment,
+  PrStatusContextFragment,
 } from "generated/graphql";
+import React from "react";
+import { ExternalLink } from "./ExternalLink";
 
 const statusIcon = (status: PrStatusContextFragment["state"]) => {
   switch (status) {

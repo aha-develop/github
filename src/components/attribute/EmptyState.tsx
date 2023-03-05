@@ -1,18 +1,9 @@
-import { IDENTIFIER, LEARN_MORE_URL, ICON } from "extension";
+import { ICON, IDENTIFIER, LEARN_MORE_URL } from "extension";
 import React, { useEffect, useState } from "react";
-
 import { useClipboard } from "@lib/useClipboard";
-
-import { withGitHubApi } from "@lib/github/api";
-import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { linkPullRequest } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
-import {
-  linkPullRequest,
-  updatePullRequestLinkOnRecord,
-} from "@lib/linkPullRequest";
-import { githubPullRequestToPrLink } from "@lib/github/converters";
-import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
 
 type MenuProps = {
   record: LinkableRecord;
