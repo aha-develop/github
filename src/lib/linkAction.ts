@@ -4,10 +4,10 @@ import { LinkableRecord } from "./linkableRecord";
 /**
  * Save Github Actions in Record Field
  */
-export const linkActionToRecord = async (
+export async function linkActionToRecord(
   record: LinkableRecord,
   githubAction: IActionLink
-): Promise<void> => {
+): Promise<void> {
   const projectId = githubAction.project?.id;
   if (!projectId) {
     throw new Error("Undefined Project Id");
@@ -38,4 +38,4 @@ export const linkActionToRecord = async (
     `action_${projectId}`,
     githubAction
   );
-};
+}
