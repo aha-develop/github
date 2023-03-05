@@ -1,12 +1,7 @@
-import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { getLastCommit } from "@lib/github/getStatusCommit";
 import { LinkableRecord } from "@lib/linkableRecord";
-import {
-  linkPullRequest,
-  updateAllLinksFromPullRequest,
-  updatePullRequestLinkOnRecord,
-} from "@lib/linkPullRequest";
+import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";
 import { IPullRequestLink } from "extension";
 import React, { useEffect, useState } from "react";

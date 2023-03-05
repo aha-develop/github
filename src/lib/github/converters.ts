@@ -10,6 +10,12 @@ import {
 } from "extension";
 import { PrCommitFragment, PrForLinkFragment } from "generated/graphql";
 
+// As per lodash, function for detecting null or undefined which also narrows
+// the type for TS
+function isNil(value: any): value is null | undefined {
+  return value === null || value === undefined;
+}
+
 /**
  * This file has functions to convert a PR from either a webhook or graphql to
  * the basic state information held in the extension field
@@ -95,10 +101,9 @@ export function githubWorkflowRunCompletedEventToActionLink(
   };
 }
 
-function isNil(value: any): value is null | undefined {
-  return value === null || value === undefined;
-}
-
+/**
+ * Convert PR fetched from graphql into action link data by looking at the check runs
+ */
 export function githubPullRequestToActionLink(
   pr: PrForLinkFragment & PrCommitFragment
 ): IActionLink | undefined {
