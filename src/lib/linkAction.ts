@@ -4,7 +4,7 @@ import { LinkableRecord } from "./linkableRecord";
 /**
  * Save Github Actions in Record Field
  */
-export const saveActionInRecord = async (
+export const linkActionToRecord = async (
   record: LinkableRecord,
   githubAction: IActionLink
 ): Promise<void> => {

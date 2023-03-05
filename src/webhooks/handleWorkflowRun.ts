@@ -1,6 +1,6 @@
 import { githubWorkflowRunCompletedEventToActionLink } from "@lib/github/converters";
 import { LinkableRecord } from "@lib/linkableRecord";
-import { saveActionInRecord } from "@lib/linkAction";
+import { linkActionToRecord } from "@lib/linkAction";
 import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
 import { WorkflowRunEvent } from "@octokit/webhooks-types";
 
@@ -24,6 +24,6 @@ export async function handleWorkflowRun(event: WorkflowRunEvent) {
     record = await referenceToRecord(event.workflow_run.head_commit.message);
 
   if (record) {
-    await saveActionInRecord(record, recordField);
+    await linkActionToRecord(record, recordField);
   }
 }

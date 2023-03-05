@@ -2,8 +2,11 @@ import { githubPullRequestToPrLink } from "@lib/github/converters";
 import { getPrByUrl } from "@lib/github/getPr";
 import { getLastCommit } from "@lib/github/getStatusCommit";
 import { LinkableRecord } from "@lib/linkableRecord";
-import { updateBranchLinkFromPullRequest } from "@lib/linkBranch";
-import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
+import {
+  linkPullRequest,
+  updateAllLinksFromPullRequest,
+  updatePullRequestLinkOnRecord,
+} from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";
 import { IPullRequestLink } from "extension";
 import React, { useEffect, useState } from "react";
@@ -31,16 +34,13 @@ export const PullRequest: React.FC<{
     });
   });
 
-  // If the reloaded PR has changed state then update the extension fields
+  // If the real data from github gets loaded then use it to update the link on
+  // the record
   useEffect(() => {
     if (loading) return;
     if (!fetchedPr) return;
 
-    const prLink = githubPullRequestToPrLink(fetchedPr);
-    if (prLink.state === prLink.state) return;
-
-    updatePullRequestLinkOnRecord(prLink, record);
-
+    updateAllLinksFromPullRequest(fetchedPr, record);
     setPrLink(prLink);
   }, [fetchedPr, loading]);
 
