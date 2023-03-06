@@ -39,8 +39,6 @@ export async function updateAllLinksFromPullRequest(
     updateBranchLinkFromPullRequest(pullRequest, record),
   ];
 
-  console.log({ actionLink });
-
   if (actionLink) {
     promises.push(linkActionToRecord(record, actionLink));
   }
