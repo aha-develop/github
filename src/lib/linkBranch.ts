@@ -2,7 +2,7 @@ import { IDENTIFIER } from "extension";
 import { PrForLinkFragment } from "generated/graphql";
 import { appendField } from "./fields";
 import { LinkableRecord } from "./linkableRecord";
-import { referenceToRecord } from "./linkPullRequest";
+import { recordFromReferenceNum } from "./recordFrom";
 
 const BRANCHES_FIELD = "branches";
 
@@ -30,7 +30,7 @@ export async function linkBranchToRecord(
  * Given some branch information, try to find and link a record
  */
 export async function linkBranch(branchName: string, repoUrl: string) {
-  const record = await referenceToRecord(branchName);
+  const record = await recordFromReferenceNum(branchName);
   if (record) {
     await linkBranchToRecord(branchName, repoUrl, record);
     return record;

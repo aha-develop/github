@@ -3,7 +3,14 @@ import {
   githubPullRequestReviewEventToPrLink,
 } from "@lib/github/converters";
 import { linkBranchToRecord } from "@lib/linkBranch";
-import { getOrLinkPullRequestRecord } from "@lib/linkPullRequest";
+import {
+  getOrLinkPullRequestRecord,
+  updatePullRequestLinkOnRecord,
+} from "@lib/linkPullRequest";
+import {
+  recordFromPullRequestEvent,
+  recordFromSimplePullRequest,
+} from "@lib/recordFrom";
 import {
   PullRequestEvent,
   PullRequestReviewEvent,
@@ -14,9 +21,11 @@ import { triggerEvent } from "./triggerEvent";
 export async function handlePullRequest(payload: PullRequestEvent) {
   // Make sure the PR is linked to its record.
   const prLink = githubPullRequestEventToPrLink(payload.pull_request);
-  const record = await getOrLinkPullRequestRecord(prLink);
+  const record = await recordFromPullRequestEvent(payload.pull_request);
 
   if (record) {
+    updatePullRequestLinkOnRecord(prLink, record);
+
     // Link the branch to the record too
     try {
       const head = payload.pull_request.head;
@@ -42,8 +51,10 @@ export async function handlePullRequest(payload: PullRequestEvent) {
 export async function handlePullRequestReview(payload: PullRequestReviewEvent) {
   // Make sure the PR is linked to its record.
   const prLink = githubPullRequestReviewEventToPrLink(payload.pull_request);
-  const record = await getOrLinkPullRequestRecord(prLink);
+  const record = await recordFromSimplePullRequest(payload.pull_request);
+
   if (record) {
+    await updatePullRequestLinkOnRecord(prLink, record);
     await triggerAutomation(payload, record);
   } else {
     console.log("No record found for this PR");

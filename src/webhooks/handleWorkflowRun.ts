@@ -1,7 +1,11 @@
 import { githubWorkflowRunCompletedEventToActionLink } from "@lib/github/converters";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { linkActionToRecord } from "@lib/linkAction";
-import { getPullRequestRecord, referenceToRecord } from "@lib/linkPullRequest";
+import {
+  recordFromReferenceNum,
+  recordFromUrl,
+  recordFromWorkflowRun,
+} from "@lib/recordFrom";
 import { WorkflowRunEvent } from "@octokit/webhooks-types";
 
 export async function handleWorkflowRun(event: WorkflowRunEvent) {
@@ -14,14 +18,7 @@ export async function handleWorkflowRun(event: WorkflowRunEvent) {
 
   // Find the record. Start by trying to find the record from the PR(s), then
   // try the branch name and then commit message
-  let record: LinkableRecord | null | undefined;
-  for (let pr of event.workflow_run.pull_requests) {
-    record = await getPullRequestRecord(pr);
-    if (record) break;
-  }
-  if (!record) record = await referenceToRecord(event.workflow_run.head_branch);
-  if (!record)
-    record = await referenceToRecord(event.workflow_run.head_commit.message);
+  const record = await recordFromWorkflowRun(event.workflow_run);
 
   if (record) {
     await linkActionToRecord(record, recordField);

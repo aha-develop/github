@@ -1,5 +1,5 @@
 import { LinkableRecord } from "@lib/linkableRecord";
-import { referenceToRecord } from "@lib/linkPullRequest";
+import { recordFromReferenceNum } from "@lib/recordFrom";
 import { WebhookEvent } from "@octokit/webhooks-types";
 
 /**
@@ -16,7 +16,7 @@ export async function triggerEvent(
   let record: null | LinkableRecord = null;
 
   if (typeof referenceText === "string") {
-    record = await referenceToRecord(referenceText);
+    record = await recordFromReferenceNum(referenceText);
   } else if (referenceText) {
     record = referenceText;
   }

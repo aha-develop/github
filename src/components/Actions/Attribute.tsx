@@ -3,7 +3,7 @@ import { IActionLink, IRecordExtensionFields } from "extension";
 import React, { useMemo } from "react";
 import AttributeProject from "./AttributeProject";
 import AttributeWorkflows from "./AttributeWorkflows";
-import EmptyState from "./EmptyState";
+import { EmptyState } from "./EmptyState";
 
 export type AttributeProps = {
   record: LinkableRecord;
