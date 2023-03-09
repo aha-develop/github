@@ -1,6 +1,6 @@
 import { EventPayloadMap, WebhookEvent } from "@octokit/webhooks-types";
 import { IDENTIFIER } from "extension.js";
-import { handleCreateBranch } from "./handleCreateBranch";
+import { handleCreateBranch, handlePushBranch } from "./handleBranch";
 import {
   handlePullRequest,
   handlePullRequestReview,
@@ -19,6 +19,7 @@ type EventHandlers = {
 // Add additional handlers here
 const eventHandlers: Partial<EventHandlers> = {
   create: handleCreateBranch,
+  push: handlePushBranch,
   pull_request: handlePullRequest,
   pull_request_review: handlePullRequestReview,
   workflow_run: handleWorkflowRun,

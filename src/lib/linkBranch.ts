@@ -1,10 +1,18 @@
-import { IDENTIFIER } from "extension";
+import { IBranchLink, IDENTIFIER } from "extension";
 import { PrForLinkFragment } from "generated/graphql";
 import { appendField } from "./fields";
 import { LinkableRecord } from "./linkableRecord";
-import { recordFromReferenceNum } from "./recordFrom";
 
 const BRANCHES_FIELD = "branches";
+
+function replacePrefixInBranchName(branchName: string): string {
+  return branchName.replace("refs/heads/", "");
+}
+
+export function branchUrl(repoUrl: string, branchName: string) {
+  branchName = replacePrefixInBranchName(branchName);
+  return `${repoUrl}/tree/${branchName}`;
+}
 
 /**
  * Link a branch to a given record
@@ -19,28 +27,33 @@ export async function linkBranchToRecord(
     `Link to ${record.typename}:${record["referenceNum"] || record.uniqueId}`
   );
 
-  await appendField(record, BRANCHES_FIELD, {
-    id: branchName,
-    name: branchName,
-    url: `${repoUrl}/tree/${branchName}`,
-  });
-}
+  branchName = replacePrefixInBranchName(branchName);
+  const url = branchUrl(repoUrl, branchName);
 
-/**
- * Given some branch information, try to find and link a record
- */
-export async function linkBranch(branchName: string, repoUrl: string) {
-  const record = await recordFromReferenceNum(branchName);
-  if (record) {
-    await linkBranchToRecord(branchName, repoUrl, record);
-    return record;
-  }
+  await Promise.all([
+    appendField(record, BRANCHES_FIELD, {
+      id: branchName,
+      name: branchName,
+      url,
+    }),
+    aha.account.setExtensionField(IDENTIFIER, url, record.referenceNum),
+  ]);
 }
 
 /**
  * Remove all linked branches on a record
  */
 export async function unlinkBranches(record: Aha.HasExtensionFields) {
+  const branches = await record.getExtensionField<IBranchLink[]>(
+    IDENTIFIER,
+    BRANCHES_FIELD
+  );
+  if (branches) {
+    for (let branch of branches) {
+      await aha.account.clearExtensionField(IDENTIFIER, branch.url);
+    }
+  }
+
   await record.setExtensionField(IDENTIFIER, BRANCHES_FIELD, []);
 }
 

@@ -1,5 +1,4 @@
 import { LinkableRecord } from "@lib/linkableRecord";
-import { recordFromReferenceNum } from "@lib/recordFrom";
 import { WebhookEvent } from "@octokit/webhooks-types";
 
 /**
@@ -8,18 +7,10 @@ import { WebhookEvent } from "@octokit/webhooks-types";
 export async function triggerEvent(
   event: string,
   payload: WebhookEvent,
-  referenceText?: string | LinkableRecord
+  record?: LinkableRecord
 ) {
   // Only trigger if there is an action
   if (!("action" in payload)) return;
-
-  let record: null | LinkableRecord = null;
-
-  if (typeof referenceText === "string") {
-    record = await recordFromReferenceNum(referenceText);
-  } else if (referenceText) {
-    record = referenceText;
-  }
 
   aha.triggerServer(`aha-develop.github.${event}.${payload.action}`, {
     record,

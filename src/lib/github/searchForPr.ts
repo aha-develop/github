@@ -1,5 +1,7 @@
 import {
+  PrCommitFragment,
   PrForLinkFragment,
+  PrForReviewDecisionFragment,
   SearchPullRequestDocument,
   SearchPullRequestQueryVariables,
 } from "generated/graphql";
@@ -35,5 +37,7 @@ export async function searchForPr(
     .map((edge) => edge?.node)
     .filter((node) => node?.__typename === "PullRequest");
 
-  return nodes as PrForLinkFragment[];
+  return nodes as Array<
+    PrForLinkFragment & PrCommitFragment & PrForReviewDecisionFragment
+  >;
 }

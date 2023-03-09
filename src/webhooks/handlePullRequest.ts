@@ -3,10 +3,7 @@ import {
   githubPullRequestReviewEventToPrLink,
 } from "@lib/github/converters";
 import { linkBranchToRecord } from "@lib/linkBranch";
-import {
-  getOrLinkPullRequestRecord,
-  updatePullRequestLinkOnRecord,
-} from "@lib/linkPullRequest";
+import { updatePullRequestLinkOnRecord } from "@lib/linkPullRequest";
 import {
   recordFromPullRequestEvent,
   recordFromSimplePullRequest,
@@ -60,9 +57,5 @@ export async function handlePullRequestReview(payload: PullRequestReviewEvent) {
     console.log("No record found for this PR");
   }
 
-  await triggerEvent(
-    "pull_request_review",
-    payload,
-    payload.pull_request?.title
-  );
+  await triggerEvent("pull_request_review", payload, record || undefined);
 }

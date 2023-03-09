@@ -1,11 +1,6 @@
 import { githubWorkflowRunCompletedEventToActionLink } from "@lib/github/converters";
-import { LinkableRecord } from "@lib/linkableRecord";
 import { linkActionToRecord } from "@lib/linkAction";
-import {
-  recordFromReferenceNum,
-  recordFromUrl,
-  recordFromWorkflowRun,
-} from "@lib/recordFrom";
+import { recordFromWorkflowRun } from "@lib/recordFrom";
 import { WorkflowRunEvent } from "@octokit/webhooks-types";
 
 export async function handleWorkflowRun(event: WorkflowRunEvent) {

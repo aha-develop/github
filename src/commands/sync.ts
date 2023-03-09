@@ -1,10 +1,8 @@
 import { withGitHubApi } from "@lib/github/api";
-import { githubPullRequestToPrLink } from "@lib/github/converters";
 import GithubSearchQuery from "@lib/github/GithubSearchQuery";
 import { searchForPr } from "@lib/github/searchForPr";
 import { LinkableRecord } from "@lib/linkableRecord";
-import { linkBranch } from "@lib/linkBranch";
-import { getOrLinkPullRequestRecord } from "@lib/linkPullRequest";
+import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
 
 const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   { record },
@@ -32,7 +30,7 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
     .toQuery();
 
   withGitHubApi(async (api) => {
-    const prs = await searchForPr(api, { query });
+    const prs = await searchForPr(api, { query, includeStatus: true });
 
     if (prs.length === 0) {
       aha.commandOutput(
@@ -42,12 +40,7 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
     }
 
     for (let pr of prs) {
-      const prLink = githubPullRequestToPrLink(pr);
-      await getOrLinkPullRequestRecord(prLink);
-
-      if (pr.headRef) {
-        await linkBranch(pr.headRef.name, pr.repository.url);
-      }
+      await updateAllLinksFromPullRequest(pr, record as LinkableRecord);
     }
   });
 };
