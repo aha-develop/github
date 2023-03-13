@@ -34,7 +34,7 @@ const Attribute = ({ fields, record }: AttributeProps) => {
     useableFields
       .filter((field) => field.project)
       .map((field, index) => {
-        if (!field.project) return;
+        if (!field.project) return null;
 
         return (
           <div key={index}>
