@@ -1,5 +1,5 @@
 import React from "react";
-import { getLastCommit } from "@lib/github/getStatusCommit";
+import { getLastCommit } from "@lib/github/getLastCommit";
 import {
   isPrForReviewDecision,
   isPrWithLabels,

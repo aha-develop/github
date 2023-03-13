@@ -1,5 +1,5 @@
 import { getPrByUrl } from "@lib/github/getPr";
-import { getLastCommit } from "@lib/github/getStatusCommit";
+import { getLastCommit } from "@lib/github/getLastCommit";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";

@@ -10,7 +10,7 @@ import { PrCommitFragment, PrForLinkFragment } from "generated/graphql";
 import { extractReferenceFromName } from "./extractReferenceFromName";
 import { withGitHubApi } from "./github/api";
 import { getPrByUrl } from "./github/getPr";
-import { getLastCommit } from "./github/getStatusCommit";
+import { getLastCommit } from "./github/getLastCommit";
 import { LinkableRecord } from "./linkableRecord";
 import { branchUrl } from "./linkBranch";
 
