@@ -19,7 +19,7 @@ const AttributeWorkflows = ({ workflows = [] }: AttributeWorkflowsProps) => {
   );
 
   const workflowElements = sortedWorkflows.map((workflow, index) => (
-    <AttributeWorkflow workflow={workflow} index={index} />
+    <AttributeWorkflow key={index} workflow={workflow} index={index} />
   ));
 
   return (
