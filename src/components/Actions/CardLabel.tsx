@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { PropsWithChildren } from "react";
 
 export type CardLabelProps = {
   title: string;
-  value?: React.ReactNode;
 };
 
-const CardLabel = ({ title, value = 'Unknown' }: CardLabelProps) => {
+const CardLabel: React.FC<PropsWithChildren<CardLabelProps>> = ({
+  title,
+  children,
+}) => {
   return (
-    <span style={{ padding: '3px' }}>
-      <strong>{title}:</strong> {value ?? 'Unknown'}
+    <span style={{ padding: "3px" }}>
+      <strong>{title}:</strong> {children ?? "Unknown"}
     </span>
   );
 };

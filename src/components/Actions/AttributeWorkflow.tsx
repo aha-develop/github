@@ -67,29 +67,26 @@ export const AttributeWorkflow: React.FC<{
           style={{ width: "100%" }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <CardLabel title="Name" value={name} />
-            <CardLabel title="Build #" value={buildNumber} />
-            <CardLabel title="Commit" value={commitHash?.slice(0, 7)} />
-            <CardLabel
-              title="Author"
-              value={
-                <>
-                  {authorURL && (
-                    <img
-                      src={authorURL}
-                      style={{
-                        width: "18px",
-                        height: "18px",
-                        border: "1px solid",
-                        borderRadius: "50%",
-                        marginRight: "3px",
-                      }}
-                    />
-                  )}
-                  {authorName}
-                </>
-              }
-            />
+            <CardLabel title="Name">{name}</CardLabel>
+            <CardLabel title="Build #">{buildNumber}</CardLabel>
+            <CardLabel title="Commit">{commitHash?.slice(0, 7)}</CardLabel>
+            <CardLabel title="Author">
+              <>
+                {authorURL && (
+                  <img
+                    src={authorURL}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      border: "1px solid",
+                      borderRadius: "50%",
+                      marginRight: "3px",
+                    }}
+                  />
+                )}
+                {authorName}
+              </>
+            </CardLabel>
           </div>
         </aha-tooltip>
       </aha-flex>
