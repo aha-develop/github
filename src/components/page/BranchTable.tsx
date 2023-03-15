@@ -2,12 +2,15 @@ import React from "react";
 import { recentBranches } from "@lib/github/recentBranches";
 import { useGithubApi } from "@lib/useGithubApi";
 import { ExternalLink } from "@components/ExternalLink";
+import { BranchFragmentFragment } from "generated/graphql";
 
-const BranchRow = ({ branch }) => {
+const BranchRow: React.FC<{ branch: BranchFragmentFragment }> = ({
+  branch,
+}) => {
   return (
     <tr>
       <td>
-        <ExternalLink href={branch.target.commitUrl}>
+        <ExternalLink href={branch.target?.commitUrl}>
           {branch.name}
         </ExternalLink>
       </td>
@@ -15,10 +18,7 @@ const BranchRow = ({ branch }) => {
   );
 };
 
-/**
- * @param {{repos: string[]}} param0
- */
-const BranchTable = ({ repos }) => {
+const BranchTable: React.FC<{ repos: string[] }> = ({ repos }) => {
   const { data, authed, loading, error } = useGithubApi(
     async (api) => await recentBranches(api, repos),
     {},
@@ -29,9 +29,15 @@ const BranchTable = ({ repos }) => {
   if (loading || !data) return <aha-spinner></aha-spinner>;
 
   const tables = data.map((repo, idx) => {
-    const rows = repo.refs.edges.map(({ node }, idx) => (
-      <BranchRow key={idx} branch={node} />
-    ));
+    const rows = [];
+    const edges = repo.refs?.edges || [];
+
+    for (let edge of edges) {
+      const node = edge?.node;
+      if (node) {
+        rows.push(<BranchRow key={idx} branch={node} />);
+      }
+    }
 
     return (
       <div className="subsection" key={idx}>

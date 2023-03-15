@@ -1,8 +1,9 @@
 import React from "react";
 // @ts-ignore
 import { titleize } from "https://cdn.skypack.dev/inflected";
+import { IPullRequestLink } from "extension";
 
-const icon = (state: "open" | "merged" | "closed") => {
+const icon = (state: IPullRequestLink["state"]) => {
   switch (state) {
     case "open":
       return "code-branch";
@@ -13,14 +14,14 @@ const icon = (state: "open" | "merged" | "closed") => {
   }
 };
 
-export const PrState: React.FC<{ pr: Github.PrLink }> = ({ pr }) => {
+export const PrState: React.FC<{
+  state: IPullRequestLink["state"];
+}> = ({ state }) => {
   return (
-    <span className={`pr-state pr-state-${pr.state.toLowerCase()}`}>
+    <span className={`pr-state pr-state-${state}`}>
       <aha-flex gap="4px">
-        <aha-icon
-          icon={"fa-regular fa-" + icon(pr.state.toLowerCase())}
-        ></aha-icon>
-        <span>{titleize(pr.state)}</span>
+        <aha-icon icon={"fa-regular fa-" + icon(state)}></aha-icon>
+        <span>{titleize(state)}</span>
       </aha-flex>
     </span>
   );

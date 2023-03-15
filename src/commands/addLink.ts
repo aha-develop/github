@@ -1,11 +1,11 @@
-import { updatePullRequestLinkOnRecord } from "@lib/fields";
-import { withGitHubApi } from "@lib/github/api";
-import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { linkPullRequest } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
 
 const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
   record,
+}: {
+  record: LinkableRecord;
 }) => {
   if (!record) return;
 
@@ -17,10 +17,7 @@ const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
     throw new Error("Please enter a valid pull request URL");
   }
 
-  await withGitHubApi(async (api) => {
-    const pullRequest = await getPrByUrl(api, prUrl);
-    await updatePullRequestLinkOnRecord(pullRequest, record);
-  });
+  await linkPullRequest(prUrl, record);
 };
 
 aha.on("addLink", AddLink);

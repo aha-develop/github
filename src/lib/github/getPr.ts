@@ -1,40 +1,34 @@
-import { graphql } from "@octokit/graphql";
-import { GetPr } from "./queries";
+import {
+  GetPullRequestDocument,
+  GetPullRequestQueryVariables,
+} from "generated/graphql";
+import { GqlFetch } from "./api";
 import { repoFromUrl } from "./repoFromUrl";
 
-interface GetPrOptions {
-  includeStatus?: boolean;
-  includeReviews?: boolean;
-}
-
+/**
+ * Fetch a PR from github. Requires the owner, repo name and PR number
+ */
 export async function getPr(
-  api: typeof graphql,
-  owner: string,
-  name: string,
-  number: number,
-  options: GetPrOptions = {}
+  api: GqlFetch,
+  variables: GetPullRequestQueryVariables
 ) {
-  const {
-    repository: { pullRequest },
-  } = await api<{ repository: { pullRequest: Github.Pr } }>(GetPr, {
-    owner,
-    name,
-    number,
-    ...options,
-  });
-  return pullRequest;
+  const data = await api(GetPullRequestDocument, variables);
+  return data.repository?.pullRequest;
 }
 
 const prNumberFromUrl = (url: string) =>
   Number(new URL(url).pathname.split("/")[4]);
 
+/**
+ * Fetch a PR from github by URL. For example, https://github.com/owner/repo/pull/38
+ */
 export async function getPrByUrl(
-  api: typeof graphql,
+  api: GqlFetch,
   url: string,
-  options: GetPrOptions = {}
+  options: Omit<GetPullRequestQueryVariables, "owner" | "name" | "number"> = {}
 ) {
   const [owner, name] = repoFromUrl(url);
   const number = prNumberFromUrl(url);
 
-  return getPr(api, owner, name, number, options);
+  return getPr(api, { owner, name, number, ...options });
 }

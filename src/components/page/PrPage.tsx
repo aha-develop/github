@@ -4,7 +4,7 @@ import { useGithubApi } from "@lib/useGithubApi";
 import { PrTableWithQuery } from "@components/PrTable";
 import BranchTable from "./BranchTable";
 
-export const PrPage = ({ repos }) => {
+export const PrPage: React.FC<{ repos: string[] }> = ({ repos }) => {
   const { authed, error, fetchData } = useGithubApi(async () => {});
 
   const baseQuery = useMemo(

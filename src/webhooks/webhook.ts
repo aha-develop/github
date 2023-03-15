@@ -1,31 +1,32 @@
-import { IDENTIFIER } from "@lib/extension.js";
+import { EventPayloadMap, WebhookEvent } from "@octokit/webhooks-types";
+import { IDENTIFIER } from "extension.js";
+import { handleCreateBranch, handlePushBranch } from "./handleBranch";
 import {
-  getOrLinkPullRequestRecord,
-  linkBranch,
-  referenceToRecord,
-} from "@lib/fields.js";
-import { LinkableRecord } from "@lib/linkableRecord.js";
-import {
-  CreateEvent,
-  PullRequestEvent,
-  PullRequestReviewEvent,
-  WebhookEvent,
-  WebhookEvents,
-} from "@octokit/webhooks-types";
+  handlePullRequest,
+  handlePullRequestReview,
+} from "./handlePullRequest";
+import { handleWorkflowRun } from "./handleWorkflowRun";
 
 interface WebhookProps {
   headers: Record<string, string>;
   payload: WebhookEvent;
 }
 
-// Github has a list of all available events but for some reason its stuffed in
-// an array type
-type ArrayElement<ArrayType extends readonly unknown[]> =
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
-type GithubWebhookEvent = ArrayElement<WebhookEvents>;
+type EventHandlers = {
+  [P in keyof EventPayloadMap]: (payload: EventPayloadMap[P]) => Promise<void>;
+};
+
+// Add additional handlers here
+const eventHandlers: Partial<EventHandlers> = {
+  create: handleCreateBranch,
+  push: handlePushBranch,
+  pull_request: handlePullRequest,
+  pull_request_review: handlePullRequestReview,
+  workflow_run: handleWorkflowRun,
+};
 
 aha.on("webhook", async ({ headers, payload }: WebhookProps) => {
-  const event = headers.HTTP_X_GITHUB_EVENT as GithubWebhookEvent;
+  const event = headers.HTTP_X_GITHUB_EVENT as keyof EventPayloadMap;
 
   console.log(
     `Received webhook '${event}' ${"action" in payload ? payload.action : ""}`
@@ -34,128 +35,11 @@ aha.on("webhook", async ({ headers, payload }: WebhookProps) => {
   // Flag the account as having successfully set up the webhook
   aha.account.setExtensionField(IDENTIFIER, "webhookConfigured", true);
 
-  switch (event) {
-    case "create":
-      await handleCreateBranch(payload as CreateEvent);
-      break;
-    case "pull_request":
-      await handlePullRequest(payload as PullRequestEvent);
-      break;
-    case "pull_request_review":
-      await handlePullRequestReview(payload as PullRequestReviewEvent);
-      break;
+  // Find a handler and run it if there is one
+  const handler = eventHandlers[event];
+
+  if (handler) {
+    // @ts-ignore we know the payload type from the event but TS doesn't
+    await handler(payload);
   }
 });
-
-const findAutomationTrigger = (
-  payload: PullRequestEvent | PullRequestReviewEvent
-) => {
-  switch (payload.action) {
-    case "closed":
-      return payload.pull_request.merged ? "prMerged" : "prClosed";
-    case "opened":
-      return payload.pull_request.draft ? "draftPrOpened" : "prOpened";
-    case "converted_to_draft":
-      return "draftPrOpened";
-    case "ready_for_review":
-      return "prOpened";
-    case "reopened":
-      return "prOpened";
-    case "submitted":
-      switch (payload.review.state) {
-        case "approved":
-          return "prApproved";
-        case "changes_requested":
-          return "prChangesRequested";
-      }
-  }
-
-  return null;
-};
-
-async function triggerAutomation(
-  payload: PullRequestEvent | PullRequestReviewEvent,
-  record: LinkableRecord
-) {
-  if (!payload?.pull_request) return;
-  const { typename } = record;
-
-  // Check the record is a supported type
-  if (
-    typename === "Epic" ||
-    typename === "Feature" ||
-    typename === "Requirement"
-  ) {
-    const trigger = findAutomationTrigger(payload);
-    if (trigger) {
-      console.log(`Found automation trigger ${trigger} from payload`);
-      await aha.triggerAutomationOn(
-        record,
-        [IDENTIFIER, trigger].join("."),
-        true
-      );
-    }
-  }
-}
-
-async function handlePullRequest(payload: PullRequestEvent) {
-  const pr = payload.pull_request;
-
-  // Make sure the PR is linked to its record.
-  const record = await getOrLinkPullRequestRecord(pr);
-
-  // Generate events.
-  if (record) {
-    await triggerEvent("pr", payload, record);
-    await triggerAutomation(payload, record);
-  } else {
-    await triggerEvent("pr", payload);
-  }
-}
-
-async function handleCreateBranch(payload: CreateEvent) {
-  if (!("ref_type" in payload) || payload.ref_type != "branch") {
-    return;
-  }
-
-  const record = await linkBranch(payload.ref, payload.repository.html_url);
-  await triggerEvent("create", payload, record);
-}
-
-async function handlePullRequestReview(payload: PullRequestReviewEvent) {
-  const pr = payload.pull_request;
-
-  // Make sure the PR is linked to its record.
-  const record = await getOrLinkPullRequestRecord(pr);
-  if (record) {
-    await triggerAutomation(payload, record);
-  }
-
-  await triggerEvent(
-    "pull_request_review",
-    payload,
-    payload.pull_request?.title
-  );
-}
-
-async function triggerEvent(
-  event: string,
-  payload: WebhookEvent,
-  referenceText?: string | LinkableRecord
-) {
-  // Only trigger if there is an action
-  if (!("action" in payload)) return;
-
-  let record: null | LinkableRecord = null;
-
-  if (typeof referenceText === "string") {
-    record = await referenceToRecord(referenceText);
-  } else if (referenceText) {
-    record = referenceText;
-  }
-
-  aha.triggerServer(`aha-develop.github.${event}.${payload.action}`, {
-    record,
-    payload,
-  });
-}

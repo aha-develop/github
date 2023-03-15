@@ -1,12 +1,8 @@
-import { IDENTIFIER, LEARN_MORE_URL, ICON } from "@lib/extension";
+import { ICON, IDENTIFIER, LEARN_MORE_URL } from "extension";
 import React, { useEffect, useState } from "react";
-
 import { useClipboard } from "@lib/useClipboard";
-
-import { updatePullRequestLinkOnRecord } from "@lib/fields";
-import { withGitHubApi } from "@lib/github/api";
-import { getPrByUrl } from "@lib/github/getPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { linkPullRequest } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
 
 type MenuProps = {
@@ -47,7 +43,7 @@ const Menu = ({ record, onPaste }: MenuProps) => {
   );
 };
 
-const EmptyStateBox = ({ children }) => (
+const EmptyStateBox: React.FC<{}> = ({ children }) => (
   <aha-box class="m-0" style={{ color: "var(--theme-secondary-text)" }}>
     <div style={{ margin: "calc(-2em + 12px)" }}>{children}</div>
   </aha-box>
@@ -74,20 +70,20 @@ export const EmptyState: React.FC<{ record: LinkableRecord }> = ({
       return;
     }
 
-    await withGitHubApi(async (api) => {
-      const pullRequest = await getPrByUrl(api, url);
-      await updatePullRequestLinkOnRecord(pullRequest, record);
+    try {
+      await linkPullRequest(url, record);
       setPasteMode(false);
-    });
+    } catch (err) {
+      setValidation("Could not find pull request");
+      setPasteMode(false);
+    }
   };
 
   // Song and dance to fetch installation status for webhook when component first loads
   useEffect(() => {
     (async () => {
-      const hasConfiguredWebhook: boolean = await aha.account.getExtensionField(
-        IDENTIFIER,
-        "webhookConfigured"
-      );
+      const hasConfiguredWebhook: boolean | null =
+        await aha.account.getExtensionField(IDENTIFIER, "webhookConfigured");
       setHasConfiguredWebhook(!!hasConfiguredWebhook); // coerce from null to false if the field isn't set
     })();
   }, []);

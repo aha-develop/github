@@ -1,5 +1,5 @@
 import { useAuth } from "@aha-app/aha-develop-react";
-import { graphql } from "@octokit/graphql";
+import { authedGraphql, GqlFetch } from "./github/api";
 
 interface UseGithubOptions<R> {
   /**
@@ -9,7 +9,7 @@ interface UseGithubOptions<R> {
 }
 
 interface GithubApiCallback<R> {
-  (api: typeof graphql): Promise<R>;
+  (api: GqlFetch): Promise<R>;
 }
 
 export function useGithubApi<R>(
@@ -18,11 +18,7 @@ export function useGithubApi<R>(
   deps: any[] = []
 ) {
   const authCallback = async (authData: any) => {
-    const api = graphql.defaults({
-      headers: {
-        authorization: `token ${authData.token}`,
-      },
-    });
+    const api = authedGraphql(authData.token);
     return await callback(api);
   };
 

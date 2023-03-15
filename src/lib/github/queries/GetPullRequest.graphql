@@ -1,0 +1,18 @@
+query GetPullRequest(
+  $name: String!
+  $owner: String!
+  $number: Int!
+  $includeStatus: Boolean = false
+  $includeReviews: Boolean = false
+  $includeLabels: Boolean = false
+) {
+  repository(name: $name, owner: $owner) {
+    pullRequest(number: $number) {
+      __typename
+      ...PrForLink
+      ...PrCommit @include(if: $includeStatus)
+      ...PrForReviewDecision @include(if: $includeReviews)
+      ...PrLabels @include(if: $includeLabels)
+    }
+  }
+}

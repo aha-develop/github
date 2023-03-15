@@ -5,7 +5,7 @@ import { Styles } from "./Styles";
 /**
  * Set up the styles and auth provider
  */
-export const ExtensionRoot: React.FC = ({ children }) => {
+export const ExtensionRoot: React.FC<{}> = ({ children }) => {
   return (
     <>
       <Styles />

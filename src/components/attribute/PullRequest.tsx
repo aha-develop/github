@@ -1,22 +1,20 @@
-import React, { useEffect } from "react";
-import { githubPrToPrLink, updatePullRequestLinkOnRecord } from "@lib/fields";
 import { getPrByUrl } from "@lib/github/getPr";
-import { prStatusCommit } from "@lib/github/prStatusCommit";
+import { getLastCommit } from "@lib/github/getLastCommit";
+import { LinkableRecord } from "@lib/linkableRecord";
+import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
 import { useGithubApi } from "@lib/useGithubApi";
+import { IPullRequestLink } from "extension";
+import React, { useEffect, useState } from "react";
 import { ExternalLink } from "../ExternalLink";
 import { PrReviewStatus } from "../PrReviewStatus";
 import { PrState } from "../PrState";
 import { Status } from "../Status";
 
-/**
- * @type {React.FC<{record:import("@lib/fields").LinkableRecord, pr:import("@lib/fields").PrLink}>}
- */
-export const PullRequest = ({ record, pr }) => {
-  const originalPr = pr;
-
-  if (pr.title) {
-    pr = { ...pr, ...githubPrToPrLink(pr) };
-  }
+export const PullRequest: React.FC<{
+  record: LinkableRecord;
+  pr: IPullRequestLink;
+}> = ({ record, pr }) => {
+  const [prLink, setPrLink] = useState(pr);
 
   const {
     authed,
@@ -31,28 +29,24 @@ export const PullRequest = ({ record, pr }) => {
     });
   });
 
-  // If the reloaded PR has changed state then update the extension fields
+  // If the real data from github gets loaded then use it to update the link on
+  // the record
   useEffect(() => {
     if (loading) return;
     if (!fetchedPr) return;
 
-    const prLink = githubPrToPrLink(fetchedPr);
-    if (prLink.state === originalPr.state) return;
-
-    updatePullRequestLinkOnRecord(fetchedPr, record);
+    updateAllLinksFromPullRequest(fetchedPr, record);
+    setPrLink(prLink);
   }, [fetchedPr, loading]);
 
-  // Once fetched replace the prop with the fetched version
-  if (authed && fetchedPr) {
-    pr = githubPrToPrLink(fetchedPr);
-  }
+  const prStatusCommit = fetchedPr && getLastCommit(fetchedPr);
 
   return (
     <aha-flex align-items="center" justify-content="space-between" gap="5px">
       <span>
-        <ExternalLink href={pr.url}>{pr.name}</ExternalLink>
+        <ExternalLink href={prLink.url}>{prLink.name}</ExternalLink>
       </span>
-      <PrState pr={pr} />
+      <PrState state={prLink.state} />
       {loading && (
         <span className="pr-status">
           <aha-spinner />
@@ -67,7 +61,7 @@ export const PullRequest = ({ record, pr }) => {
       )}
       {authed && fetchedPr && (
         <>
-          <Status prStatus={prStatusCommit(fetchedPr)} />
+          {prStatusCommit && <Status prStatus={prStatusCommit} />}
           <PrReviewStatus pr={fetchedPr} />
         </>
       )}

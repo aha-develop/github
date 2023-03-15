@@ -1,10 +1,12 @@
+import { LinkableRecord } from "@lib/linkableRecord";
+import { IPullRequestLink } from "extension";
 import React from "react";
 import { PullRequest } from "./PullRequest";
 
-/**
- * @type {React.FC<{record: import("@lib/fields").LinkableRecord, prs:import("@lib/fields").PrLink[]}>}
- */
-export const PullRequests = ({ record, prs }) => {
+export const PullRequests: React.FC<{
+  record: LinkableRecord;
+  prs: IPullRequestLink[];
+}> = ({ record, prs }) => {
   const pullRequests = (prs || []).map((pr, idx) => (
     <PullRequest key={idx} record={record} pr={pr} />
   ));

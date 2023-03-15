@@ -1,12 +1,12 @@
-import React from "react";
-import { getPrByUrl } from "@lib/github/getPr";
-import { prStatusCommit } from "@lib/github/prStatusCommit";
-import { isPrWithStatus } from "@lib/github/queries";
-import { useGithubApi } from "@lib/useGithubApi";
 import { usePopperAlerter } from "@lib/usePopperAlerter";
+import {
+  PrCommitStatusFragment,
+  PrStatusContextFragment,
+} from "generated/graphql";
+import React from "react";
 import { ExternalLink } from "./ExternalLink";
 
-const statusIcon = (status: Github.StatusState) => {
+const statusIcon = (status: PrStatusContextFragment["state"]) => {
   switch (status) {
     case "ERROR":
       return "fa-regular fa-exclamation-triangle";
@@ -21,7 +21,9 @@ const statusIcon = (status: Github.StatusState) => {
   }
 };
 
-const StatusIcon: React.FC<{ status: Github.StatusState }> = ({ status }) => {
+const StatusIcon: React.FC<{ status: PrStatusContextFragment["state"] }> = ({
+  status,
+}) => {
   return (
     <span className={`pr-check pr-check-${status.toLowerCase()}`}>
       <aha-icon icon={statusIcon(status)} />
@@ -29,7 +31,9 @@ const StatusIcon: React.FC<{ status: Github.StatusState }> = ({ status }) => {
   );
 };
 
-const StatusCheck: React.FC<{ context: Github.Context }> = ({ context }) => {
+const StatusCheck: React.FC<{ context: PrStatusContextFragment }> = ({
+  context,
+}) => {
   return (
     <aha-flex className="pr-check-detail" gap="5px">
       <span className="pr-check-icon">
@@ -53,7 +57,9 @@ const StatusCheck: React.FC<{ context: Github.Context }> = ({ context }) => {
   );
 };
 
-const Status: React.FC<{ prStatus: Github.CommitStatus }> = ({ prStatus }) => {
+const Status: React.FC<{ prStatus: PrCommitStatusFragment }> = ({
+  prStatus,
+}) => {
   const {
     attributes,
     popperElement,
@@ -110,46 +116,4 @@ const Status: React.FC<{ prStatus: Github.CommitStatus }> = ({ prStatus }) => {
   );
 };
 
-const FetchStatus: React.FC<{ pr: Github.Pr }> = ({ pr }) => {
-  const {
-    data: fetchedPr,
-    error,
-    authed,
-    loading,
-    fetchData,
-  } = useGithubApi(async (api) => {
-    if (isPrWithStatus(pr)) return pr;
-    return await getPrByUrl(api, pr.url, { includeStatus: true });
-  });
-
-  if (error) {
-    return (
-      <span className="pr-status">
-        <aha-icon icon="fa-regular fa-warn"></aha-icon>
-      </span>
-    );
-  }
-
-  if (loading) {
-    return (
-      <span className="pr-status">
-        <aha-spinner />
-      </span>
-    );
-  }
-
-  if (!authed || !fetchedPr) {
-    return (
-      <span className="pr-status">
-        <aha-button onClick={fetchData}>
-          <aha-icon icon="fa-regular fa-refresh"></aha-icon>
-        </aha-button>
-      </span>
-    );
-  }
-
-  const prStatus = prStatusCommit(fetchedPr);
-  return <Status prStatus={prStatus} />;
-};
-
-export { FetchStatus, Status };
+export { Status };

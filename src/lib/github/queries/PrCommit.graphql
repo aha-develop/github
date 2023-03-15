@@ -1,0 +1,12 @@
+fragment PrCommit on PullRequest {
+  commits(last: 1) {
+    nodes {
+      commit {
+        oid
+        message
+        ...PrCommitStatus
+        ...CommitCheckSuites
+      }
+    }
+  }
+}

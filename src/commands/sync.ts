@@ -1,8 +1,8 @@
-import { linkBranch, getOrLinkPullRequestRecord } from "@lib/fields";
 import { withGitHubApi } from "@lib/github/api";
 import GithubSearchQuery from "@lib/github/GithubSearchQuery";
 import { searchForPr } from "@lib/github/searchForPr";
 import { LinkableRecord } from "@lib/linkableRecord";
+import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
 
 const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   { record },
@@ -30,23 +30,17 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
     .toQuery();
 
   withGitHubApi(async (api) => {
-    const search = await searchForPr(api, { query });
+    const prs = await searchForPr(api, { query, includeStatus: true });
 
-    if (search.edges.length === 0) {
+    if (prs.length === 0) {
       aha.commandOutput(
         `No pull requests found with ${record.referenceNum} in the title`
       );
       return;
     }
 
-    for (let prNode of search.edges) {
-      const pr = prNode.node;
-
-      await getOrLinkPullRequestRecord(pr);
-
-      if (pr.headRef) {
-        await linkBranch(pr.headRef.name, pr.repository.url);
-      }
+    for (let pr of prs) {
+      await updateAllLinksFromPullRequest(pr, record as LinkableRecord);
     }
   });
 };

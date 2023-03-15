@@ -1,0 +1,18 @@
+fragment PrCommitStatus on Commit {
+  statusCheckRollup {
+    state
+  }
+  status {
+    contexts {
+      ...PrStatusContext
+    }
+  }
+}
+
+fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}

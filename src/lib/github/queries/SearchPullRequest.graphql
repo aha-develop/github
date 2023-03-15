@@ -1,0 +1,21 @@
+query SearchPullRequest(
+  $searchQuery: String!
+  $count: Int!
+  $includeStatus: Boolean = false
+  $includeReviews: Boolean = false
+  $includeLabels: Boolean = false
+) {
+  search(query: $searchQuery, type: ISSUE, first: $count) {
+    edges {
+      node {
+        __typename
+        ... on PullRequest {
+          ...PrForLink
+          ...PrCommit @include(if: $includeStatus)
+          ...PrForReviewDecision @include(if: $includeReviews)
+          ...PrLabels @include(if: $includeLabels)
+        }
+      }
+    }
+  }
+}
