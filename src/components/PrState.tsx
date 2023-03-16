@@ -1,6 +1,4 @@
 import React from "react";
-// @ts-ignore
-import { titleize } from "https://cdn.skypack.dev/inflected";
 import { IPullRequestLink } from "extension";
 
 const icon = (state: IPullRequestLink["state"]) => {
@@ -17,11 +15,25 @@ const icon = (state: IPullRequestLink["state"]) => {
 export const PrState: React.FC<{
   state: IPullRequestLink["state"];
 }> = ({ state }) => {
+  let label: string;
+
+  switch (state) {
+    case "closed":
+      label = "Closed";
+      break;
+    case "merged":
+      label = "Merged";
+      break;
+    case "open":
+      label = "Open";
+      break;
+  }
+
   return (
     <span className={`pr-state pr-state-${state}`}>
       <aha-flex gap="4px">
         <aha-icon icon={"fa-regular fa-" + icon(state)}></aha-icon>
-        <span>{titleize(state)}</span>
+        <span>{label}</span>
       </aha-flex>
     </span>
   );

@@ -8,7 +8,7 @@ const config: CodegenConfig = {
       plugins: [
         "typescript",
         "typescript-operations",
-        "typed-document-node",
+        "./src/generated/string-typed-node.js",
       ],
       config: {
         onlyOperationTypes: true,
