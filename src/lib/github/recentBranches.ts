@@ -2,10 +2,9 @@ import {
   RepoFragmentFragment,
   RepoFragmentFragmentDoc,
 } from "generated/graphql";
-import { classify } from "inflected";
 import { GqlFetch } from "./api";
 
-const repoAlias = (repo: string) => classify(repo).replace(/[^a-zA-Z]/g, "");
+const repoAlias = (repo: string) => repo.replace(/[^a-zA-Z]/g, "");
 
 const RepoBranches = (repo: string) => {
   const alias = repoAlias(repo);
