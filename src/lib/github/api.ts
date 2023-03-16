@@ -1,5 +1,5 @@
-import { DocumentNode, print } from "graphql";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { DocumentNode } from "graphql";
 
 /**
  * Wrap the github provided graphql function in a function that accepts a
@@ -13,10 +13,14 @@ function toFetch(token: string) {
     variables?: TVariables
   ): Promise<TData>;
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
-    operation: DocumentNode,
+    operation: DocumentNode|string,
+    variables?: TVariables
+  ): Promise<TData>;
+  async function gqlFetch<TData = any, TVariables = Record<string, any>>(
+    operation: any,
     variables?: TVariables
   ): Promise<TData> {
-    const query = print(operation);
+    const query = operation;
     const payload: any = { query };
     if (variables) payload.variables = variables;
 

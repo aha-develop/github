@@ -3315,15 +3315,445 @@ export type SearchPullRequestQueryVariables = Exact<{
 
 export type SearchPullRequestQuery = { __typename: 'Query', search: { __typename: 'SearchResultItemConnection', edges: Array<{ __typename: 'SearchResultItemEdge', node: { __typename: 'App' } | { __typename: 'Discussion' } | { __typename: 'Issue' } | { __typename: 'MarketplaceListing' } | { __typename: 'Organization' } | { __typename: 'PullRequest', id: string, number: number, title: string, url: any, state: PullRequestState, merged: boolean, reviewDecision: PullRequestReviewDecision | null, repository: { __typename: 'Repository', name: string, url: any, databaseId: number | null }, headRef: { __typename: 'Ref', name: string } | null, commits: { __typename: 'PullRequestCommitConnection', nodes: Array<{ __typename: 'PullRequestCommit', commit: { __typename: 'Commit', oid: any, message: string, statusCheckRollup: { __typename: 'StatusCheckRollup', state: StatusState } | null, status: { __typename: 'Status', contexts: Array<{ __typename: 'StatusContext', context: string, description: string | null, targetUrl: any | null, avatarUrl: any | null, state: StatusState }> } | null, checkSuites: { __typename: 'CheckSuiteConnection', nodes: Array<{ __typename: 'CheckSuite', conclusion: CheckConclusionState | null, workflowRun: { __typename: 'WorkflowRun', createdAt: any, updatedAt: any, runNumber: number, url: any, workflow: { __typename: 'Workflow', id: string, databaseId: number | null, name: string } } | null, creator: { __typename: 'User', login: string, avatarUrl: any } | null, checkRuns: { __typename: 'CheckRunConnection', nodes: Array<{ __typename: 'CheckRun', title: string | null, text: string | null, summary: string | null, status: CheckStatusState, conclusion: CheckConclusionState | null, name: string } | null> | null } | null } | null> | null } | null } } | null> | null }, latestReviews: { __typename: 'PullRequestReviewConnection', nodes: Array<{ __typename: 'PullRequestReview', state: PullRequestReviewState } | null> | null } | null, labels: { __typename: 'LabelConnection', nodes: Array<{ __typename: 'Label', color: string, name: string } | null> | null } | null } | { __typename: 'Repository' } | { __typename: 'User' } | null } | null> | null } };
 
-export const PrStatusContextFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrStatusContext"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StatusContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"context"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"targetUrl"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]} as unknown as DocumentNode<PrStatusContextFragment, unknown>;
-export const PrCommitStatusFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommitStatus"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"statusCheckRollup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"Field","name":{"kind":"Name","value":"status"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contexts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrStatusContext"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrStatusContext"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StatusContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"context"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"targetUrl"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]} as unknown as DocumentNode<PrCommitStatusFragment, unknown>;
-export const CheckRunFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckRun"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CheckRun"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CheckRunFragment, unknown>;
-export const CommitCheckSuitesFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommitCheckSuites"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkSuites"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"workflowRun"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"runNumber"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"workflow"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"size"},"value":{"kind":"IntValue","value":"32"}}]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"checkRuns"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CheckRun"}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckRun"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CheckRun"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CommitCheckSuitesFragment, unknown>;
-export const PrCommitFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommit"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commits"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commit"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oid"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrCommitStatus"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommitCheckSuites"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrStatusContext"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StatusContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"context"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"targetUrl"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckRun"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CheckRun"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommitStatus"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"statusCheckRollup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"Field","name":{"kind":"Name","value":"status"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contexts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrStatusContext"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommitCheckSuites"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkSuites"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"workflowRun"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"runNumber"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"workflow"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"size"},"value":{"kind":"IntValue","value":"32"}}]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"checkRuns"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CheckRun"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<PrCommitFragment, unknown>;
-export const PrForLinkFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForLink"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"merged"}},{"kind":"Field","name":{"kind":"Name","value":"repository"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"headRef"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<PrForLinkFragment, unknown>;
-export const PrForReviewDecisionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForReviewDecision"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewDecision"}},{"kind":"Field","name":{"kind":"Name","value":"latestReviews"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]}}]}}]} as unknown as DocumentNode<PrForReviewDecisionFragment, unknown>;
-export const PrLabelsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrLabels"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<PrLabelsFragment, unknown>;
-export const BranchFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BranchFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Ref"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"target"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oid"}},{"kind":"Field","name":{"kind":"Name","value":"commitUrl"}}]}}]}}]} as unknown as DocumentNode<BranchFragmentFragment, unknown>;
-export const RepoFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RepoFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Repository"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nameWithOwner"}},{"kind":"Field","name":{"kind":"Name","value":"refs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"refPrefix"},"value":{"kind":"StringValue","value":"refs/heads/","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"field"},"value":{"kind":"EnumValue","value":"TAG_COMMIT_DATE"}},{"kind":"ObjectField","name":{"kind":"Name","value":"direction"},"value":{"kind":"EnumValue","value":"ASC"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"BranchFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"BranchFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Ref"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"target"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oid"}},{"kind":"Field","name":{"kind":"Name","value":"commitUrl"}}]}}]}}]} as unknown as DocumentNode<RepoFragmentFragment, unknown>;
-export const GetPullRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPullRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"owner"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"number"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeStatus"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeReviews"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeLabels"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"repository"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"owner"},"value":{"kind":"Variable","name":{"kind":"Name","value":"owner"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pullRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"number"},"value":{"kind":"Variable","name":{"kind":"Name","value":"number"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrForLink"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrCommit"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeStatus"}}}]}]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrForReviewDecision"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeReviews"}}}]}]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrLabels"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeLabels"}}}]}]}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrStatusContext"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StatusContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"context"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"targetUrl"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommitStatus"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"statusCheckRollup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"Field","name":{"kind":"Name","value":"status"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contexts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrStatusContext"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckRun"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CheckRun"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommitCheckSuites"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkSuites"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"workflowRun"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"runNumber"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"workflow"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"size"},"value":{"kind":"IntValue","value":"32"}}]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"checkRuns"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CheckRun"}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForLink"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"merged"}},{"kind":"Field","name":{"kind":"Name","value":"repository"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"headRef"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommit"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commits"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commit"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oid"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrCommitStatus"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommitCheckSuites"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForReviewDecision"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewDecision"}},{"kind":"Field","name":{"kind":"Name","value":"latestReviews"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrLabels"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetPullRequestQuery, GetPullRequestQueryVariables>;
-export const SearchPullRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SearchPullRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchQuery"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeStatus"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeReviews"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"includeLabels"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}},"defaultValue":{"kind":"BooleanValue","value":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"search"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"query"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchQuery"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ISSUE"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrForLink"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrCommit"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeStatus"}}}]}]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrForReviewDecision"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeReviews"}}}]}]},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrLabels"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"includeLabels"}}}]}]}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrStatusContext"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StatusContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"context"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"targetUrl"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommitStatus"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"statusCheckRollup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}},{"kind":"Field","name":{"kind":"Name","value":"status"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contexts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrStatusContext"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckRun"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CheckRun"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommitCheckSuites"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Commit"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"checkSuites"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"conclusion"}},{"kind":"Field","name":{"kind":"Name","value":"workflowRun"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"runNumber"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"workflow"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"creator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"size"},"value":{"kind":"IntValue","value":"32"}}]}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"checkRuns"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CheckRun"}}]}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForLink"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"state"}},{"kind":"Field","name":{"kind":"Name","value":"merged"}},{"kind":"Field","name":{"kind":"Name","value":"repository"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"databaseId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"headRef"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrCommit"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commits"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"commit"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oid"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PrCommitStatus"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommitCheckSuites"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrForReviewDecision"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"reviewDecision"}},{"kind":"Field","name":{"kind":"Name","value":"latestReviews"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"state"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PrLabels"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PullRequest"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"labels"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"5"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<SearchPullRequestQuery, SearchPullRequestQueryVariables>;
+export const PrStatusContextFragmentDoc = `fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}` as unknown as DocumentNode<PrStatusContextFragment, unknown>;
+export const PrCommitStatusFragmentDoc = `fragment PrCommitStatus on Commit {
+  statusCheckRollup {
+    state
+  }
+  status {
+    contexts {
+      ...PrStatusContext
+    }
+  }
+}
+
+fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}` as unknown as DocumentNode<PrCommitStatusFragment, unknown>;
+export const CheckRunFragmentDoc = `fragment CheckRun on CheckRun {
+  title
+  text
+  summary
+  status
+  conclusion
+  name
+}` as unknown as DocumentNode<CheckRunFragment, unknown>;
+export const CommitCheckSuitesFragmentDoc = `fragment CommitCheckSuites on Commit {
+  checkSuites(last: 1) {
+    nodes {
+      conclusion
+      workflowRun {
+        createdAt
+        updatedAt
+        runNumber
+        url
+        workflow {
+          id
+          databaseId
+          name
+        }
+      }
+      creator {
+        ... on Actor {
+          login
+          avatarUrl(size: 32)
+        }
+      }
+      checkRuns(last: 1) {
+        nodes {
+          ...CheckRun
+        }
+      }
+    }
+  }
+}
+
+fragment CheckRun on CheckRun {
+  title
+  text
+  summary
+  status
+  conclusion
+  name
+}` as unknown as DocumentNode<CommitCheckSuitesFragment, unknown>;
+export const PrCommitFragmentDoc = `fragment PrCommit on PullRequest {
+  commits(last: 1) {
+    nodes {
+      commit {
+        oid
+        message
+        ...PrCommitStatus
+        ...CommitCheckSuites
+      }
+    }
+  }
+}
+
+fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}
+
+fragment CheckRun on CheckRun {
+  title
+  text
+  summary
+  status
+  conclusion
+  name
+}
+
+fragment PrCommitStatus on Commit {
+  statusCheckRollup {
+    state
+  }
+  status {
+    contexts {
+      ...PrStatusContext
+    }
+  }
+}
+
+fragment CommitCheckSuites on Commit {
+  checkSuites(last: 1) {
+    nodes {
+      conclusion
+      workflowRun {
+        createdAt
+        updatedAt
+        runNumber
+        url
+        workflow {
+          id
+          databaseId
+          name
+        }
+      }
+      creator {
+        ... on Actor {
+          login
+          avatarUrl(size: 32)
+        }
+      }
+      checkRuns(last: 1) {
+        nodes {
+          ...CheckRun
+        }
+      }
+    }
+  }
+}` as unknown as DocumentNode<PrCommitFragment, unknown>;
+export const PrForLinkFragmentDoc = `fragment PrForLink on PullRequest {
+  id
+  number
+  title
+  url
+  state
+  merged
+  repository {
+    name
+    url
+    databaseId
+  }
+  headRef {
+    name
+  }
+}` as unknown as DocumentNode<PrForLinkFragment, unknown>;
+export const PrForReviewDecisionFragmentDoc = `fragment PrForReviewDecision on PullRequest {
+  reviewDecision
+  latestReviews(first: 5) {
+    nodes {
+      state
+    }
+  }
+}` as unknown as DocumentNode<PrForReviewDecisionFragment, unknown>;
+export const PrLabelsFragmentDoc = `fragment PrLabels on PullRequest {
+  labels(first: 5) {
+    nodes {
+      color
+      name
+    }
+  }
+}` as unknown as DocumentNode<PrLabelsFragment, unknown>;
+export const BranchFragmentFragmentDoc = `fragment BranchFragment on Ref {
+  __typename
+  name
+  target {
+    oid
+    commitUrl
+  }
+}` as unknown as DocumentNode<BranchFragmentFragment, unknown>;
+export const RepoFragmentFragmentDoc = `fragment RepoFragment on Repository {
+  nameWithOwner
+  refs(
+    refPrefix: "refs/heads/"
+    orderBy: {field: TAG_COMMIT_DATE, direction: ASC}
+    first: 5
+  ) {
+    edges {
+      node {
+        ...BranchFragment
+      }
+    }
+  }
+}
+
+fragment BranchFragment on Ref {
+  __typename
+  name
+  target {
+    oid
+    commitUrl
+  }
+}` as unknown as DocumentNode<RepoFragmentFragment, unknown>;
+export const GetPullRequestDocument = `query GetPullRequest($name: String!, $owner: String!, $number: Int!, $includeStatus: Boolean = false, $includeReviews: Boolean = false, $includeLabels: Boolean = false) {
+  repository(name: $name, owner: $owner) {
+    pullRequest(number: $number) {
+      __typename
+      ...PrForLink
+      ...PrCommit @include(if: $includeStatus)
+      ...PrForReviewDecision @include(if: $includeReviews)
+      ...PrLabels @include(if: $includeLabels)
+    }
+  }
+}
+
+fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}
+
+fragment PrCommitStatus on Commit {
+  statusCheckRollup {
+    state
+  }
+  status {
+    contexts {
+      ...PrStatusContext
+    }
+  }
+}
+
+fragment CheckRun on CheckRun {
+  title
+  text
+  summary
+  status
+  conclusion
+  name
+}
+
+fragment CommitCheckSuites on Commit {
+  checkSuites(last: 1) {
+    nodes {
+      conclusion
+      workflowRun {
+        createdAt
+        updatedAt
+        runNumber
+        url
+        workflow {
+          id
+          databaseId
+          name
+        }
+      }
+      creator {
+        ... on Actor {
+          login
+          avatarUrl(size: 32)
+        }
+      }
+      checkRuns(last: 1) {
+        nodes {
+          ...CheckRun
+        }
+      }
+    }
+  }
+}
+
+fragment PrForLink on PullRequest {
+  id
+  number
+  title
+  url
+  state
+  merged
+  repository {
+    name
+    url
+    databaseId
+  }
+  headRef {
+    name
+  }
+}
+
+fragment PrCommit on PullRequest {
+  commits(last: 1) {
+    nodes {
+      commit {
+        oid
+        message
+        ...PrCommitStatus
+        ...CommitCheckSuites
+      }
+    }
+  }
+}
+
+fragment PrForReviewDecision on PullRequest {
+  reviewDecision
+  latestReviews(first: 5) {
+    nodes {
+      state
+    }
+  }
+}
+
+fragment PrLabels on PullRequest {
+  labels(first: 5) {
+    nodes {
+      color
+      name
+    }
+  }
+}` as unknown as DocumentNode<GetPullRequestQuery, GetPullRequestQueryVariables>;
+export const SearchPullRequestDocument = `query SearchPullRequest($searchQuery: String!, $count: Int!, $includeStatus: Boolean = false, $includeReviews: Boolean = false, $includeLabels: Boolean = false) {
+  search(query: $searchQuery, type: ISSUE, first: $count) {
+    edges {
+      node {
+        __typename
+        ... on PullRequest {
+          ...PrForLink
+          ...PrCommit @include(if: $includeStatus)
+          ...PrForReviewDecision @include(if: $includeReviews)
+          ...PrLabels @include(if: $includeLabels)
+        }
+      }
+    }
+  }
+}
+
+fragment PrStatusContext on StatusContext {
+  context
+  description
+  targetUrl
+  avatarUrl
+  state
+}
+
+fragment PrCommitStatus on Commit {
+  statusCheckRollup {
+    state
+  }
+  status {
+    contexts {
+      ...PrStatusContext
+    }
+  }
+}
+
+fragment CheckRun on CheckRun {
+  title
+  text
+  summary
+  status
+  conclusion
+  name
+}
+
+fragment CommitCheckSuites on Commit {
+  checkSuites(last: 1) {
+    nodes {
+      conclusion
+      workflowRun {
+        createdAt
+        updatedAt
+        runNumber
+        url
+        workflow {
+          id
+          databaseId
+          name
+        }
+      }
+      creator {
+        ... on Actor {
+          login
+          avatarUrl(size: 32)
+        }
+      }
+      checkRuns(last: 1) {
+        nodes {
+          ...CheckRun
+        }
+      }
+    }
+  }
+}
+
+fragment PrForLink on PullRequest {
+  id
+  number
+  title
+  url
+  state
+  merged
+  repository {
+    name
+    url
+    databaseId
+  }
+  headRef {
+    name
+  }
+}
+
+fragment PrCommit on PullRequest {
+  commits(last: 1) {
+    nodes {
+      commit {
+        oid
+        message
+        ...PrCommitStatus
+        ...CommitCheckSuites
+      }
+    }
+  }
+}
+
+fragment PrForReviewDecision on PullRequest {
+  reviewDecision
+  latestReviews(first: 5) {
+    nodes {
+      state
+    }
+  }
+}
+
+fragment PrLabels on PullRequest {
+  labels(first: 5) {
+    nodes {
+      color
+      name
+    }
+  }
+}` as unknown as DocumentNode<SearchPullRequestQuery, SearchPullRequestQueryVariables>;
