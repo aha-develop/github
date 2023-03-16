@@ -1,4 +1,3 @@
-import { graphql } from "@octokit/graphql";
 import { DocumentNode, print } from "graphql";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 
@@ -8,7 +7,7 @@ import { TypedDocumentNode } from "@graphql-typed-document-node/core";
  * from the *.graphql files in ./queries and get typing for the input variables
  * and output data.
  */
-function toFetch(api: typeof graphql) {
+function toFetch(token: string) {
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
     operation: TypedDocumentNode<TData, TVariables>,
     variables?: TVariables
@@ -18,7 +17,25 @@ function toFetch(api: typeof graphql) {
     variables?: TVariables
   ): Promise<TData> {
     const query = print(operation);
-    return api(query, variables as any);
+    const payload: any = { query };
+    if (variables) payload.variables = variables;
+
+    const response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.v3+json",
+        Authorization: `token ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    const json = await response.json();
+    return json.data;
   }
 
   return gqlFetch;
@@ -30,13 +47,7 @@ export type GqlFetch = ReturnType<typeof toFetch>;
  * Take a token and return a wrapped authorized graphql function
  */
 export function authedGraphql(token: string): GqlFetch {
-  return toFetch(
-    graphql.defaults({
-      headers: {
-        authorization: `token ${token}`,
-      },
-    })
-  );
+  return toFetch(token);
 }
 
 /**

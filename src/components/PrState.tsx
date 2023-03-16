@@ -1,6 +1,5 @@
 import React from "react";
-// @ts-ignore
-import { titleize } from "https://cdn.skypack.dev/inflected";
+import { titleize } from "inflected";
 import { IPullRequestLink } from "extension";
 
 const icon = (state: IPullRequestLink["state"]) => {
