@@ -1,6 +1,13 @@
 // @ts-nocheck
 "use strict";
-const { extname } = require("path");
+
+/**
+ * This file is a copy of document-typed-node but it outputs graphql strings
+ * instead of compiled graphql document nodes. The reason to do this is that to
+ * parse the documents again to send with queries requires importing print from
+ * graphql, which adds a significant amount of code to the output bundle.
+ */
+
 const { print } = require("graphql");
 const { oldVisit } = require("@graphql-codegen/plugin-helpers");
 const {
