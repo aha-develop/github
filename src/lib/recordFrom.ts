@@ -147,8 +147,8 @@ export async function recordFromPullRequestEvent(
   pr: PullRequestEvent["pull_request"]
 ): Promise<LinkableRecord | null> {
   return recordFromFinders([
-    ["PR URL", () => recordFromUrl(pr.html_url)],
     ["PR Title", () => recordFromReferenceNum(pr.title)],
+    ["PR URL", () => recordFromUrl(pr.html_url)],
     ["PR branch name", () => recordFromReferenceNum(pr.head.ref)],
     [
       "PR branch URL",
