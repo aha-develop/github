@@ -31,6 +31,15 @@
           "type": "string",
           "array": true,
           "description": "List of the GitHub repositories that should be searched for related pull requests. e.g. 'rails/rails'."
+        },
+        "webhookOnly": {
+          "title": "Webhook only",
+          "description": "Makes the extension webhook-only, by disabling any UI that depends on a GitHub token",
+          "default": false,
+          "type": "boolean",
+          "scope": [
+            "account"
+          ]
         }
       },
       "views": {
