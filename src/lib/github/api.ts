@@ -1,4 +1,5 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { webhookOnly } from "extension";
 import { DocumentNode } from "graphql";
 
 /**
@@ -63,6 +64,14 @@ export function authedGraphql(token: string): GqlFetch {
  * @returns
  */
 export async function githubApi(cachedOnly = false) {
+  if (webhookOnly()) {
+    const error = new Error(
+      "GitHub extension is set to webhook only mode. Cannot interact with GitHub API."
+    );
+    console.error(error);
+    throw error;
+  }
+
   const options: Aha.AuthOptions = {
     useCachedRetry: true,
     parameters: { scope: "repo" },
