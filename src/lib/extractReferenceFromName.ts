@@ -4,7 +4,7 @@
  */
 export function extractReferenceFromName(
   name: string
-): null | { type: "Requirement" | "Epic" | "Feature"; referenceNum: string; } {
+): null | { type: "Requirement" | "Epic" | "Feature"; referenceNum: string } {
   let matches;
 
   // Requirement

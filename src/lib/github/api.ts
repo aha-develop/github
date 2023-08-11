@@ -13,7 +13,7 @@ function toFetch(token: string) {
     variables?: TVariables
   ): Promise<TData>;
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
-    operation: DocumentNode|string,
+    operation: DocumentNode | string,
     variables?: TVariables
   ): Promise<TData>;
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(

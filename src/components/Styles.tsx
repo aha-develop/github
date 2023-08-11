@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import css from "@lib/css";
 
 export const Styles = () => {

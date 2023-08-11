@@ -39,9 +39,13 @@ describe("extractReferenceFromName  ", () => {
   });
 
   it("returns the first match", () => {
-    expect(extractReferenceFromName("with FEAT-123-1 I'm fixing issues that were found in FEAT-122 of epic FEAT-E-121")).toEqual({
+    expect(
+      extractReferenceFromName(
+        "with FEAT-123-1 I'm fixing issues that were found in FEAT-122 of epic FEAT-E-121"
+      )
+    ).toEqual({
       type: "Requirement",
       referenceNum: "FEAT-123-1",
     });
-  })
+  });
 });

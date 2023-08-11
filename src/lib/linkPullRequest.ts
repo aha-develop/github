@@ -1,6 +1,5 @@
 import { IDENTIFIER, IPullRequestLink } from "extension";
 import { PrCommitFragment, PrForLinkFragment } from "generated/graphql";
-import { extractReferenceFromName } from "./extractReferenceFromName";
 import { appendField } from "./fields";
 import { withGitHubApi } from "./github/api";
 import {
