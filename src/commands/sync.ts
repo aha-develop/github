@@ -3,6 +3,7 @@ import GithubSearchQuery from "@lib/github/GithubSearchQuery";
 import { searchForPr } from "@lib/github/searchForPr";
 import { LinkableRecord } from "@lib/linkableRecord";
 import { updateAllLinksFromPullRequest } from "@lib/linkPullRequest";
+import { webhookOnly } from "extension";
 
 const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   { record },
@@ -45,4 +46,6 @@ const SyncCommand: Aha.CommandExtension<{ record: LinkableRecord }> = (
   });
 };
 
-aha.on("sync", SyncCommand);
+if (!webhookOnly()) {
+  aha.on("sync", SyncCommand);
+}

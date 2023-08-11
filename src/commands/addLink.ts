@@ -1,6 +1,7 @@
 import { LinkableRecord } from "@lib/linkableRecord";
 import { linkPullRequest } from "@lib/linkPullRequest";
 import { validPrUrl } from "@lib/validPrUrl";
+import { webhookOnly } from "extension";
 
 const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
   record,
@@ -20,4 +21,6 @@ const AddLink: Aha.CommandExtension<{ record: LinkableRecord }> = async ({
   await linkPullRequest(prUrl, record);
 };
 
-aha.on("addLink", AddLink);
+if (!webhookOnly()) {
+  aha.on("addLink", AddLink);
+}
