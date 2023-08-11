@@ -1,5 +1,5 @@
 import React from "react";
-import { LEARN_MORE_URL } from "extension";
+import { LEARN_MORE_URL, webhookOnly } from "extension";
 import { LinkableRecord } from "@lib/linkableRecord";
 
 export const Menu: React.FC<{ record: LinkableRecord }> = ({ record }) => {
@@ -15,6 +15,9 @@ export const Menu: React.FC<{ record: LinkableRecord }> = ({ record }) => {
     await aha.command("aha-develop.github.removeLinks", { record });
   };
 
+  const isWebhookOnly = webhookOnly();
+  const title = isWebhookOnly ? "Not available in webhook-only mode." : null;
+
   return (
     <aha-menu>
       <aha-button slot="control" kind="secondary" size="mini">
@@ -22,12 +25,22 @@ export const Menu: React.FC<{ record: LinkableRecord }> = ({ record }) => {
       </aha-button>
       <aha-menu-content>
         <aha-menu-item>
-          <aha-button kind="plain" onClick={addLink}>
+          <aha-button
+            disabled={isWebhookOnly || null}
+            kind="plain"
+            onClick={isWebhookOnly ? null : addLink}
+            title={title}
+          >
             Paste PR link
           </aha-button>
         </aha-menu-item>
         <aha-menu-item>
-          <aha-button kind="plain" onClick={sync}>
+          <aha-button
+            disabled={isWebhookOnly || null}
+            kind="plain"
+            onClick={isWebhookOnly ? null : sync}
+            title={title}
+          >
             Scan GitHub
           </aha-button>
         </aha-menu-item>

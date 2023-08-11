@@ -1,4 +1,4 @@
-import { ICON, IDENTIFIER, LEARN_MORE_URL } from "extension";
+import { ICON, IDENTIFIER, LEARN_MORE_URL, webhookOnly } from "extension";
 import React, { useEffect, useState } from "react";
 import { useClipboard } from "@lib/useClipboard";
 import { LinkableRecord } from "@lib/linkableRecord";
@@ -15,6 +15,9 @@ const Menu = ({ record, onPaste }: MenuProps) => {
     aha.command(`${IDENTIFIER}.sync`, { record });
   };
 
+  const isWebhookOnly = webhookOnly();
+  const title = isWebhookOnly ? "Not available in webhook-only mode." : null;
+
   return (
     <aha-menu>
       <aha-button slot="control" size="mini">
@@ -22,12 +25,22 @@ const Menu = ({ record, onPaste }: MenuProps) => {
       </aha-button>
       <aha-menu-content>
         <aha-menu-item>
-          <aha-button kind="plain" onClick={() => onPaste()}>
+          <aha-button
+            disabled={isWebhookOnly || null}
+            kind="plain"
+            onClick={isWebhookOnly ? null : onPaste}
+            title={title}
+          >
             Paste PR link
           </aha-button>
         </aha-menu-item>
         <aha-menu-item>
-          <aha-button kind="plain" onClick={handleSync}>
+          <aha-button
+            disabled={isWebhookOnly || null}
+            kind="plain"
+            onClick={isWebhookOnly ? null : handleSync}
+            title={title}
+          >
             Scan GitHub
           </aha-button>
         </aha-menu-item>
