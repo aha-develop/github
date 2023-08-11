@@ -68,3 +68,7 @@ export interface IActionWorkflow {
   authorName?: string;
   authorURL?: string;
 }
+
+export const webhookOnly = () =>
+  typeof window !== "undefined" &&
+  window.aha?.settings?.original?.get("aha-develop.github.webhookOnly");
