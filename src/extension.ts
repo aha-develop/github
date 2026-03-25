@@ -1,9 +1,26 @@
 export const IDENTIFIER = "aha-develop.github";
 export const ACTIONS_IDENTIFIER = "aha-develop.github-actions";
+export const DEFAULT_SERVER_URL = "https://github.com";
 
 export const LEARN_MORE_URL =
   "https://www.aha.io/support/develop/integrations/github/github-extension";
 export const ICON = aha.iconForExtensionIdentifier(IDENTIFIER);
+
+const SERVER_URL_KEY = `${IDENTIFIER}.serverUrl`;
+
+export const getServerUrl = () => {
+  if (!aha.settings.has(SERVER_URL_KEY)) {
+    return DEFAULT_SERVER_URL;
+  }
+
+  const serverUrl = aha.settings.get(SERVER_URL_KEY);
+
+  if (typeof serverUrl === "string") {
+    return serverUrl;
+  } else {
+    return DEFAULT_SERVER_URL;
+  }
+};
 
 export interface IRecordExtensionFields {
   branches?: IBranchLink[];

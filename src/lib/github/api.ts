@@ -1,6 +1,6 @@
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { DocumentNode } from "graphql";
-import { IDENTIFIER } from "../../extension";
+import { DEFAULT_SERVER_URL, getServerUrl } from "../../extension";
 
 /**
  * Wrap the github provided graphql function in a function that accepts a
@@ -25,9 +25,9 @@ function toFetch(token: string) {
     const payload: any = { query };
     if (variables) payload.variables = variables;
 
-    const serverUrl = await aha.settings.get(`${IDENTIFIER}.serverUrl`);
+    const serverUrl = getServerUrl();
     const apiUrl =
-      !serverUrl || serverUrl === "https://github.com"
+      !serverUrl || serverUrl === DEFAULT_SERVER_URL
         ? "https://api.github.com/graphql"
         : `${serverUrl}/api/graphql`;
 
