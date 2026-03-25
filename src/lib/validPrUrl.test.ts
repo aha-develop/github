@@ -1,6 +1,6 @@
 import { validPrUrl } from "./validPrUrl";
 
-jest.mock('../extension', () => ({
+jest.mock("../extension", () => ({
   IDENTIFIER: "aha-develop.github",
 }));
 
@@ -18,24 +18,26 @@ describe("validPrUrl", () => {
 
   it("successed for valid urls", async () => {
     expect(
-      await validPrUrl("https://github.com/example/project/pull/1")
+      await validPrUrl("https://github.com/example/project/pull/1"),
     ).toBeTruthy();
   });
 
   describe("when serverUrl is set", () => {
     it("succeeds for valid urls matching the serverUrl", async () => {
-        settingsGet.mockResolvedValueOnce("https://github.enterprise.com");
+      settingsGet.mockResolvedValueOnce("https://github.enterprise.com");
 
-        expect(
-          await validPrUrl("https://github.enterprise.com/example/project/pull/1")
-        ).toBeTruthy();
+      expect(
+        await validPrUrl(
+          "https://github.enterprise.com/example/project/pull/1",
+        ),
+      ).toBeTruthy();
     });
     it("fails for invalid urls", async () => {
-        settingsGet.mockResolvedValueOnce("https://github.enterprise.com");
+      settingsGet.mockResolvedValueOnce("https://github.enterprise.com");
 
-        expect(
-          await validPrUrl("https://github.com/example/project/pull/1")
-        ).toBeFalsy();
+      expect(
+        await validPrUrl("https://github.com/example/project/pull/1"),
+      ).toBeFalsy();
     });
   });
 

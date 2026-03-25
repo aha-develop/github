@@ -11,24 +11,25 @@ import { IDENTIFIER } from "../../extension";
 function toFetch(token: string) {
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
     operation: TypedDocumentNode<TData, TVariables>,
-    variables?: TVariables
+    variables?: TVariables,
   ): Promise<TData>;
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
-    operation: DocumentNode|string,
-    variables?: TVariables
+    operation: DocumentNode | string,
+    variables?: TVariables,
   ): Promise<TData>;
   async function gqlFetch<TData = any, TVariables = Record<string, any>>(
     operation: any,
-    variables?: TVariables
+    variables?: TVariables,
   ): Promise<TData> {
     const query = operation;
     const payload: any = { query };
     if (variables) payload.variables = variables;
 
     const serverUrl = await aha.settings.get(`${IDENTIFIER}.serverUrl`);
-    const apiUrl = !serverUrl || serverUrl === "https://github.com"
-      ? "https://api.github.com/graphql"
-      : `${serverUrl}/api/graphql`;
+    const apiUrl =
+      !serverUrl || serverUrl === "https://github.com"
+        ? "https://api.github.com/graphql"
+        : `${serverUrl}/api/graphql`;
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -85,7 +86,7 @@ export async function githubApi(cachedOnly = false) {
  * Authenticate via Aha! and pass the created graphql function to a callback
  */
 export async function withGitHubApi<T>(
-  callback: (api: GqlFetch) => Promise<T>
+  callback: (api: GqlFetch) => Promise<T>,
 ) {
   const api = await githubApi(false);
   return await callback(api);
